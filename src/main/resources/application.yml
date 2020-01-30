@@ -33,3 +33,7 @@ management:
           - info
           - prometheus
           - configprops
+#meetroom reservation properties
+meetroom:
+  minimum-reservation-value: 30 #in minutes
+  maximum-reservation-value: 1440 #24h in minutes
