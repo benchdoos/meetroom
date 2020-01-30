@@ -7,6 +7,7 @@ import com.github.benchdoos.meetroom.mappers.MeetingRoomMapper;
 import com.github.benchdoos.meetroom.repository.MeetingRoomRepository;
 import com.github.benchdoos.meetroom.service.MeetingRoomService;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,6 @@ import java.util.UUID;
 @Service
 public class MeetingRoomServiceImpl implements MeetingRoomService {
     private final MeetingRoomRepository meetingRoomRepository;
-    private final MeetingRoomMapper meetingRoomMapper;
 
     @Override
     public MeetingRoom getById(UUID id) {
@@ -28,6 +28,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
     public MeetingRoom createMeetingRoom(MeetingRoomDto meetingRoomDto) {
         final MeetingRoom meetingRoom = new MeetingRoom();
 
+        final MeetingRoomMapper meetingRoomMapper = Mappers.getMapper(MeetingRoomMapper.class);
         meetingRoomMapper.convertDtoToEntity(meetingRoomDto, meetingRoom);
 
         return meetingRoomRepository.save(meetingRoom);
