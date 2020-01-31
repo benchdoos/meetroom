@@ -18,6 +18,7 @@ import java.util.UUID;
 @Service
 public class MeetingRoomServiceImpl implements MeetingRoomService {
     private final MeetingRoomRepository meetingRoomRepository;
+    private final MeetingRoomMapper meetingRoomMapper;
 
     @Override
     public MeetingRoom getById(UUID id) {
@@ -28,8 +29,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
     public MeetingRoom createMeetingRoom(MeetingRoomDto meetingRoomDto) {
         final MeetingRoom meetingRoom = new MeetingRoom();
 
-        final MeetingRoomMapper meetingRoomMapper = Mappers.getMapper(MeetingRoomMapper.class);
-        meetingRoomMapper.convertDtoToEntity(meetingRoomDto, meetingRoom);
+        meetingRoomMapper.convert(meetingRoomDto, meetingRoom);
 
         return meetingRoomRepository.save(meetingRoom);
     }

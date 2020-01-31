@@ -7,11 +7,12 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(unmappedSourcePolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+componentModel = "spring")
 public interface MeetingRoomMapper {
 
-    void convertEntityToDto(MeetingRoom meetingRoom, @MappingTarget MeetingRoomDto meetingRoomDto);
+    void convert(MeetingRoom meetingRoom, @MappingTarget MeetingRoomDto meetingRoomDto);
 
-    void convertDtoToEntity(MeetingRoomDto meetingRoomDto, @MappingTarget MeetingRoom meetingRoom);
+    void convert(MeetingRoomDto meetingRoomDto, @MappingTarget MeetingRoom meetingRoom);
 }
