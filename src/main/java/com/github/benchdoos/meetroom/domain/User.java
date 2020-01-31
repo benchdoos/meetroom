@@ -10,36 +10,30 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity
-@Table(name = "meeting_rooms")
+@Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class MeetingRoom {
+public class User {
     @Id
     @GeneratedValue
     private UUID id;
 
-    /**
-     * Name of meeting room
-     */
-    @NotBlank
+    @NotNull
     @Column(unique = true)
-    private String name;
+    private String username;
 
-    /**
-     * Room location
-     */
-    @NotBlank
-    @Column(unique = true)
-    private String location;
+    @NotNull
+    private String password;
 
-    /**
-     * Is room disabled
-     */
-    private Boolean disabled;
+    @NotNull
+    private String firstName;
+
+    @NotNull
+    private String lastName;
 }
