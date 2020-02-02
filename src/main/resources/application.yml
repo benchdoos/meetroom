@@ -1,3 +1,17 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - prometheus
+          - configprops
+#meetroom reservation properties
+meetroom:
+  minimum-reservation-value: 30 #in minutes
+  maximum-reservation-value: 1440 #24h in minutes
+
 spring:
   profiles:
     active: DEVELOP
@@ -27,16 +41,35 @@ server:
   servlet:
     context-path: /meetroom
     port: 8080
-management:
-  endpoints:
-    web:
-      exposure:
-        include:
-          - health
-          - info
-          - prometheus
-          - configprops
-#meetroom reservation properties
-meetroom:
-  minimum-reservation-value: 30 #in minutes
-  maximum-reservation-value: 1440 #24h in minutes
+
+---
+
+spring:
+  profiles:
+    active: PRODUCTION
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/meetroom_zrazhevsky
+    username: meetroom
+    password: meetroom
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1;
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+  flyway:
+    enabled: true
+    encoding: UTF-8
+    locations: classpath:/db/flyway/migration/
+    validate-on-migrate: true
+    baseline-on-migrate: true
+server:
+  servlet:
+    context-path: /meetroom
+    port: 80
