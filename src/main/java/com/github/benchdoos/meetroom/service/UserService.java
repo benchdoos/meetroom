@@ -3,11 +3,12 @@ package com.github.benchdoos.meetroom.service;
 import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.dto.UserShortInfoDto;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  * Service that gives ability to operate with {@link User}
  */
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     /**
      * Get user by username or throws {@link UserNotFoundException}

@@ -14,7 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -41,8 +41,11 @@ public class User {
     @NotNull
     private String lastName;
 
+    @NotNull
+    private boolean enabled;
+
     @NotEmpty
     @OneToMany(cascade = CascadeType.ALL)
-    private Collection<UserRole> roles;
+    private Set<UserRole> roles;
 
 }
