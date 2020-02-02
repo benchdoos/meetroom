@@ -36,8 +36,8 @@ public class MeetingEvent {
     private User user;
 
     @NotNull
-    private ZonedDateTime from;
+    private ZonedDateTime fromDate;
 
     @NotNull
-    private ZonedDateTime to;
+    private ZonedDateTime toDate;
 }
