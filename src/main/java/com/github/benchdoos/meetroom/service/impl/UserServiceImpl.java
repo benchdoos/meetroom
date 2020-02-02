@@ -12,6 +12,7 @@ import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotEmpty;
@@ -26,6 +27,7 @@ import java.util.Collection;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserShortInfoDto getUserShortInfoDtoByUsername(String username) {
@@ -40,6 +42,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+
+        System.out.println(passwordEncoder.encode(user.getPassword()));
 
         checkUserIsNotDisabled(user);
 
