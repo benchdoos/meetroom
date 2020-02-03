@@ -17,6 +17,10 @@
     grid-area: content;
 }
 
+.pagination {
+    display: inline-flex;
+}
+
 .top-date {
     float: left;
     display: inline;

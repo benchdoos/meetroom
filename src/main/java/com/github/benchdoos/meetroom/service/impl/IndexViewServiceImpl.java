@@ -31,8 +31,8 @@ public class IndexViewServiceImpl implements IndexViewService {
         model.addAttribute("rooms", meetingRooms);
 
         final int totalPages = meetingRooms.getTotalPages();
-        if (totalPages > 0) {
-            final List<Integer> pageNumbers = IntStream.rangeClosed(0, totalPages)
+        if (totalPages > 1) {
+            final List<Integer> pageNumbers = IntStream.rangeClosed(0, totalPages - 1)
                     .boxed()
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);

@@ -15,11 +15,13 @@
     </a>
 </div>
 
-<div th:if="${rooms.totalPages > 0}" class="pagination"
-     th:each="pageNumber : ${pageNumbers}">
-    <a th:href="@{/available(size=${rooms.size}, page=${pageNumber})}"
-       th:text=${pageNumber}
-       th:class="${pageNumber==rooms.number + 1} ? active"></a>
+<div class="pagination" style="display: inline-flex">
+    <div th:each="pageNumber : ${pageNumbers}">
+        <a th:href="@{/(size=${rooms.size}, page=${pageNumber})}"
+           th:text=${pageNumber}
+           th:class="${pageNumber==rooms.number} ? active"></a>
+        &nbsp;
+    </div>
 </div>
 </body>
 </html>
