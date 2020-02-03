@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="|User page - ${user.username}|"></title>
+</head>
+<body>
+<div class="header">
+    <h2 th:text="|Account information - ${user.username}|"></h2>
+</div>
+<div>
+    <a href="javascript: document.logoutForm.submit()" role="menuitem"> Logout</a>
+
+    <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+        <input hidden type="submit" value="Sign Out"/>
+    </form>
+    <p th:text="|Name: ${user.firstName}|"></p>
+    <p th:text="|Surname: ${user.lastName}|"></p>
+    <button class="btn btn-info" onclick="goBack()">Go Back</button>
+</div>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+</body>
+</html>

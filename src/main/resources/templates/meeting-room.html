@@ -29,8 +29,8 @@
         <div class="header top-date" th:each="event : ${events.content}">
             <div>
                 <p>User reserved:
-                <p th:text="|${event.user.firstName} ${event.user.lastName}|"></p></p>
-                <p th:text="|${event.fromDate} - ${event.toDate}|"></p></p>
+                <p th:text="|${event.user.firstName} ${event.user.lastName}|"></p>
+                <p th:text="|${event.fromDate} - ${event.toDate}|"></p>
             </div>
         </div>
     </div>
