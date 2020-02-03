@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Meeting rooms</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div class="header"><h2>Available meeting rooms list</h2></div>
+<div th:each="room : ${rooms.content}">
+    <a th:href="@{'/' + ${room.id}}">
+        <div th:style="${room.enabled}? 'background-color: green;'" style="height: 250px; width: 300px;">
+            <h2><p style="font-weight: bold" th:text="${room.name}"></p></h2>
+            <p th:text="${room.location}"></p>
+        </div>
+    </a>
+</div>
+
+<div th:if="${rooms.totalPages > 0}" class="pagination"
+     th:each="pageNumber : ${pageNumbers}">
+    <a th:href="@{/available(size=${rooms.size}, page=${pageNumber})}"
+       th:text=${pageNumber}
+       th:class="${pageNumber==rooms.number + 1} ? active"></a>
+</div>
+</body>
+</html>

@@ -10,6 +10,6 @@ import java.util.UUID;
 /**
  * JPA repository to operate with {@link MeetingRoom}
  */
-public interface MeetingRoomRepository extends JpaRepository<MeetingRoom, UUID> {
-    Page<MeetingRoom> findAllByDisabled(Boolean disabled, Pageable pageable);
+public interface MeetingRoomsRepository extends JpaRepository<MeetingRoom, UUID> {
+    Page<MeetingRoom> findAllByEnabled(boolean enabled, Pageable pageable);
 }

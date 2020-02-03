@@ -41,5 +41,5 @@ public class MeetingRoom {
     /**
      * Is room disabled
      */
-    private Boolean disabled;
+    private boolean enabled;
 }

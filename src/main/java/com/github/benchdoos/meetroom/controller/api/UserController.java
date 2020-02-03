@@ -1,4 +1,4 @@
-package com.github.benchdoos.meetroom.controller;
+package com.github.benchdoos.meetroom.controller.api;
 
 import com.github.benchdoos.meetroom.domain.dto.UserShortInfoDto;
 import com.github.benchdoos.meetroom.service.UserService;
