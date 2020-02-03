@@ -5,7 +5,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-<div class="header"><h2>Available meeting rooms list</h2></div>
+<div class="header">
+    <h2>Available meeting rooms list</h2>
+    <div>
+        <a th:href="@{/login}">Login</a>
+    </div>
+</div>
 <div th:each="room : ${rooms.content}">
     <a th:href="@{'/' + ${room.id}}">
         <div th:style="${room.enabled}? 'background-color: green;'" style="height: 250px; width: 300px;">

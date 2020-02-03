@@ -126,6 +126,7 @@ function drawTimeScheduleTable() {
             cell.width = 50;
         }
     }
+    console.log("Hello")
 }
 
 /*
