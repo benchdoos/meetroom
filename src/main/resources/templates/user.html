@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title th:text="|User page - ${user.username}|"></title>
+    <link th:href="@{/css/bootstrap.mini.4.1.3.css}" href="/css/bootstrap.mini.4.1.3.css" rel="stylesheet">
 </head>
 <body>
 <div class="header">
     <h2 th:text="|Account information - ${user.username}|"></h2>
 </div>
 <div>
-    <a href="javascript: document.logoutForm.submit()" role="menuitem"> Logout</a>
-
-    <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
-        <input hidden type="submit" value="Sign Out"/>
-    </form>
     <p th:text="|Name: ${user.firstName}|"></p>
     <p th:text="|Surname: ${user.lastName}|"></p>
-    <button class="btn btn-info" onclick="goBack()">Go Back</button>
+
+    <div style="display: flex">
+        <button class="btn btn-info" onclick="goBack()">Go Back</button>
+        &nbsp;
+        <form name="logoutForm" th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+            <button class="btn btn-primary" type="submit" value="Sign Out">Sign Out</button>
+        </form>
+    </div>
 </div>
 
 <script>

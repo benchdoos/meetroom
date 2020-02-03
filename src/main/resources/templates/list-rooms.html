@@ -3,6 +3,7 @@
 <head>
     <title>Meeting rooms</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link th:href="@{/css/bootstrap.mini.4.1.3.css}" href="/css/bootstrap.mini.4.1.3.css" rel="stylesheet">
 </head>
 <body>
 <div class="header">
@@ -13,7 +14,7 @@
         </a>
     </div>
     <div sec:authorize="!isAuthenticated()">
-        <a th:href="@{/login}">Login</a>
+        <a th:href="@{/login}" class="btn btn-primary">Login</a>
     </div>
 </div>
 <div th:each="room : ${rooms.content}">
