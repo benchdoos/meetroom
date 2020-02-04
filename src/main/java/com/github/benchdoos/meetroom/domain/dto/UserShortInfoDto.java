@@ -25,4 +25,7 @@ public class UserShortInfoDto {
     @NotNull
     private String lastName;
 
+    @NotNull
+    private Boolean enabled;
+
 }

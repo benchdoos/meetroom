@@ -1,6 +1,7 @@
 package com.github.benchdoos.meetroom.mappers;
 
 import com.github.benchdoos.meetroom.domain.User;
+import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserShortInfoDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -15,4 +16,8 @@ public interface UserMapper {
     void convert(User user, @MappingTarget UserShortInfoDto userShortInfoDto);
 
     void convert(UserShortInfoDto userShortInfoDto, @MappingTarget User user);
+
+    void convert(User user, @MappingTarget UserExtendedInfoDto userExtendedInfoDto);
+
+    void convert(UserExtendedInfoDto userExtendedInfoDto, @MappingTarget User user);
 }

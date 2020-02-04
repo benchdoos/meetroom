@@ -2,6 +2,7 @@ package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.UserRole;
+import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserShortInfoDto;
 import com.github.benchdoos.meetroom.exceptions.UserDisabledException;
@@ -35,6 +36,15 @@ public class UserServiceImpl implements UserService {
         userMapper.convert(user, userShortInfoDto);
 
         return userShortInfoDto;
+    }
+
+    public UserExtendedInfoDto getExtendedUserInfoDtoByUsername(String username) {
+        final User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+        final UserExtendedInfoDto userExtendedInfoDto = new UserExtendedInfoDto();
+
+        userMapper.convert(user, userExtendedInfoDto);
+
+        return userExtendedInfoDto;
     }
 
     @Override
