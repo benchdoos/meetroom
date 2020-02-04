@@ -3,7 +3,6 @@
 <head>
     <title>Meeting rooms</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<!--    <link th:href="@{/css/bootstrap.mini.4.1.3.css}" href="/css/bootstrap.mini.4.1.3.css" rel="stylesheet">-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet">
@@ -12,12 +11,15 @@
 <body>
 <div class="header" style="background-color: green; color: white; display: flex">
     <div style="width: 100%">
-        <h2>Meeting room</h2>
         <div>
-            <p style="font-weight: bold" th:text="${room.name}"></p>
-            <p th:text="${room.location}"></p>
+            <h1>Meeting room</h1>
+            <p>Meeting room information</p>
+            <hr class="my-4">
+            <p th:text="${room.name}" class="h3"></p>
+            <p th:text="${room.location}" class="h6"></p>
             <a class="btn btn-info" th:href="@{/}">meeting rooms list</a>
         </div>
+
     </div>
     <div class="login-block">
         <div th:include="modal/modal-login :: fr-login"></div>
