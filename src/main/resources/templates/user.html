@@ -7,18 +7,26 @@
 </head>
 <body>
 <div style="padding: 20px">
-    <div class="header" style="display: flex">
-        <div style="width: 100%"><h2>Account information</h2></div>
+    <div class="header">
+        <div><h2>Account information</h2></div>
     </div>
 
     <div th:switch="${user.enabled}">
-        <span th:if="${false}" class="badge badge-pill badge-danger">Disabled</span>
-        <span th:if="${true}" class="badge badge-pill badge-primary">Enabled</span>
+        <span th:case="${false}" class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="top"
+              title="Account disabled">Disabled</span>
+        <span th:case="${true}" class="badge badge-pill badge-primary" data-toggle="tooltip" data-placement="top"
+              title="Account enabled">Enabled</span>
     </div>
-    <div th:each="roleInfo : ${user.roles}">
-        <div th:switch="${roleInfo.role}">
-            <span th:case="'ROLE_ADMIN'" class="badge badge-pill badge-danger">admin</span>
-            <span th:case="'ROLE_USER'" class="badge badge-pill badge-success">user</span>
+    <div style="display: flex">
+        <div th:each="roleInfo : ${user.roles}">
+            <div th:switch="${roleInfo.role}">
+            <span th:case="'ROLE_ADMIN'" class="badge badge-pill badge-danger" data-toggle="tooltip"
+                  data-placement="top" title="Administrator">admin</span>
+                <span th:case="'ROLE_USER'" class="badge badge-pill badge-success" data-toggle="tooltip"
+                      data-placement="top" title="User">user</span>
+                <span th:case="*" class="badge badge-pill badge-info" data-toggle="tooltip" data-placement="top"
+                      title="Role">${roleInfo.role}</span>
+            </div>
         </div>
     </div>
     <p th:text="|Name: ${user.firstName}|"></p>
