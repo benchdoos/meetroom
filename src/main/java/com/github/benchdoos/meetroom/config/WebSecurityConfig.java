@@ -31,7 +31,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/login",
                 "/css/**",
                 "/images/**",
-                "/js/**").permitAll()
+                "/js/**",
+                "/webjars/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .csrf().disable()
