@@ -8,9 +8,6 @@
 <body>
 <div class="header" style="display: flex">
     <div style="width: 100%"><h2 th:text="|Account information - ${user.username}|"></h2></div>
-    <div class="login-block">
-        <div th:include="modal/modal-login :: fr-login"></div>
-    </div>
 </div>
 <div>
     <p th:text="|Name: ${user.firstName}|"></p>
@@ -18,7 +15,6 @@
 
     <div style="display: flex">
         <button class="btn btn-info" onclick="goBack()">Go Back</button>
-        &nbsp;
         <form name="logoutForm" th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
             <button class="btn btn-primary" type="submit" value="Sign Out">Sign Out</button>
         </form>
