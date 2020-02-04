@@ -10,8 +10,17 @@
 }
 
 .header {
-    grid-area: header;
-    background-color: darkgreen;
+    padding: 20px;
+}
+
+.card-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin: 10px;
+}
+
+.login-block {
+    align-content: end;
 }
 
 .content {
