@@ -12,14 +12,7 @@
 <div class="header" style="display: flex">
     <div style="width: 100%"><h2>Available meeting rooms list</h2></div>
     <div class="login-block">
-        <div sec:authorize="isAuthenticated()">
-            <a th:href="@{/user(username=${#authentication.getName()})}">
-                <img th:src="@{images/account.png}"/>
-            </a>
-        </div>
-        <div sec:authorize="!isAuthenticated()">
-            <a th:href="@{/login}" class="btn btn-primary">Login</a>
-        </div>
+        <div th:include="modal/modal-login :: fr-login"></div>
     </div>
 </div>
 

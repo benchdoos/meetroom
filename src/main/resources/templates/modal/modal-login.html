@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="../../static/css/custom.css" th:href="@{/static/css/custom.css}" rel="stylesheet">
+    <title></title>
+</head>
+<body>
+<div th:fragment="fr-login">
+    <div class="login-block">
+        <div sec:authorize="isAuthenticated()">
+            <a th:href="@{/user(username=${#authentication.getName()})}">
+                <img th:src="@{images/account.png}"/>
+            </a>
+        </div>
+        <div sec:authorize="!isAuthenticated()">
+            <a th:href="@{/login}" class="btn btn-primary">Login</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

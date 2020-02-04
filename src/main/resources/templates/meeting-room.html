@@ -10,19 +10,24 @@
 
 </head>
 <body>
-<div class="header" style="background-color: green; color: white">
-    <h2>Meeting room</h2>
-    <div>
-        <p style="font-weight: bold" th:text="${room.name}"></p>
-        <p th:text="${room.location}"></p>
-        <a class="btn btn-info" th:href="@{/}">meeting rooms list</a>
+<div class="header" style="background-color: green; color: white; display: flex">
+    <div style="width: 100%">
+        <h2>Meeting room</h2>
+        <div>
+            <p style="font-weight: bold" th:text="${room.name}"></p>
+            <p th:text="${room.location}"></p>
+            <a class="btn btn-info" th:href="@{/}">meeting rooms list</a>
+        </div>
+    </div>
+    <div class="login-block">
+        <div th:include="modal/modal-login :: fr-login"></div>
     </div>
 
-    <div class="top-date">
-        <span class="btn btn-dark" id="previous-week">previous week</span>
-        <h4>Today: <span id="today"></span></h4>
-        <span class="btn btn-dark" id="next-week">next week</span>
-    </div>
+    <!--    <div class="top-date">-->
+    <!--        <span class="btn btn-dark" id="previous-week">previous week</span>-->
+    <!--        <h4>Today: <span id="today"></span></h4>-->
+    <!--        <span class="btn btn-dark" id="next-week">next week</span>-->
+    <!--    </div>-->
 </div>
 <div id="wrapped">
 
