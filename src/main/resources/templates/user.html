@@ -7,36 +7,46 @@
 </head>
 <body>
 <div style="padding: 20px">
-    <div class="header">
-        <div><h2>Account information</h2></div>
-    </div>
-
-    <div th:switch="${user.enabled}">
+    <div class="header" style="display: flex">
+        <div style="width: 100%"><h2>Account information</h2></div>
+        <div th:switch="${user.enabled}">
         <span th:case="${false}" class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="top"
               title="Account disabled">Disabled</span>
-        <span th:case="${true}" class="badge badge-pill badge-primary" data-toggle="tooltip" data-placement="top"
-              title="Account enabled">Enabled</span>
-    </div>
-    <div style="display: flex">
-        <div th:each="roleInfo : ${user.roles}">
-            <div th:switch="${roleInfo.role}">
-            <span th:case="'ROLE_ADMIN'" class="badge badge-pill badge-danger" data-toggle="tooltip"
-                  data-placement="top" title="Administrator">admin</span>
-                <span th:case="'ROLE_USER'" class="badge badge-pill badge-success" data-toggle="tooltip"
-                      data-placement="top" title="User">user</span>
-                <span th:case="*" class="badge badge-pill badge-info" data-toggle="tooltip" data-placement="top"
-                      title="Role">${roleInfo.role}</span>
-            </div>
+            <span th:case="${true}" class="badge badge-pill badge-primary" data-toggle="tooltip" data-placement="top"
+                  title="Account enabled">Enabled</span>
+        </div>
+        <div sec:authorize="isAuthenticated()" style="padding-left: 20px">
+            <form name="logoutForm" th:action="@{/logout}" method="post"
+                  th:if="${user.username} == ${#authentication.getPrincipal().getUsername()}">
+                <button class="btn btn-danger" type="submit" value="Sign Out">Sign Out</button>
+            </form>
         </div>
     </div>
-    <p th:text="|Name: ${user.firstName}|"></p>
-    <p th:text="|Surname: ${user.lastName}|"></p>
 
-    <div style="display: flex">
-        <button class="btn btn-info" onclick="goBack()">Go Back</button>
-        <form name="logoutForm" th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
-            <button class="btn btn-primary" type="submit" value="Sign Out">Sign Out</button>
-        </form>
+
+    <div class="card" style="width: 20rem;">
+        <!--        <img class="card-img-top" src=".../100px180/" alt="Card image cap">-->
+        <div class="card-body">
+            <h5 class="card-title" th:text="|${user.firstName} ${user.lastName}|"></h5>
+            <div style="display: flex">
+                User roles:
+                <div th:each="roleInfo : ${user.roles}" th:switch="${roleInfo.role}">
+                    <span th:case="'ROLE_ADMIN'" class="badge badge-pill badge-danger" data-toggle="tooltip"
+                          data-placement="top" th:title="${roleInfo.name}" th:text="${roleInfo.name}"></span>
+                    <span th:case="'ROLE_USER'" class="badge badge-pill badge-success" data-toggle="tooltip"
+                          data-placement="top" th:title="${roleInfo.name}" th:text="${roleInfo.name}"></span>
+                    <span th:case="*" class="badge badge-pill badge-info" data-toggle="tooltip" data-placement="top"
+                          th:text="${roleInfo.name}">${roleInfo.name}</span>
+                </div>
+            </div>
+            <br>
+            <div style="display: flex">
+                <div style="width: 100%">
+                    <button class="btn btn-info" onclick="goBack()">Go Back</button>
+                </div>
+                <button class="btn btn-info" th:onclick="@{/}">Main page</button>
+            </div>
+        </div>
     </div>
 </div>
 
