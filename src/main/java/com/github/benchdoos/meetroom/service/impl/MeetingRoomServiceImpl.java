@@ -2,6 +2,7 @@ package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
 import com.github.benchdoos.meetroom.domain.dto.MeetingRoomDto;
+import com.github.benchdoos.meetroom.exceptions.MeetingRoomAlreadyExistException;
 import com.github.benchdoos.meetroom.exceptions.MeetingRoomNotFoundException;
 import com.github.benchdoos.meetroom.mappers.MeetingRoomMapper;
 import com.github.benchdoos.meetroom.repository.MeetingRoomsRepository;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -26,9 +28,17 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
 
     @Override
     public MeetingRoom createMeetingRoom(MeetingRoomDto meetingRoomDto) {
+        final Optional<MeetingRoom> firstByNameOrLocation = meetingRoomsRepository
+                .findFirstByNameOrLocation(meetingRoomDto.getName(), meetingRoomDto.getLocation());
+        if (firstByNameOrLocation.isPresent()) {
+            throw new MeetingRoomAlreadyExistException(firstByNameOrLocation.get());
+        }
+
         final MeetingRoom meetingRoom = new MeetingRoom();
 
         meetingRoomMapper.convert(meetingRoomDto, meetingRoom);
+
+        meetingRoom.setEnabled(true);
 
         return meetingRoomsRepository.save(meetingRoom);
     }

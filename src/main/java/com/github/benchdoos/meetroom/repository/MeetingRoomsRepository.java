@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -12,4 +13,6 @@ import java.util.UUID;
  */
 public interface MeetingRoomsRepository extends JpaRepository<MeetingRoom, UUID> {
     Page<MeetingRoom> findAllByEnabled(boolean enabled, Pageable pageable);
+
+    Optional<MeetingRoom> findFirstByNameOrLocation(String name, String location);
 }
