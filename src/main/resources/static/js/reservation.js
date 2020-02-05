@@ -63,7 +63,7 @@ $("#cr-save").on("click", function () {
     }).always(function (response) {
         if (response && response.code == "0000") {
             clearTimeScheduleTable();
-            drawTimeScheduleTable();
+            drawTimePanel();
             getReservationsByRoomName(selectedRoom.roomName);
         } else {
             alert(response.responseJSON.message);
@@ -95,9 +95,9 @@ function clearTimeScheduleTable() {
 }
 
 /**
- * 예약 스케쥴 테이블 그리기
+ * Draw time panel
  */
-function drawTimeScheduleTable() {
+function drawTimePanel() {
     var table = document.getElementById("timetable");
     var head = table.insertRow(0);
     head.insertCell(0).innerHTML = '';
@@ -133,7 +133,6 @@ function drawTimeScheduleTable() {
         }
         hour++;
     }
-    console.log("Hello")
 }
 
 /*
@@ -152,7 +151,7 @@ function getReservationsByRoomName(name, li) {
 
     selectedRoom.roomName = name;
     clearTimeScheduleTable();
-    drawTimeScheduleTable();
+    drawTimePanel();
 
     const today = $("#today").text();
 
@@ -224,10 +223,21 @@ function popupReservationDialog(tdId) {
  * 현재 날짜를 기준으로 이전주 다음주 획득
  */
 function getPreviousAndNextWeekday() {
-    const today = $("#today").text();
+    const today = $("#beginDay").text();
+
+    var day = moment(today, 'DD.MM.YYYY').subtract(1, 'weeks').startOf('week');
+
+    // beforeOneWeek.setDate(beforeOneWeek.getDate() + 1); //fixes date
+    // console.log("fixed date> ", beforeOneWeek)
+    //
+
+//Log the date to our web console.
+    console.log(day);
+    console.log(">", day.format("dd-MM-YYYY"));
+
     $.get("/dates/" + today, function (result) {
         if (result && result.data) {
-            $("#today").text(result.data.today);
+            $("#beginDay").text(result.data.today);
             weekday.previousWeekDay = result.data.previousWeekDay;
             weekday.nextWeekDay = result.data.nextWeekDay;
             $("#hidden-monday").text(result.data.monday);
@@ -250,7 +260,7 @@ $("#ur-delete").on("click", function () {
     }).always(function (response) {
         if (response && response.code == "0000") {
             clearTimeScheduleTable();
-            drawTimeScheduleTable();
+            drawTimePanel();
             getReservationsByRoomName(selectedRoom.roomName);
         } else {
             alert(response.responseJSON.message);
@@ -278,7 +288,7 @@ $("#ur-save").on("click", function () {
     }).always(function (response) {
         if (response && response.code == "0000") {
             clearTimeScheduleTable();
-            drawTimeScheduleTable();
+            drawTimePanel();
             getReservationsByRoomName(selectedRoom.roomName);
         } else {
             alert(response.responseJSON.message);
@@ -311,7 +321,7 @@ var weekday = {};
 $("#previous-week").on("click", function () {
     $("#today").text(weekday.previousWeekDay);
     getPreviousAndNextWeekday();
-    drawTimeScheduleTable();
+    drawTimePanel();
     getReservationsByRoomName(selectedRoom.roomName);
 });
 
@@ -321,7 +331,7 @@ $("#previous-week").on("click", function () {
 $("#next-week").on("click", function () {
     $("#today").text(weekday.nextWeekDay);
     getPreviousAndNextWeekday();
-    drawTimeScheduleTable();
+    drawTimePanel();
     getReservationsByRoomName(selectedRoom.roomName);
 });
 
