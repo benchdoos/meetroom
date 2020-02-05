@@ -106,25 +106,31 @@ function drawTimeScheduleTable() {
     head.insertCell(3).innerHTML = 'Wednesday';
     head.insertCell(4).innerHTML = 'Thursday';
     head.insertCell(5).innerHTML = 'Friday';
+    head.insertCell(6).innerHTML = 'Sunday';
 
-    var hour = 9;
+    var hour = 0;
     var min = 0;
-    for (var i = 0; i < 19; i++) {
+    const MAXIMUM_DAYS = 6;
+    const MAXIMUM_HOURS = 23;
+    for (var i = 0; i <= MAXIMUM_HOURS; i++) {
         var row = table.insertRow(i + 1);
-        if (i % 2 === 0 && i > 0) {
-            hour++;
-        }
-        for (var j = 0; j < 6; j++) {
+        // if (i % 2 === 0 && i > 0) {
+        //     hour++;
+        // }
+        for (var j = 0; j <= MAXIMUM_DAYS; j++) {
             var cell = row.insertCell(j);
-            min = i % 2 !== 0 ? 30 : 0;
+            // min = i % 2 !== 0 ? 30 : 0;
             var strHour = hour < 10 ? '0' + hour : hour;
             var strMin = min < 10 ? '0' + min : min;
             if (j === 0) {
                 cell.innerText = strHour + ":" + strMin;
+            } else {
+                cell.setAttribute("class", "eventCell");
             }
             cell.setAttribute("id", strHour.toString() + strMin.toString() + j.toString());
             cell.width = 50;
         }
+        hour++;
     }
     console.log("Hello")
 }
