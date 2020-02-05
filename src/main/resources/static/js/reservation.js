@@ -233,7 +233,7 @@ function getPreviousAndNextWeekday() {
 
 //Log the date to our web console.
     console.log(day);
-    console.log(">", day.format("dd-MM-YYYY"));
+    console.log(">", day.format("DD.MM.YYYY"));
 
     $.get("/dates/" + today, function (result) {
         if (result && result.data) {
