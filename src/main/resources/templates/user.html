@@ -33,10 +33,12 @@
                 <div th:each="roleInfo : ${user.roles}" th:switch="${roleInfo.role}">
                     <span th:case="'ROLE_ADMIN'" class="badge badge-pill badge-danger" data-toggle="tooltip"
                           data-placement="top" th:title="${roleInfo.name}" th:text="${roleInfo.name}"></span>
+
                     <span th:case="'ROLE_USER'" class="badge badge-pill badge-success" data-toggle="tooltip"
                           data-placement="top" th:title="${roleInfo.name}" th:text="${roleInfo.name}"></span>
+
                     <span th:case="*" class="badge badge-pill badge-info" data-toggle="tooltip" data-placement="top"
-                          th:text="${roleInfo.name}">${roleInfo.name}</span>
+                          th:text="${roleInfo.name != null ? roleInfo.name : roleInfo.role}"></span>
                 </div>
             </div>
             <br>
