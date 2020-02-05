@@ -11,14 +11,11 @@
 <div class="header" style="background-color: green; color: white; display: flex">
     <div style="width: 100%">
         <div>
-            <h1>Meeting room</h1>
-            <p>Meeting room information</p>
-            <hr class="my-4">
-            <p th:text="${room.name}" class="h3"></p>
+            <a class="btn btn-info h1" th:href="@{/}"><i class="fas fa-chevron-left"></i></a>
+            <span th:text="${room.name}" class="h3"></span>
+            <span th:class="|${room.enabled ? 'badge badge-primary' : 'badge badge-danger'}|"
+                  th:text="${room.enabled ? 'enabled' : 'disabled'}"></span>
             <p th:text="${room.location}" class="h6"></p>
-            <p>Status: <span th:class="|${room.enabled ? 'badge badge-primary' : 'badge badge-danger'}|"
-                             th:text="${room.enabled ? 'enabled' : 'disabled'}"></span></p>
-            <a class="btn btn-info" th:href="@{/}">meeting rooms list</a>
         </div>
 
     </div>
