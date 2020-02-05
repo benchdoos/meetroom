@@ -28,14 +28,19 @@
     <div class="login-block">
         <div th:include="modal/modal-login :: fr-login"></div>
     </div>
-
-    <!--    <div class="top-date">-->
-    <!--        <span class="btn btn-dark" id="previous-week">previous week</span>-->
-    <!--        <h4>Today: <span id="today"></span></h4>-->
-    <!--        <span class="btn btn-dark" id="next-week">next week</span>-->
-    <!--    </div>-->
+    <hr>
 </div>
-<div id="wrapped">
+
+<div class="w-100" style="text-align: center; padding-top: 10px;">
+    <div style="display: inline-flex;">
+        <span class="btn btn-secondary" id="previous-week">previous week</span>
+        <h4 style="padding-left: 20px; padding-right: 20px;">
+            <span th:text="|${#temporals.format(dateRange.fromDate, 'dd.MM.yyyy')} - ${#temporals.format(dateRange.toDate, 'dd.MM.yyyy')}|"></span>
+        </h4>
+        <span class="btn btn-secondary" id="next-week">next week</span>
+    </div>
+</div>
+<!--<div id="wrapped">
 
     <div>
         <div class="header top-date" th:each="event : ${events}">
@@ -46,7 +51,7 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->
 
 ----
 
