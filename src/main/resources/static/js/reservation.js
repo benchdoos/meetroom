@@ -106,11 +106,12 @@ function drawTimeScheduleTable() {
     head.insertCell(3).innerHTML = 'Wednesday';
     head.insertCell(4).innerHTML = 'Thursday';
     head.insertCell(5).innerHTML = 'Friday';
-    head.insertCell(6).innerHTML = 'Sunday';
+    head.insertCell(6).innerHTML = 'Saturday';
+    head.insertCell(7).innerHTML = 'Sunday';
 
     var hour = 0;
     var min = 0;
-    const MAXIMUM_DAYS = 6;
+    const MAXIMUM_DAYS = 7;
     const MAXIMUM_HOURS = 23;
     for (var i = 0; i <= MAXIMUM_HOURS; i++) {
         var row = table.insertRow(i + 1);
