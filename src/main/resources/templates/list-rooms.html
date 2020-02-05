@@ -8,7 +8,14 @@
 </head>
 <body>
 <div class="header" style="display: flex">
-    <div style="width: 100%"><h2>Available meeting rooms list</h2></div>
+    <div style="width: 100%">
+        <h2>Available meeting rooms list</h2>
+        <div sec:authorize="isAuthenticated()" th:each="role : ${#authentication.getPrincipal().getAuthorities()}">
+            <div th:if="${role.getAuthority().equals('ROLE_ADMIN')}">
+                <!--todo show modal-->
+            </div>
+        </div>
+    </div>
     <div class="login-block">
         <div th:include="modal/modal-login :: fr-login"></div>
     </div>
