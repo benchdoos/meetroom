@@ -29,8 +29,16 @@ public class IndexController {
         return indexViewService.getAllRooms(pageable, model);
     }
 
+
     @GetMapping("/{uuid}")
     public String getMeetingRoomById(@PathVariable UUID uuid, @PageableDefault Pageable pageable, Model model) {
         return indexViewService.getMeetingRoomById(uuid, pageable, model);
+//    public String getMeetingRoomById(@PathVariable UUID uuid,
+//                                     @RequestParam(value = "from", required = false) ZonedDateTime fromDate,
+//                                     @RequestParam(value = "to", required = false) ZonedDateTime toDate,
+//                                     @PageableDefault Pageable pageable,
+//                                     Model model) {
+//
+//        return indexViewService.getMeetingRoomById(uuid, fromDate, toDate, pageable, model);
     }
 }

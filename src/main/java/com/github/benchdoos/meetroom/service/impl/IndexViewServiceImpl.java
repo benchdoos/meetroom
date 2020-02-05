@@ -1,5 +1,6 @@
 package com.github.benchdoos.meetroom.service.impl;
 
+import com.github.benchdoos.meetroom.domain.DateRange;
 import com.github.benchdoos.meetroom.domain.MeetingEvent;
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
 import com.github.benchdoos.meetroom.service.IndexViewService;
@@ -40,12 +41,33 @@ public class IndexViewServiceImpl implements IndexViewService {
 
     @Override
     public String getMeetingRoomById(UUID uuid, Pageable pageable, Model model) {
+        return getMeetingRoomById(uuid, null, null, pageable, model);
+    }
+
+    @Override
+    public String getMeetingRoomById(UUID uuid,
+                                     ZonedDateTime fromDate,
+                                     ZonedDateTime toDate,
+                                     Pageable pageable,
+                                     Model model) {
         final MeetingRoom meetingRoom = roomService.getById(uuid);
+
+        DateRange dateRange;
+
+        dateRange = new DateRange(fromDate, toDate);
+
+        if (!dateRange.isValid()) {
+            dateRange = new DateRange(
+                    DateUtils.truncateTime(ZonedDateTime.now()),
+                    DateUtils.truncateTime(ZonedDateTime.now().plusDays(7)));
+        }
+
         final Page<MeetingEvent> meetingEvents = eventService.getMeetingEvents(
                 meetingRoom,
-                DateUtils.truncateTime(ZonedDateTime.now()),
-                DateUtils.truncateTime(ZonedDateTime.now().plusDays(7)),
+                dateRange.getFromDate(),
+                dateRange.getToDate(),
                 pageable);
+
         model.addAttribute("room", meetingRoom);
         model.addAttribute("events", meetingEvents);
         return "meeting-room.html";
