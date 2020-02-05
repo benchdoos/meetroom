@@ -41,28 +41,19 @@ public class IndexViewServiceImpl implements IndexViewService {
 
     @Override
     public String getMeetingRoomById(UUID uuid, Pageable pageable, Model model) {
-        return getMeetingRoomById(uuid, null, null, pageable, model);
+        return getMeetingRoomById(uuid, null, pageable, model);
     }
 
     @Override
     public String getMeetingRoomById(UUID uuid,
-                                     ZonedDateTime fromDate,
-                                     ZonedDateTime toDate,
+                                     ZonedDateTime day,
                                      Pageable pageable,
                                      Model model) {
         final MeetingRoom meetingRoom = roomService.getById(uuid);
 
-        DateRange dateRange;
+        final DateRange dateRange = DateUtils.getWeekRange(day != null ? day : ZonedDateTime.now());
 
-        dateRange = new DateRange(fromDate, toDate);
-
-        if (!dateRange.isValid()) {
-            dateRange = new DateRange(
-                    DateUtils.truncateTime(ZonedDateTime.now()),
-                    DateUtils.truncateTime(ZonedDateTime.now().plusDays(7)));
-        }
-
-        final Page<MeetingEvent> meetingEvents = eventService.getMeetingEvents(
+        final List<MeetingEvent> meetingEvents = eventService.getMeetingEvents(
                 meetingRoom,
                 dateRange.getFromDate(),
                 dateRange.getToDate(),
@@ -70,6 +61,7 @@ public class IndexViewServiceImpl implements IndexViewService {
 
         model.addAttribute("room", meetingRoom);
         model.addAttribute("events", meetingEvents);
+        model.addAttribute("dateRange", dateRange);
         return "meeting-room.html";
     }
 

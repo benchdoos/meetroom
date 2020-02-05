@@ -16,5 +16,5 @@ public interface IndexViewService {
 
     String getMeetingRoomById(@PathVariable UUID uuid, @PageableDefault Pageable pageable, Model model);
 
-    String getMeetingRoomById(@PathVariable UUID uuid, ZonedDateTime fromDate, ZonedDateTime toDate, @PageableDefault Pageable pageable, Model model);
+    String getMeetingRoomById(@PathVariable UUID uuid, ZonedDateTime fromDate, @PageableDefault Pageable pageable, Model model);
 }

@@ -5,12 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -31,14 +34,14 @@ public class IndexController {
 
 
     @GetMapping("/{uuid}")
-    public String getMeetingRoomById(@PathVariable UUID uuid, @PageableDefault Pageable pageable, Model model) {
-        return indexViewService.getMeetingRoomById(uuid, pageable, model);
-//    public String getMeetingRoomById(@PathVariable UUID uuid,
-//                                     @RequestParam(value = "from", required = false) ZonedDateTime fromDate,
-//                                     @RequestParam(value = "to", required = false) ZonedDateTime toDate,
-//                                     @PageableDefault Pageable pageable,
-//                                     Model model) {
-//
-//        return indexViewService.getMeetingRoomById(uuid, fromDate, toDate, pageable, model);
+    public String getMeetingRoomById(@PathVariable UUID uuid,
+
+                                     @RequestParam(value = "day", required = false)
+                                     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime day,
+
+                                     @PageableDefault Pageable pageable,
+                                     Model model) {
+
+        return indexViewService.getMeetingRoomById(uuid, day, pageable, model);
     }
 }

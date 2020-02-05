@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -17,7 +18,7 @@ public class MeetingEventServiceImpl implements MeetingEventService {
     private final MeetingEventRepository meetingEventRepository;
 
     @Override
-    public Page<MeetingEvent> getMeetingEvents(MeetingRoom meetingRoom, ZonedDateTime fromDate, ZonedDateTime toDate, Pageable pageable) {
+    public List<MeetingEvent> getMeetingEvents(MeetingRoom meetingRoom, ZonedDateTime fromDate, ZonedDateTime toDate, Pageable pageable) {
         return meetingEventRepository.findByMeetingRoomAndFromDateIsAfterAndToDateIsBefore(meetingRoom, fromDate, toDate, pageable);
     }
 

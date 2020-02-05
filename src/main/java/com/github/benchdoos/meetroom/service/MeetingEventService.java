@@ -6,10 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 public interface MeetingEventService {
 
-    Page<MeetingEvent> getMeetingEvents(MeetingRoom meetingRoom, ZonedDateTime fromDate, ZonedDateTime toDate, Pageable pageable);
+    List<MeetingEvent> getMeetingEvents(MeetingRoom meetingRoom, ZonedDateTime fromDate, ZonedDateTime toDate, Pageable pageable);
 
     Page<MeetingEvent> getAllMeetingEvents(MeetingRoom meetingRoom, Pageable pageable);
 }

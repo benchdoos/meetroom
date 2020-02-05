@@ -19,11 +19,11 @@ public class DateRange {
      *
      * @return true if valid
      */
-    public boolean isValid() {
+    public boolean isWeekRange() {
 
         if (fromDate != null && toDate != null) {
-            final ZonedDateTime from = DateUtils.truncateSeconds(fromDate);
-            final ZonedDateTime to = DateUtils.truncateSeconds(toDate);
+            final ZonedDateTime from = DateUtils.truncateSecondsToStart(fromDate);
+            final ZonedDateTime to = DateUtils.truncateSecondsToEnd(toDate);
 
             return from.plusDays(7).isBefore(to);
         }

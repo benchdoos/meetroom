@@ -38,7 +38,7 @@
 <div id="wrapped">
 
     <div>
-        <div class="header top-date" th:each="event : ${events.content}">
+        <div class="header top-date" th:each="event : ${events}">
             <div>
                 <p>User reserved:
                 <p th:text="|${event.user.firstName} ${event.user.lastName}|"></p>

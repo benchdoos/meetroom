@@ -7,11 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public interface MeetingEventRepository extends JpaRepository<MeetingEvent, UUID> {
 
-    Page<MeetingEvent> findByMeetingRoomAndFromDateIsAfterAndToDateIsBefore(
+    List<MeetingEvent> findByMeetingRoomAndFromDateIsAfterAndToDateIsBefore(
             MeetingRoom meetingRoom,
             ZonedDateTime fromDate,
             ZonedDateTime toDate,
