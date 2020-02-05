@@ -19,8 +19,13 @@ public class IndexController {
     private final IndexViewService indexViewService;
 
     @GetMapping
-    public String getAllAvailable(@PageableDefault Pageable pageable, Model model) {
+    public String getAllAvailableRooms(@PageableDefault Pageable pageable, Model model) {
         return indexViewService.getAllAvailable(pageable, model);
+    }
+
+    @GetMapping("/all")
+    public String getAllRooms(@PageableDefault Pageable pageable, Model model) {
+        return indexViewService.getAllRooms(pageable, model);
     }
 
     @GetMapping("/{uuid}")

@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.UUID;
 
 public interface IndexViewService {
+
+    String getAllRooms(@PageableDefault Pageable pageable, Model model);
+
     String getAllAvailable(@PageableDefault Pageable pageable, Model model);
 
     String getMeetingRoomById(@PathVariable UUID uuid, @PageableDefault Pageable pageable, Model model);

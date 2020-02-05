@@ -25,20 +25,17 @@ public class IndexViewServiceImpl implements IndexViewService {
     private final MeetingEventService eventService;
 
     @Override
+    public String getAllRooms(Pageable pageable, Model model) {
+        final Page<MeetingRoom> meetingRooms = roomService.findAll(pageable);
+
+        return prepareListRoomPage(model, meetingRooms);
+    }
+
+    @Override
     public String getAllAvailable(Pageable pageable, Model model) {
         final Page<MeetingRoom> meetingRooms = roomService.getAllAvailable(pageable);
 
-        model.addAttribute("rooms", meetingRooms);
-
-        final int totalPages = meetingRooms.getTotalPages();
-        if (totalPages > 1) {
-            final List<Integer> pageNumbers = IntStream.rangeClosed(0, totalPages - 1)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
-
-        return "list-rooms.html";
+        return prepareListRoomPage(model, meetingRooms);
     }
 
     @Override
@@ -52,5 +49,26 @@ public class IndexViewServiceImpl implements IndexViewService {
         model.addAttribute("room", meetingRoom);
         model.addAttribute("events", meetingEvents);
         return "meeting-room.html";
+    }
+
+    /**
+     * Fills model with rooms and returns list-rooms page name
+     *
+     * @param model model to fill
+     * @param meetingRooms list of rooms
+     * @return page
+     */
+    private String prepareListRoomPage(Model model, Page<MeetingRoom> meetingRooms) {
+        model.addAttribute("rooms", meetingRooms);
+
+        final int totalPages = meetingRooms.getTotalPages();
+        if (totalPages > 1) {
+            final List<Integer> pageNumbers = IntStream.rangeClosed(0, totalPages - 1)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
+        return "list-rooms.html";
     }
 }

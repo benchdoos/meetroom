@@ -52,4 +52,26 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
     public Page<MeetingRoom> getAllAvailable(Pageable pageable) {
         return meetingRoomsRepository.findAllByEnabled(Boolean.TRUE, pageable);
     }
+
+    @Override
+    public MeetingRoom updateMeetingRoomInfo(UUID id, MeetingRoomDto meetingRoomDto) {
+        final Optional<MeetingRoom> firstByNameOrLocation = meetingRoomsRepository
+                .findFirstByNameOrLocation(meetingRoomDto.getName(), meetingRoomDto.getLocation());
+        if (firstByNameOrLocation.isPresent()) {
+            if (!firstByNameOrLocation.get().getId().equals(id)) {
+                throw new MeetingRoomAlreadyExistException(firstByNameOrLocation.get());
+            }
+        }
+
+        final MeetingRoom meetingRoom = meetingRoomsRepository.findById(id).orElseThrow(MeetingRoomNotFoundException::new);
+
+        meetingRoom.setName(meetingRoomDto.getName());
+        meetingRoom.setLocation(meetingRoomDto.getLocation());
+
+        if (meetingRoomDto.getEnabled() != null) {
+            meetingRoom.setEnabled(meetingRoomDto.getEnabled());
+        }
+
+        return meetingRoomsRepository.save(meetingRoom);
+    }
 }

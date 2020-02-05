@@ -43,4 +43,12 @@ public interface MeetingRoomService {
      * @return all avaible rooms for use
      */
     Page<MeetingRoom> getAllAvailable(Pageable pageable);
+
+    /**
+     * Updates meeting room info by id
+     * @param id id of meeting room
+     * @param meetingRoomDto
+     * @return
+     */
+    MeetingRoom updateMeetingRoomInfo(UUID id, MeetingRoomDto meetingRoomDto);
 }
