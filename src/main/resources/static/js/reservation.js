@@ -126,7 +126,7 @@ function drawTimePanel() {
                 cell.setAttribute("class", "eventCell");
             }
             cell.setAttribute("id", strHour.toString() + strMin.toString() + j.toString());
-            cell.width = 50;
+            cell.width = 100;
         }
         hour++;
     }
