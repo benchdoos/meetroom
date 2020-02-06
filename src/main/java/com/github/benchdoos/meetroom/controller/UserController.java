@@ -5,10 +5,12 @@ import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.websocket.server.PathParam;
+import java.security.Principal;
 
 @RequiredArgsConstructor
 @Controller
@@ -17,8 +19,15 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public String getUserPage(@PathParam("username") String username, Model model) {
-        final UserExtendedInfoDto userDto = userService.getExtendedUserInfoDtoByUsername(username);
+    public String getUserPage(@RequestParam(value = "username", required = false) String username,
+                              Model model,
+                              Principal principal) {
+        final UserExtendedInfoDto userDto;
+        if (StringUtils.hasText(username)) {
+            userDto = userService.getExtendedUserInfoDtoByUsername(username);
+        } else {
+            userDto = userService.getExtendedUserInfoDtoByUsername(principal.getName());
+        }
         model.addAttribute("user", userDto);
         return "user.html";
     }
