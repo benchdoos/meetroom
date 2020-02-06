@@ -153,8 +153,7 @@ function createLink(eventBackgroundColor, eventForegroundColor, event, fromHours
 
 function fillTimePanel(events, dateRange) {
     events.forEach(event => {
-        console.log("placing event:", event);
-        console.log("by range", dateRange);
+        console.log("placing event:", event, dateRange);
 
         let eventColor = Math.random().toString(16).slice(2, 8);
         let eventBackgroundColor = "#" + eventColor;
@@ -165,41 +164,85 @@ function fillTimePanel(events, dateRange) {
         let fromHours = from.getHours();
         let fromMinutes = from.getMinutes() < 10 ? "0" + from.getMinutes() : from.getMinutes();
         let fromDay = from.getDay();
+        let fromDayNumber = from.getDate();
 
         let to = new Date(event.toDate);
+        let toDay = to.getDay();
         let toHours = to.getHours();
         let toMinutes = to.getMinutes() < 10 ? "0" + to.getMinutes() : to.getMinutes();
-        let toDay = to.getDay();
-
-        console.log("HHello",from,to);
+        let toDayNumber = to.getDate();
 
         const ZERO_MINUTES = "00";
 
-        if (toDay !== fromDay) {
-            for (var i = 0; i < (toDay - fromDay) + 1; i++) {
-
-                console.log("I:>>", (fromDay + i));
-                if (fromDay === fromDay + i) {
-                    for (var j = fromHours; j <= 23; j++) {
-                        let id = j + ZERO_MINUTES + (fromDay + i);
-                        createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
-                    }
-                } else if (toDay === fromDay + i) {
-                    for (var j = 0; j <= toHours; j++) {
+        if (toDayNumber !== fromDayNumber) {
+            for (let i = 0; i < (toDayNumber - fromDayNumber); i++) {
+                let indexFrom = fromDayNumber + i - new Date(dateRange.fromDate).getDate();
+                console.log("indexFrom:", indexFrom);
+                if (indexFrom >= 0 && indexFrom <= 7) {
+                    for (let j = fromHours; j <= 23; j++) {
                         var fixedJ = j < 10 ? "0" + j : j;
-                        let id = fixedJ + ZERO_MINUTES + (fromDay + i);
+                        let id = fixedJ + ZERO_MINUTES + (indexFrom + 1);
                         createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                     }
                 } else {
-                    for (var j = 0; j <= 23; j++) {
-                        let id = j + ZERO_MINUTES + (fromDay + i);
-                        createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                    let indexTo = toDayNumber + i - new Date(dateRange.fromDate).getDate();
+                    console.log("indexTo:", indexTo);
+                    if (indexTo >= 0 && indexTo <= 7) {
+                        for (let j = 0; j <= toHours; j++) {
+                            var fixedJ = j < 10 ? "0" + j : j;
+                            let id = fixedJ + ZERO_MINUTES + (indexTo + 1);
+                            createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                        }
                     }
+
                 }
             }
+
+            // for (var i = toHours; i < (toDayNumber - fromDayNumber); i++) {
+            //     if (toDay === fromDay + i) {
+            //         for (var j = 0; j <= toHours; j++) {
+            //             var fixedJ = j < 10 ? "0" + j : j;
+            //             let id = fixedJ + ZERO_MINUTES + (fromDay + i);
+            //             createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+            //         }
+            //     } else {
+            //         console.log("omg!");
+            //         for (var j = fromDay + i; j <= 23; j++) {
+            //             var fixedJ = j < 10 ? "0" + j : j;
+            //             let id = fixedJ + ZERO_MINUTES + (fromDay + i);
+            //             createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+            //         }
+            //     }
+            // }
+
+            // for (var i = 0; i < (toDayNumber - fromDayNumber) + 1; i++) {
+            //     let date = new Date(dateRange.toDate).getDate();
+            //     console.log(">", date, (fromDayNumber + 1));
+            //     if (date === fromDayNumber + i) {
+            //         console.log("fromDay, toDay:", fromDay, toDay);
+            //         console.log("from-to Numberm:", fromDayNumber, toDayNumber);
+            //         console.log("i:", i);
+            //         for (var j = fromHours; j <= 23; j++) {
+            //             let id = j + ZERO_MINUTES + (fromDayNumber + i);
+            //             createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+            //         }
+            //     } else if (toDay === fromDay + i) {
+            //         for (var j = 0; j <= toHours; j++) {
+            //             var fixedJ = j < 10 ? "0" + j : j;
+            //             let id = fixedJ + ZERO_MINUTES + (fromDay + i);
+            //             createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+            //         }
+            //     } else {
+            //         console.log("omg!");
+            //         for (var j = 0; j <= 23; j++) {
+            //             let id = j + ZERO_MINUTES + (fromDay + i);
+            //             createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+            //         }
+            //     }
+            // }
         } else {
             for (var j = fromHours; j <= toHours; j++) {
-                console.log("HML:", from.getDay(), new Date(dateRange.fromDate).getDay()); //todo fixme отображение корявое
+                console.log("ELSE:", from.getDay(), new Date(dateRange.fromDate).getDay()); //todo fixme отображение корявое
                 if (from.getDay() >= new Date(dateRange.fromDate).getDate()) {
                     if (toMinutes !== ZERO_MINUTES) {
                         let id = j + ZERO_MINUTES + fromDay;
@@ -322,26 +365,23 @@ function popupReservationDialog(tdId) {
  * 현재 날짜를 기준으로 이전주 다음주 획득
  */
 function getPreviousAndNextWeekday() {
-    const today = $("#beginDay").text();
-
-    var day = moment(today, 'DD.MM.YYYY').subtract(1, 'weeks').startOf('week');
-
-    // beforeOneWeek.setDate(beforeOneWeek.getDate() + 1); //fixes date
-    // console.log("fixed date> ", beforeOneWeek)
-    //
-
-//Log the date to our web console.
-    console.log(day);
-    console.log(">", day.format("DD.MM.YYYY"));
-
-    $.get("/dates/" + today, function (result) {
-        if (result && result.data) {
-            $("#beginDay").text(result.data.today);
-            weekday.previousWeekDay = result.data.previousWeekDay;
-            weekday.nextWeekDay = result.data.nextWeekDay;
-            $("#hidden-monday").text(result.data.monday);
-        }
-    });
+//     const today = $("#beginDay").text();
+//
+//     var day = moment(today, 'DD.MM.YYYY').subtract(1, 'weeks').startOf('week');
+//
+//     // beforeOneWeek.setDate(beforeOneWeek.getDate() + 1); //fixes date
+//     // console.log("fixed date> ", beforeOneWeek)
+//     //
+//
+// //Log the date to our web console.
+//     $.get("/dates/" + today, function (result) {
+//         if (result && result.data) {
+//             $("#beginDay").text(result.data.today);
+//             weekday.previousWeekDay = result.data.previousWeekDay;
+//             weekday.nextWeekDay = result.data.nextWeekDay;
+//             $("#hidden-monday").text(result.data.monday);
+//         }
+//     });
 }
 
 /**
