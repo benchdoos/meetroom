@@ -20,11 +20,11 @@ public interface MeetingEventRepository extends JpaRepository<MeetingEvent, UUID
             ZonedDateTime toDate,
             Pageable pageable);
 
-    @Query("select MeetingEvent from MeetingEvent where meetingRoom = :room " +
-            "and ((fromDate >= :from and fromDate <= :to) " +
-            "or(:from >= fromDate and toDate <= :from) " +
-            "or(:from <= toDate and :to >= fromDate))")
-    List<MeetingEvent> findMeetingRooms( //todo fixme: create from sunday -> monday to test
+    @Query("select e from MeetingEvent e where e.meetingRoom = :room " +
+            "and ((e.fromDate >= :from and e.fromDate <= :to) " +
+            "or(:from >= e.fromDate and e.toDate <= :from) " +
+            "or(:from <= e.toDate and :to >= e.fromDate))")
+    List<MeetingEvent> findMeetingRooms(
                                          @Param("room") MeetingRoom meetingRoom,
                                          @Param("from") ZonedDateTime fromDate,
                                          @Param("to") ZonedDateTime toDate);
