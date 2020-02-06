@@ -135,6 +135,11 @@ function drawTimePanel() {
     }
 }
 
+function fillTimePanel(events) {
+    console.log("HM", events);
+    events.forEach(e => console.log("hello!", e));
+}
+
 /*
 * 회의실에 예약된 방 조회.
 * */

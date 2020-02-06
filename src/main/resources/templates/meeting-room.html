@@ -127,11 +127,12 @@ s
 
 
 <script th:src="@{/js/reservation.js}"></script>
-<script>
+<script th:inline="javascript">
     $(document).ready(function () {
         drawToday();
         drawMeetingRoom();
         drawTimePanel();
+        fillTimePanel([[${events}]]);
     });
 </script>
 </body>
