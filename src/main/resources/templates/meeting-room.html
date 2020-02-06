@@ -12,7 +12,7 @@
     <div style="width: 100%">
         <div>
             <a class="btn btn-info h1" th:href="@{/}"><i class="fas fa-chevron-left"></i></a>
-            <span th:text="${room.name}" class="h3"></span>
+            <a th:href="@{'/' + ${room.id}}" style="color: white"><span th:text="${room.name}" class="h3"></span></a>
             <span th:class="|${room.enabled ? 'badge badge-primary' : 'badge badge-danger'}|"
                   th:text="${room.enabled ? 'enabled' : 'disabled'}"></span>
             <p th:text="${room.location}" class="h6"></p>
@@ -33,13 +33,17 @@
 
 <div class="w-100" style="text-align: center; padding-top: 10px;">
     <div style="display: inline-flex;">
-        <span class="btn btn-secondary" id="previous-week">previous week</span>
+        <a class="btn btn-secondary"
+           th:href="@{'/' + ${room.id}(day=${#temporals.format(prevWeek.fromDate,'dd.MM.yyyy')})}">previous week</a>
+
         <span style="padding-left: 20px; padding-right: 20px;">
             <span id="beginDay" class="h4" th:text="${#temporals.format(dateRange.fromDate, 'dd.MM.yyyy')}"></span>
             <span class="h4"> - </span>
             <span class="h4" th:text="${#temporals.format(dateRange.toDate, 'dd.MM.yyyy')}"></span>
         </span>
-        <span class="btn btn-secondary" id="next-week">next week</span>
+
+        <a class="btn btn-secondary"
+           th:href="@{'/' + ${room.id}(day=${#temporals.format(nextWeek.toDate,'dd.MM.yyyy')})}">next week</a>
     </div>
 </div>
 <!--<div id="wrapped">

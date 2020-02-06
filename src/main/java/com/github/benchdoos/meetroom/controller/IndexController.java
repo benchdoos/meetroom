@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -37,11 +39,16 @@ public class IndexController {
     public String getMeetingRoomById(@PathVariable UUID uuid,
 
                                      @RequestParam(value = "day", required = false)
-                                     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime day,
+                                     @DateTimeFormat(pattern = "dd.MM.yyyy") Date day,
 
                                      @PageableDefault Pageable pageable,
                                      Model model) {
 
-        return indexViewService.getMeetingRoomById(uuid, day, pageable, model);
+        if (day != null) {
+            final ZonedDateTime fromDate = ZonedDateTime.ofInstant(day.toInstant(), ZoneId.systemDefault());
+            return indexViewService.getMeetingRoomById(uuid, fromDate, pageable, model);
+        }
+
+        return indexViewService.getMeetingRoomById(uuid, null, pageable, model);
     }
 }

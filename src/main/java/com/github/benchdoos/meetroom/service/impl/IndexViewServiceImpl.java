@@ -62,6 +62,8 @@ public class IndexViewServiceImpl implements IndexViewService {
         model.addAttribute("room", meetingRoom);
         model.addAttribute("events", meetingEvents);
         model.addAttribute("dateRange", dateRange);
+        model.addAttribute("prevWeek", DateUtils.getWeekRange(dateRange.getFromDate().minusDays(1)));
+        model.addAttribute("nextWeek", DateUtils.getWeekRange(dateRange.getToDate().plusDays(1)));
         return "meeting-room.html";
     }
 
