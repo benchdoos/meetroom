@@ -151,14 +151,33 @@ function createLink(eventBackgroundColor, eventForegroundColor, event, fromHours
     }
 }
 
+/**
+ * Pseudo - random color generation by uuid
+ * @param event to generate code from its id
+ * @returns {string} color in hex
+ */
+function generateEventColorForEvent(event) {
+    if (event != null) {
+        let subCore = event.id.substr(9, 12);
+        let core = event.id.substr(0, 3);
+        return subCore[0] + core[0] + subCore[1] + core[1] + subCore[3] + core[2];
+    }
+    return Math.random().toString(16).slice(2, 8);
+}
+
+/**
+ * Fills panel with given elements
+ *
+ * @param events to fill with
+ * @param dateRange of given panel
+ */
 function fillTimePanel(events, dateRange) {
     events.forEach(event => {
         console.log("placing event:", event, dateRange);
 
-        let eventColor = Math.random().toString(16).slice(2, 8);
+        let eventColor = generateEventColorForEvent(event);
         let eventBackgroundColor = "#" + eventColor;
         let eventForegroundColor = "#" + pickTextColorBasedOnBgColorSimple(eventColor, "FFFFFF", "000000");
-
 
         let from = new Date(event.fromDate);
         let fromHours = from.getHours();
