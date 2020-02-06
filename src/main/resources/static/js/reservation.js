@@ -136,8 +136,42 @@ function drawTimePanel() {
 }
 
 function fillTimePanel(events) {
-    console.log("HM", events);
-    events.forEach(e => console.log("hello!", e));
+    events.forEach(event => {
+        console.log("placing event:", event);
+
+        let eventColor = Math.random().toString(16).slice(2, 8);
+        let eventBackgroundColor = "#" + eventColor;
+        let eventForegroundColor = "#" + pickTextColorBasedOnBgColorSimple(eventColor, "FFFFFF", "000000");
+
+
+        let from = new Date(event.fromDate);
+        let fromHours = from.getHours();
+        let fromMinutes = from.getMinutes() < 10 ? "0" + from.getMinutes() : from.getMinutes();
+        let fromDay = from.getDay();
+
+        let to = new Date(event.toDate);
+        let toHours = to.getHours();
+        let toMinutes = to.getMinutes() < 10 ? "0" + to.getMinutes() : to.getMinutes();
+        let toDay = to.getDay();
+
+        let element = document.createElement("a");
+        element.setAttribute("style",
+            "background-color:" + eventBackgroundColor + "; color: " + eventForegroundColor + ";");
+        element.setAttribute("href", "/event/" + event.id);
+        element.innerText = fromHours + ":" + fromMinutes + " - " + toHours + ":" + toMinutes;
+
+        document.getElementById(fromHours + "00" + fromDay).appendChild(element);
+    });
+
+}
+
+function pickTextColorBasedOnBgColorSimple(bgColor, lightColor, darkColor) {
+    var color = (bgColor.charAt(0) === '#') ? bgColor.substring(1, 7) : bgColor;
+    var r = parseInt(color.substring(0, 2), 16); // hexToR
+    var g = parseInt(color.substring(2, 4), 16); // hexToG
+    var b = parseInt(color.substring(4, 6), 16); // hexToB
+    return (((r * 0.299) + (g * 0.587) + (b * 0.114)) > 186) ?
+        darkColor : lightColor;
 }
 
 /*
