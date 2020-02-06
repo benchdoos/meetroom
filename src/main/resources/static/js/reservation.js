@@ -151,9 +151,10 @@ function createLink(eventBackgroundColor, eventForegroundColor, event, fromHours
     }
 }
 
-function fillTimePanel(events) {
+function fillTimePanel(events, dateRange) {
     events.forEach(event => {
         console.log("placing event:", event);
+        console.log("by range", dateRange);
 
         let eventColor = Math.random().toString(16).slice(2, 8);
         let eventBackgroundColor = "#" + eventColor;
@@ -169,6 +170,8 @@ function fillTimePanel(events) {
         let toHours = to.getHours();
         let toMinutes = to.getMinutes() < 10 ? "0" + to.getMinutes() : to.getMinutes();
         let toDay = to.getDay();
+
+        console.log("HHello",from,to);
 
         const ZERO_MINUTES = "00";
 
@@ -196,13 +199,16 @@ function fillTimePanel(events) {
             }
         } else {
             for (var j = fromHours; j <= toHours; j++) {
-                if (toMinutes !== ZERO_MINUTES) {
-                    let id = j + ZERO_MINUTES + fromDay;
-                    createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
-                } else {
-                    if (j !== toHours) { //prevents duplicates to next hour
+                console.log("HML:", from.getDay(), new Date(dateRange.fromDate).getDay()); //todo fixme отображение корявое
+                if (from.getDay() >= new Date(dateRange.fromDate).getDate()) {
+                    if (toMinutes !== ZERO_MINUTES) {
                         let id = j + ZERO_MINUTES + fromDay;
                         createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                    } else {
+                        if (j !== toHours) { //prevents duplicates to next hour
+                            let id = j + ZERO_MINUTES + fromDay;
+                            createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                        }
                     }
                 }
             }
