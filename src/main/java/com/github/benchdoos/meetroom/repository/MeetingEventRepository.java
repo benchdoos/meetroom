@@ -18,5 +18,11 @@ public interface MeetingEventRepository extends JpaRepository<MeetingEvent, UUID
             ZonedDateTime toDate,
             Pageable pageable);
 
+    List<MeetingEvent> findByMeetingRoomAndFromDateGreaterThanEqualAndToDateLessThanEqual( //todo fixme: create from sunday -> monday to test
+            MeetingRoom meetingRoom,
+            ZonedDateTime fromDate,
+            ZonedDateTime toDate,
+            Pageable pageable);
+
     Page<MeetingEvent> findByMeetingRoom(MeetingRoom meetingRoom, Pageable pageable);
 }

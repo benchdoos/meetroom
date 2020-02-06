@@ -19,7 +19,7 @@ public class MeetingEventServiceImpl implements MeetingEventService {
 
     @Override
     public List<MeetingEvent> getMeetingEvents(MeetingRoom meetingRoom, ZonedDateTime fromDate, ZonedDateTime toDate, Pageable pageable) {
-        return meetingEventRepository.findByMeetingRoomAndFromDateIsAfterAndToDateIsBefore(meetingRoom, fromDate, toDate, pageable);
+        return meetingEventRepository.findByMeetingRoomAndFromDateGreaterThanEqualAndToDateLessThanEqual(meetingRoom, fromDate, toDate, pageable);
     }
 
     @Override
