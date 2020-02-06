@@ -115,9 +115,6 @@ function drawTimePanel() {
     const MAXIMUM_HOURS = 23;
     for (var i = 0; i <= MAXIMUM_HOURS; i++) {
         var row = table.insertRow(i + 1);
-        // if (i % 2 === 0 && i > 0) {
-        //     hour++;
-        // }
         for (var j = 0; j <= MAXIMUM_DAYS; j++) {
             var cell = row.insertCell(j);
             // min = i % 2 !== 0 ? 30 : 0;
@@ -132,6 +129,25 @@ function drawTimePanel() {
             cell.width = 50;
         }
         hour++;
+    }
+}
+
+function createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, elementId) {
+    let element = document.createElement("a");
+    element.setAttribute("style",
+        "background-color:" + eventBackgroundColor + "; color: " + eventForegroundColor + "; padding: 5px;");
+    element.setAttribute("data-toggle", "tooltip");
+    element.setAttribute("data-placement", "top");
+    element.setAttribute("title", "User: " + event.user.firstName + " " + event.user.lastName);
+    element.setAttribute("href", "/event/" + event.id);
+    element.innerText = fromHours + ":" + fromMinutes + " - " + toHours + ":" + toMinutes;
+
+    let brElement = document.createElement("br");
+
+    let elementById = document.getElementById(elementId);
+    if (elementById !== null) {
+        elementById.appendChild(element);
+        elementById.appendChild(brElement);
     }
 }
 
@@ -154,22 +170,60 @@ function fillTimePanel(events) {
         let toMinutes = to.getMinutes() < 10 ? "0" + to.getMinutes() : to.getMinutes();
         let toDay = to.getDay();
 
-        let element = document.createElement("a");
-        element.setAttribute("style",
-            "background-color:" + eventBackgroundColor + "; color: " + eventForegroundColor + ";");
-        element.setAttribute("href", "/event/" + event.id);
-        element.innerText = fromHours + ":" + fromMinutes + " - " + toHours + ":" + toMinutes;
+        const ZERO_MINUTES = "00";
 
-        document.getElementById(fromHours + "00" + fromDay).appendChild(element);
+        if (toDay !== fromDay) {
+            for (var i = 0; i < (toDay - fromDay) + 1; i++) {
+
+                console.log("I:>>", (fromDay + i));
+                if (fromDay === fromDay + i) {
+                    for (var j = fromHours; j <= 23; j++) {
+                        let id = j + ZERO_MINUTES + (fromDay + i);
+                        createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                    }
+                } else if (toDay === fromDay + i) {
+                    for (var j = 0; j <= toHours; j++) {
+                        var fixedJ = j < 10 ? "0" + j : j;
+                        let id = fixedJ + ZERO_MINUTES + (fromDay + i);
+                        createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                    }
+                } else {
+                    for (var j = 0; j <= 23; j++) {
+                        let id = j + ZERO_MINUTES + (fromDay + i);
+                        createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                    }
+                }
+            }
+        } else {
+            for (var j = fromHours; j <= toHours; j++) {
+                if (toMinutes !== ZERO_MINUTES) {
+                    let id = j + ZERO_MINUTES + fromDay;
+                    createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                } else {
+                    if (j !== toHours) { //prevents duplicates to next hour
+                        let id = j + ZERO_MINUTES + fromDay;
+                        createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                    }
+                }
+            }
+        }
     });
 
 }
 
+/**
+ * Generates foreground element color, based on background
+ *
+ * @param bgColor background color
+ * @param lightColor light color
+ * @param darkColor darck color
+ * @returns {*} color with '#' (ex: #000000 or #FFFFFF)
+ */
 function pickTextColorBasedOnBgColorSimple(bgColor, lightColor, darkColor) {
-    var color = (bgColor.charAt(0) === '#') ? bgColor.substring(1, 7) : bgColor;
-    var r = parseInt(color.substring(0, 2), 16); // hexToR
-    var g = parseInt(color.substring(2, 4), 16); // hexToG
-    var b = parseInt(color.substring(4, 6), 16); // hexToB
+    let color = (bgColor.charAt(0) === '#') ? bgColor.substring(1, 7) : bgColor;
+    let r = parseInt(color.substring(0, 2), 16); // hexToR
+    let g = parseInt(color.substring(2, 4), 16); // hexToG
+    let b = parseInt(color.substring(4, 6), 16); // hexToB
     return (((r * 0.299) + (g * 0.587) + (b * 0.114)) > 186) ?
         darkColor : lightColor;
 }
