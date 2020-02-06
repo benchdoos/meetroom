@@ -18,13 +18,20 @@
             <span th:class="|${room.enabled ? 'badge badge-primary' : 'badge badge-danger'}|"
                   th:text="${room.enabled ? 'enabled' : 'disabled'}"></span>
             <p th:text="${room.location}" class="h6"></p>
-        </div>
 
+            <div class="edit-meeting-room-block" sec:authorize="hasRole('ROLE_ADMIN')">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#editRoomModal"
+                        style="margin-right: 20px">
+                    Edit room
+                </button>
+            </div>
+        </div>
     </div>
-    <div class="edit-meeting-room-block" sec:authorize="hasRole('ROLE_ADMIN')">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createEventModal"
+                 data-placement="top" title="Create event"
                 style="margin-right: 20px">
-            Edit
+            +
         </button>
     </div>
     <div class="login-block">
@@ -49,51 +56,16 @@
            th:href="@{'/' + ${room.id}(day=${#temporals.format(nextWeek.toDate,'dd.MM.yyyy')})}">next week</a>
     </div>
 </div>
-<!--<div id="wrapped">
 
-    <div>
-        <div class="header top-date" th:each="event : ${events}">
-            <div>
-                <p>User reserved:
-                <p th:text="|${event.user.firstName} ${event.user.lastName}|"></p>
-                <p th:text="|${event.fromDate} - ${event.toDate}|"></p>
-            </div>
-        </div>
-    </div>
-</div>-->
-
-----
-
-<!--<div id="grid">-->
-<!--    <div class="header top-date">-->
-<!--        <span class="btn btn-danger" id="previous-week">이전 주</span>-->
-<!--        <h4>날짜: <span id="today">2018-08-28</span></h4>-->
-<!--        <span class="btn btn-danger" id="next-week">다음 주</span>-->
-<!--    </div>-->
-
-<!--    <div class="container sidebar">-->
-<!--        <h2>회의실선택</h2>-->
-<!--        <div id="meeting-room-list">-->
-<!--            <ul class="list-group">-->
-<!--                <li class="list-group-item"></li>-->
-<!--            </ul>-->
-<!--        </div>-->
-<!--        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create-meetingroom-modal" id="create-meetingroom">-->
-<!--            회의실추가-->
-<!--        </button>-->
-<!--        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create-reservation-modal" id="create-reservation">-->
-<!--            예약하기-->
-<!--        </button>-->
-<!--    </div>-->
-
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<!--<editor-fold desc="Modals for this page">-->
+<div class="modal fade" id="editRoomModal" tabindex="-1" role="dialog" aria-labelledby="editRoomModalLabel"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form id="create-meetroom-form" sec:authorize="isAuthenticated()"
                   th:action="|@{/meetroom/edit/}${room.id}|" method="post">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit meeting room</h5>
+                    <h5 class="modal-title" id="editRoomModalLabel">Edit meeting room</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -111,7 +83,34 @@
         </div>
     </div>
 </div>
-s
+
+<div class="modal fade" id="createEventModal" tabindex="-1" role="dialog" aria-labelledby="editRoomModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="create-event-form" sec:authorize="isAuthenticated()"
+                  th:action="@{/event/create}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createEventLabel">Create new event</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="create-event">
+                        <div th:include="modal/modal-manage-event :: fr-create-event"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" form="create-meetroom-form" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--</editor-fold>-->
+
 <div class="container content">
     <table class="table table-striped" id="timetable"></table>
 </div>
@@ -129,8 +128,6 @@ s
 <script th:src="@{/js/reservation.js}"></script>
 <script th:inline="javascript">
     $(document).ready(function () {
-        drawToday();
-        drawMeetingRoom();
         drawTimePanel();
         fillTimePanel([[${events}]], [[${dateRange}]]);
     });

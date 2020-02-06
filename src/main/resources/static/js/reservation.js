@@ -19,27 +19,27 @@ $('#create-meetingroom-modal').on('shown.bs.modal', function () {
 /**
  * 회의실 생성버튼 클릭
  */
-$("#cmr-save").on("click", function () {
-    var roomName = $("#cmr-name").val();
-
-    var postData = {
-        roomName: roomName,
-    };
-
-    $.ajax({
-        url: "/room",
-        type: "POST",
-        data: JSON.stringify(postData),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-    }).always(function (response) {
-        if (response && response.code == "0000") {
-            drawMeetingRoom();
-        } else {
-            alert(response.responseJSON.message);
-        }
-    });
-});
+// $("#cmr-save").on("click", function () {
+//     var roomName = $("#cmr-name").val();
+//
+//     var postData = {
+//         roomName: roomName,
+//     };
+//
+//     $.ajax({
+//         url: "/room",
+//         type: "POST",
+//         data: JSON.stringify(postData),
+//         contentType: "application/json; charset=utf-8",
+//         dataType: "json",
+//     }).always(function (response) {
+//         if (response && response.code == "0000") {
+//             drawMeetingRoom();
+//         } else {
+//             alert(response.responseJSON.message);
+//         }
+//     });
+// });
 
 /**
  * 예약 생성버튼 클릭
@@ -70,19 +70,6 @@ $("#cr-save").on("click", function () {
         }
     });
 });
-
-/**
- * 회의실 뷰 그리기
- */
-function drawMeetingRoom() {
-    $.get("/rooms", function (result) {
-        $("#meeting-room-list ul").empty();
-        $.each(result, function (i, room) {
-            $('#meeting-room-list .list-group')
-                .append("<li onclick='getReservationsByRoomName(this.innerHTML)' class='list-group-item'>" + room.name + "</li>");
-        });
-    });
-}
 
 /**
  * 예약 스케쥴 테이블 내용 삭제
@@ -381,29 +368,6 @@ function popupReservationDialog(tdId) {
 }
 
 /**
- * 현재 날짜를 기준으로 이전주 다음주 획득
- */
-function getPreviousAndNextWeekday() {
-//     const today = $("#beginDay").text();
-//
-//     var day = moment(today, 'DD.MM.YYYY').subtract(1, 'weeks').startOf('week');
-//
-//     // beforeOneWeek.setDate(beforeOneWeek.getDate() + 1); //fixes date
-//     // console.log("fixed date> ", beforeOneWeek)
-//     //
-//
-// //Log the date to our web console.
-//     $.get("/dates/" + today, function (result) {
-//         if (result && result.data) {
-//             $("#beginDay").text(result.data.today);
-//             weekday.previousWeekDay = result.data.previousWeekDay;
-//             weekday.nextWeekDay = result.data.nextWeekDay;
-//             $("#hidden-monday").text(result.data.monday);
-//         }
-//     });
-}
-
-/**
  * 예약된 방 삭제 버튼을 눌렀을 때.
  */
 $("#ur-delete").on("click", function () {
@@ -453,46 +417,6 @@ $("#ur-save").on("click", function () {
         }
     });
 });
-
-/**
- * Draw date for today
- */
-function drawToday() {
-    let today = new Date();
-    let dd = today.getDate();
-    let mm = today.getMonth() + 1;
-    let yyyy = today.getFullYear();
-    mm = mm < 10 ? '0' + mm : mm;
-    dd = dd < 10 ? '0' + dd : dd;
-
-    today = yyyy + '-' + mm + '-' + dd;
-    $("#today").text(today);
-
-    getPreviousAndNextWeekday();
-    return today;
-}
-
-var weekday = {};
-/**
- * 이전 주 버튼 클릭 하였을 때
- */
-$("#previous-week").on("click", function () {
-    $("#today").text(weekday.previousWeekDay);
-    getPreviousAndNextWeekday();
-    drawTimePanel();
-    getReservationsByRoomName(selectedRoom.roomName);
-});
-
-/**
- * 다음 주 버튼 클릭 하였을 때
- */
-$("#next-week").on("click", function () {
-    $("#today").text(weekday.nextWeekDay);
-    getPreviousAndNextWeekday();
-    drawTimePanel();
-    getReservationsByRoomName(selectedRoom.roomName);
-});
-
 
 Date.prototype.yyyymmdd = function () {
     var mm = this.getMonth() + 1;
