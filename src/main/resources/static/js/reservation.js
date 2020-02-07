@@ -1,6 +1,7 @@
 const WEEKDAY = {"MONDAY": 1, "TUESDAY": 2, "WEDNESDAY": 3, "THURSDAY": 4, "FRIDAY": 5};
 const BGCOLOR = ["#00FFFF", "#7FFFD4", "#0000FF", "#8A2BE2", "#A52A2A", "#DEB887", "#5F9EA0", "#6495ED", "#FF1493"];
 const FONTCOLOR = ["#000000", "#000000", "#7FFFD4", "#00FFFF", "#00FFFF", "#A52A2A", "#000000", "#7FFF00", "#FFE4C4"];
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 /**
  * 예약하기 모달 띄우기
@@ -88,13 +89,20 @@ function drawTimePanel() {
     var table = document.getElementById("timetable");
     var head = table.insertRow(0);
     head.insertCell(0).innerHTML = '';
-    head.insertCell(1).innerHTML = 'Monday';
-    head.insertCell(2).innerHTML = 'Tuesday';
-    head.insertCell(3).innerHTML = 'Wednesday';
-    head.insertCell(4).innerHTML = 'Thursday';
-    head.insertCell(5).innerHTML = 'Friday';
-    head.insertCell(6).innerHTML = 'Saturday';
-    head.insertCell(7).innerHTML = 'Sunday';
+
+    for (let i = 1; i <= DAYS.length; i++) {
+        let dayCell = head.insertCell(i);
+        let container = document.createElement("div");
+
+        container.style.display = "grid";
+
+        let dayName = DAYS[i - 1];
+        let dayNameSpan = document.createElement("span");
+        dayNameSpan.innerText = dayName;
+
+        container.appendChild(dayNameSpan);
+        dayCell.appendChild(container);
+    }
 
     var hour = 0;
     var min = 0;
@@ -122,9 +130,13 @@ function drawTimePanel() {
 function createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, elementId) {
     let element = document.createElement("a");
     element.setAttribute("style",
-        "background-color:" + eventBackgroundColor + "; color: " + eventForegroundColor + "; padding: 5px;");
+        "background-color:" + eventBackgroundColor + "; " +
+        "border-color: " + shadeColor(eventBackgroundColor,100) + "; " +
+        "color: " + eventForegroundColor + "; " +
+        "margin: 2px;");
     element.setAttribute("data-toggle", "tooltip");
     element.setAttribute("data-placement", "top");
+    element.setAttribute("class", "btn btn-primary");
     element.setAttribute("title", "User: " + event.user.firstName + " " + event.user.lastName);
     element.setAttribute("href", "/event/" + event.id);
     element.innerText = fromHours + ":" + fromMinutes + " - " + toHours + ":" + toMinutes;
@@ -140,6 +152,27 @@ function createLink(eventBackgroundColor, eventForegroundColor, event, fromHours
     }
 }
 
+
+function shadeColor(color, percent) {
+
+    var R = parseInt(color.substring(1,3),16);
+    var G = parseInt(color.substring(3,5),16);
+    var B = parseInt(color.substring(5,7),16);
+
+    R = parseInt(R * (100 + percent) / 100);
+    G = parseInt(G * (100 + percent) / 100);
+    B = parseInt(B * (100 + percent) / 100);
+
+    R = (R<255)?R:255;
+    G = (G<255)?G:255;
+    B = (B<255)?B:255;
+
+    var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
+    var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
+    var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+
+    return "#"+RR+GG+BB;
+}
 /**
  * Pseudo - random color generation by uuid
  * @param event to generate code from its id
@@ -152,6 +185,35 @@ function generateEventColorForEvent(event) {
         return subCore[0] + core[0] + subCore[1] + core[1] + subCore[3] + core[2];
     }
     return Math.random().toString(16).slice(2, 8);
+}
+
+function fillDays(range) {
+    let from = new Date(range.fromDate);
+    console.log(">>>");
+    for (let i = 1; i <= 7; i++) {
+
+        console.log("cell:", i, from);
+
+        const tomorrow = new Date(from);
+        tomorrow.setDate(tomorrow.getDate() + (i - 1));
+
+        let table = document.getElementById("timetable");
+        let cell = table.rows[0].cells[i];
+
+
+        let dateSpan = document.createElement("span");
+        let fixedMonth = tomorrow.getMonth() + 1;
+        // date.innerText = tomorrow.getDate() + "." + fixedMonth + "." + tomorrow.getFullYear();
+
+        const fixedDate = ("0" + tomorrow.getDate()).slice(-2) + "."
+            + ("0" + (tomorrow.getMonth() + 1)).slice(-2) + "."
+            + tomorrow.getFullYear();
+
+        dateSpan.innerText = fixedDate;
+        dateSpan.style.color = "cornflowerblue";
+
+        cell.firstChild.appendChild(dateSpan);
+    }
 }
 
 /**
