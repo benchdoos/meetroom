@@ -15,8 +15,12 @@
             <a th:href="@{'/' + ${room.id}}" style="color: white;">
                 <span th:text="${room.name}" class="h3"></span>
             </a>
-            <span th:class="|${room.enabled ? 'badge badge-primary' : 'badge badge-danger'}|"
-                  th:text="${room.enabled ? 'enabled' : 'disabled'}"></span>
+            <span class="h3">
+                &nbsp;
+                <span th:class="|${room.enabled ? 'badge badge-primary' : 'badge badge-danger'}|"
+                      th:text="${room.enabled ? 'enabled' : 'disabled'}"></span>
+            </span>
+
             <p th:text="${room.location}" class="h6"></p>
 
             <div class="edit-meeting-room-block" sec:authorize="hasRole('ROLE_ADMIN')">
