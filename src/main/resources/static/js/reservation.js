@@ -135,6 +135,8 @@ function createLink(eventBackgroundColor, eventForegroundColor, event, fromHours
     if (elementById !== null) {
         elementById.appendChild(element);
         elementById.appendChild(brElement);
+    } else {
+        console.log("Can not print child for event: ", event, "elementId: ", elementId)
     }
 }
 
@@ -185,7 +187,7 @@ function fillTimePanel(events, dateRange) {
         if (fromDayNumber !== toDayNumber) {
             for (let i = 0; i < (toDayNumber - fromDayNumber) + 1; i++) {
                 let indexFrom = fromDayNumber + i - new Date(dateRange.fromDate).getDate();
-                console.log("indexFrom:", indexFrom);
+                console.log("indexFrom: ", indexFrom);
                 if (indexFrom >= 0 && indexFrom <= 7) {
                     if (fromDayNumber + i === fromDayNumber) {
                         for (let j = fromHours; j <= 23; j++) {
@@ -202,11 +204,19 @@ function fillTimePanel(events, dateRange) {
                     }
                 } else {
                     let indexTo = toDayNumber + i - new Date(dateRange.fromDate).getDate();
-                    console.log("indexTo:", indexTo);
+                    console.log("indexTo: ", indexTo);
                     if (indexTo >= 0 && indexTo <= 7) {
                         for (let j = 0; j <= toHours; j++) {
                             var fixedJ = j < 10 ? "0" + j : j;
                             let id = fixedJ + ZERO_MINUTES + (indexTo + 1);
+                            createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                        }
+                    } else {
+                        let indexFixed = 7 - i;
+                        console.log("indexFixed: ", indexFixed);
+                        for (let j = fromHours; j <= 23; j++) {
+                            var fixedJ = j < 10 ? "0" + j : j;
+                            let id = fixedJ + ZERO_MINUTES + (indexFixed + 1);
                             createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                         }
                     }
