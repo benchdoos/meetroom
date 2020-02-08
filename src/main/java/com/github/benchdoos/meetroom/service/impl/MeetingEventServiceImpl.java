@@ -36,7 +36,9 @@ public class MeetingEventServiceImpl implements MeetingEventService {
 
             final Predicate idPredicate = criteriaBuilder.equal(root.get("meetingRoom"), meetingRoom);
 
-            final Predicate deletedPredicate = criteriaBuilder.isTrue(root.get("deleted"));
+            final Predicate deletedPredicate = criteriaBuilder.and(
+                    criteriaBuilder.isNotNull(root.get("deleted").as(Boolean.class)),
+                    criteriaBuilder.isTrue(root.get("deleted").as(Boolean.class)));
 
             final List<Predicate> datePredicates = new ArrayList<>();
             datePredicates.add(criteriaBuilder.between(root.get("fromDate"), fromDate, toDate));
