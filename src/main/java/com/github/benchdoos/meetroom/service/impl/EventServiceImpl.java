@@ -23,7 +23,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.Predicate;
-import java.time.Period;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -71,11 +70,7 @@ public class EventServiceImpl implements EventService {
         final ZonedDateTime fromDate = DateUtils.truncateSecondsToStart(DateUtils.toZoneDateTime(createEventDto.getFromDate()));
         final ZonedDateTime toDate = DateUtils.truncateSecondsToEnd(DateUtils.toZoneDateTime(createEventDto.getToDate()));
 
-        final Period period = Period.between(fromDate.toLocalDate(), toDate.toLocalDate());
-        final long eventDuration = period.get(ChronoUnit.MINUTES);
-        Assert.isTrue(properties.getMinimumReservationValue() >= eventDuration
-                        && eventDuration <= properties.getMaximumReservationValue(),
-                String.format("Event duration is not in given range: %s", properties.getViewableDurationString()));
+        validateEventDuration(fromDate, toDate);
 
         final List<Event> events = getEvents(meetingRoom, fromDate, toDate);
         if (!CollectionUtils.isEmpty(events)) {
@@ -91,6 +86,25 @@ public class EventServiceImpl implements EventService {
                 .build();
 
         return eventRepository.save(event);
+    }
+
+    /**
+     * Check event duration. Duration must be in range of minimum and maximum reservation values.
+     * {@code fromDate} must be earlier then {@code toDate}.
+     *
+     * @param fromDate event begin date
+     * @param toDate event end date
+     * @see MeetroomProperties
+     */
+    private void validateEventDuration(ZonedDateTime fromDate, ZonedDateTime toDate) {
+        final ChronoUnit chronoUnit = ChronoUnit.MINUTES;
+        final long eventDuration = chronoUnit.between(fromDate, toDate);
+
+        Assert.isTrue(eventDuration >= properties.getMinimumReservationValue()
+                && eventDuration <= properties.getMaximumReservationValue(),
+                String.format("Event duration is not in given range: %s", properties.getViewableDurationString()));
+
+        Assert.isTrue(fromDate.isBefore(toDate), "Start date must be before the end date.");
     }
 
     private Specification<Event> prepareMeetingEventSpecification(MeetingRoom meetingRoom,

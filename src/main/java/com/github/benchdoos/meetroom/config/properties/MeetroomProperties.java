@@ -47,10 +47,10 @@ public class MeetroomProperties {
         if (value < 60) {
             return String.format("%s minutes", value);
         } else {
-            if (value < 1440) { //24h
+            if (value <= 1440) { //24h
                 return String.format("%s hours %s minutes", value / 60, value % 60);
             } else {
-                return String.format("%s days %s hours %s minutes", value / 24, value / (60 * 24), value % (60 * 24));
+                return String.format("%s days %s hours %s minutes", value / (24 * 60 * 24), value / (60 * 24), value % (60 * 24)); //todo fix
             }
         }
     }

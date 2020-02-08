@@ -36,7 +36,7 @@ public class DateUtils {
     }
 
     public static ZonedDateTime truncateSecondsToEnd(ZonedDateTime dateTime) {
-        return dateTime.withSecond(59).withNano(999999999);
+        return dateTime.withSecond(59).withNano(99999); //prevents from saving plus 1 minute
     }
 
     /**
