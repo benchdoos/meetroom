@@ -4,6 +4,7 @@ import com.github.benchdoos.meetroom.domain.Event;
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
 import com.github.benchdoos.meetroom.domain.dto.CreateEventDto;
 import com.github.benchdoos.meetroom.domain.dto.EventDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateEventDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -43,10 +44,35 @@ public interface EventService {
     EventDto getEventDtoById(UUID id);
 
     /**
+     * Get event by id
+     *
+     * @param id id
+     * @return event
+     */
+    Event getEventById(UUID id);
+
+    /**
      * Create event
      *
      * @param createEventDto dto
      * @return created event
      */
     Event createEvent(CreateEventDto createEventDto);
+
+    /**
+     * Update event
+     *
+     * @param id of event
+     * @param updateEventDto dto with data to update
+     * @return updated event
+     */
+    Event updateEvent(UUID id, UpdateEventDto updateEventDto);
+
+    /**
+     * Marks event as deleted
+     *
+     * @param id of event
+     * @return boolean, {@code true} is successfully deleted
+     */
+    boolean deleteEvent(UUID id);
 }

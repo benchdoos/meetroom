@@ -40,6 +40,64 @@
     </div>
 </div>
 
+<div th:fragment="modal-edit-event">
+    <div class="modal fade" id="editEventModal" tabindex="-1" role="dialog" aria-labelledby="editRoomModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="edit-event-form" sec:authorize="isAuthenticated()"
+                      th:action="@{'/event/edit/' + ${event.id}}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editEventLabel">Edit event</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="edit-event">
+                            <div th:include="modal/modal-manage-event :: fr-edit-event"></div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="userId" th:value="${#authentication.getPrincipal().getId()}" hidden/>
+                    <input type="hidden" name="meetingRoomId" th:value="${event.meetingRoom.id}" hidden/>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" form="edit-event-form" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="modal-delete-event">
+    <div class="modal fade" id="deleteEventModal" tabindex="-1" role="dialog" aria-labelledby="deleteRoomModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="delete-event-form" th:action="|@{/event/}${event.id}|" th:method="delete"> <!--todo fixme not working, reporting about post-->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteEventLabel">Delete event</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this event?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger" form="delete-event-form">Delete</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 <div th:fragment="modal-edit-meeting-room">
     <div class="modal fade" id="editRoomModal" tabindex="-1" role="dialog" aria-labelledby="editRoomModalLabel"
          aria-hidden="true">
@@ -60,7 +118,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" form="create-meetroom-form" class="btn btn-primary">Save changes</button>
+                        <button type="submit" form="create-meetroom-form" class="btn btn-primary">Save changes
+                        </button>
                     </div>
                 </form>
             </div>

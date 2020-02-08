@@ -1,12 +1,14 @@
 package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.config.properties.MeetroomProperties;
+import com.github.benchdoos.meetroom.domain.DateRange;
 import com.github.benchdoos.meetroom.domain.Event;
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
 import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.dto.CreateEventDto;
 import com.github.benchdoos.meetroom.domain.dto.EventDto;
-import com.github.benchdoos.meetroom.exceptions.MeetingRoomNotFoundException;
+import com.github.benchdoos.meetroom.domain.dto.UpdateEventDto;
+import com.github.benchdoos.meetroom.exceptions.EventNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.TimeNotAvailableException;
 import com.github.benchdoos.meetroom.mappers.EventMapper;
 import com.github.benchdoos.meetroom.repository.EventRepository;
@@ -51,12 +53,17 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventDto getEventDtoById(UUID id) {
-        final Event event = eventRepository.findById(id).orElseThrow(MeetingRoomNotFoundException::new);
+        final Event event = eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
 
         final EventDto eventDto = new EventDto();
         eventMapper.convert(event, eventDto);
 
         return eventDto;
+    }
+
+    @Override
+    public Event getEventById(UUID id) {
+        return eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
     }
 
     @Override
@@ -67,12 +74,14 @@ public class EventServiceImpl implements EventService {
         Assert.isTrue(user.isEnabled(), "User must be enabled to create events");
         Assert.isTrue(meetingRoom.isEnabled(), "Meeting room must be enabled to create events");
 
-        final ZonedDateTime fromDate = DateUtils.truncateSecondsToStart(DateUtils.toZoneDateTime(createEventDto.getFromDate()));
-        final ZonedDateTime toDate = DateUtils.truncateSecondsToEnd(DateUtils.toZoneDateTime(createEventDto.getToDate()));
+        final DateRange dateRange = DateUtils.createDateRange(
+                DateUtils.toZoneDateTime(createEventDto.getFromDate()),
+                DateUtils.toZoneDateTime(createEventDto.getToDate())
+        );
 
-        validateEventDuration(fromDate, toDate);
+        validateEventDuration(dateRange.getFromDate(), dateRange.getToDate());
 
-        final List<Event> events = getEvents(meetingRoom, fromDate, toDate);
+        final List<Event> events = getEvents(meetingRoom, dateRange.getFromDate(), dateRange.getToDate());
         if (!CollectionUtils.isEmpty(events)) {
             throw new TimeNotAvailableException(events.get(0)); //Taking the first one. Not critical
         }
@@ -80,12 +89,48 @@ public class EventServiceImpl implements EventService {
         final Event event = Event.builder()
                 .user(user)
                 .meetingRoom(meetingRoom)
-                .fromDate(fromDate)
-                .toDate(toDate)
+                .fromDate(dateRange.getFromDate())
+                .toDate(dateRange.getToDate())
                 .deleted(false)
                 .build();
 
         return eventRepository.save(event);
+    }
+
+
+    @Override
+    public Event updateEvent(UUID id, UpdateEventDto updateEventDto) {
+        final Event event = eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
+
+        Assert.isTrue(event.getDeleted() == null || !event.getDeleted(),
+                "Deleted event can not be modified.");
+
+        final DateRange dateRange = DateUtils.createDateRange(
+                DateUtils.toZoneDateTime(updateEventDto.getFromDate()),
+                DateUtils.toZoneDateTime(updateEventDto.getToDate())
+        );
+
+        validateEventDuration(dateRange.getFromDate(), dateRange.getToDate());
+
+        final List<Event> events = getEvents(event.getMeetingRoom(), dateRange.getFromDate(), dateRange.getToDate());
+        if (!CollectionUtils.isEmpty(events)) {
+            //checking if the only found event is the same
+            if (events.size() != 1 || !events.get(0).getId().equals(event.getId())) {
+                throw new TimeNotAvailableException(events.get(0)); //Taking the first one. Not critical
+            }
+        }
+
+        event.setFromDate(dateRange.getFromDate());
+        event.setToDate(dateRange.getToDate());
+
+        return eventRepository.save(event);
+    }
+
+    @Override
+    public boolean deleteEvent(UUID id) {
+        final Event event = eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
+        event.setDeleted(true);
+        return eventRepository.save(event).getDeleted();
     }
 
     /**

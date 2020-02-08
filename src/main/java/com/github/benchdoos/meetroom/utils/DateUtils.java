@@ -65,4 +65,11 @@ public class DateUtils {
                 DateUtils.truncateTimeToDayStart(mondayDay),
                 DateUtils.truncateTimeToDayEnd(sundayDay));
     }
+
+    public static DateRange createDateRange(ZonedDateTime fromDate, ZonedDateTime toDate) {
+        return new DateRange(
+                truncateSecondsToStart(fromDate),
+                truncateSecondsToEnd(toDate)
+        );
+    }
 }

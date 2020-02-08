@@ -5,16 +5,20 @@ import com.github.benchdoos.meetroom.domain.Event;
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
 import com.github.benchdoos.meetroom.domain.dto.CreateEventDto;
 import com.github.benchdoos.meetroom.domain.dto.EventDto;
-import com.github.benchdoos.meetroom.service.ModelViewService;
+import com.github.benchdoos.meetroom.domain.dto.UpdateEventDto;
 import com.github.benchdoos.meetroom.service.EventService;
 import com.github.benchdoos.meetroom.service.MeetingRoomService;
+import com.github.benchdoos.meetroom.service.ModelViewService;
 import com.github.benchdoos.meetroom.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +27,7 @@ import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ModelViewServiceImpl implements ModelViewService {
     private final MeetingRoomService roomService;
     private final EventService eventService;
@@ -83,6 +88,24 @@ public class ModelViewServiceImpl implements ModelViewService {
         final Event event = eventService.createEvent(createEventDto);
 
         return getMeetingEventInfoById(event.getId(), model);
+    }
+
+    @Override
+    public String updateEvent(UUID id, UpdateEventDto updateEventDto, Model model) {
+        final Event event = eventService.updateEvent(id, updateEventDto);
+
+        return getMeetingEventInfoById(event.getId(), model);
+    }
+
+    @Override
+    public String deleteEvent(UUID id, Model model, HttpServletRequest request) {
+        final Event event = eventService.getEventById(id);
+        @NotNull final MeetingRoom meetingRoom = event.getMeetingRoom();
+        final boolean deleted = eventService.deleteEvent(id);
+        log.info("Event with id: {} is deleted: {}", id, deleted);
+
+        return getMeetingEventInfoById(meetingRoom.getId(), model);
+
     }
 
     /**
