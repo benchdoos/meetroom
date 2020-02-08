@@ -1,10 +1,11 @@
 package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.domain.DateRange;
-import com.github.benchdoos.meetroom.domain.MeetingEvent;
+import com.github.benchdoos.meetroom.domain.Event;
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
-import com.github.benchdoos.meetroom.service.IndexViewService;
-import com.github.benchdoos.meetroom.service.MeetingEventService;
+import com.github.benchdoos.meetroom.domain.dto.EventDto;
+import com.github.benchdoos.meetroom.service.ModelViewService;
+import com.github.benchdoos.meetroom.service.EventService;
 import com.github.benchdoos.meetroom.service.MeetingRoomService;
 import com.github.benchdoos.meetroom.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,9 @@ import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Service
-public class IndexViewServiceImpl implements IndexViewService {
+public class ModelViewServiceImpl implements ModelViewService {
     private final MeetingRoomService roomService;
-    private final MeetingEventService eventService;
+    private final EventService eventService;
 
     @Override
     public String getAllRooms(Pageable pageable, Model model) {
@@ -53,18 +54,27 @@ public class IndexViewServiceImpl implements IndexViewService {
 
         final DateRange dateRange = DateUtils.getWeekRange(day != null ? day : ZonedDateTime.now());
 
-        final List<MeetingEvent> meetingEvents = eventService.getMeetingEvents(
+        final List<Event> events = eventService.getEvents(
                 meetingRoom,
                 dateRange.getFromDate(),
                 dateRange.getToDate(),
                 pageable);
 
         model.addAttribute("room", meetingRoom);
-        model.addAttribute("events", meetingEvents);
+        model.addAttribute("events", events);
         model.addAttribute("dateRange", dateRange);
         model.addAttribute("prevWeek", DateUtils.getWeekRange(dateRange.getFromDate().minusDays(1)));
         model.addAttribute("nextWeek", DateUtils.getWeekRange(dateRange.getToDate().plusDays(1)));
         return "meeting-room.html";
+    }
+
+    @Override
+    public String getMeetingEventInfoById(UUID id, Model model) {
+        final EventDto eventDto = eventService.getEventDtoById(id);
+
+        model.addAttribute("event", eventDto);
+
+        return "event.html";
     }
 
     /**

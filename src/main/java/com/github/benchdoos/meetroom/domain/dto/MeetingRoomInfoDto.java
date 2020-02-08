@@ -17,7 +17,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @Builder
-public class MeetingRoomDto {
+public class MeetingRoomInfoDto {
+
+    @NotNull
+    private UUID id;
 
     @NotBlank
     private String name;

@@ -73,7 +73,7 @@
     $(document).ready(function () {
         drawTimePanel();
         fillDays([[${dateRange}]]);
-        fillTimePanel([[${events}]], [[${dateRange}]]);
+        fillTimePanel("/meetroom/event/",[[${events}]], [[${dateRange}]]);
     });
 </script>
 </body>

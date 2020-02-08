@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-public interface IndexViewService {
+public interface ModelViewService {
 
     String getAllRooms(@PageableDefault Pageable pageable, Model model);
 
@@ -17,4 +17,6 @@ public interface IndexViewService {
     String getMeetingRoomById(@PathVariable UUID uuid, @PageableDefault Pageable pageable, Model model);
 
     String getMeetingRoomById(@PathVariable UUID uuid, ZonedDateTime fromDate, @PageableDefault Pageable pageable, Model model);
+
+    String getMeetingEventInfoById(@PathVariable UUID id, Model model);
 }

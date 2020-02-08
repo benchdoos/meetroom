@@ -2,7 +2,7 @@ package com.github.benchdoos.meetroom.mappers;
 
 import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
-import com.github.benchdoos.meetroom.domain.dto.UserShortInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -13,9 +13,9 @@ import org.mapstruct.ReportingPolicy;
 componentModel = "spring")
 public interface UserMapper {
 
-    void convert(User user, @MappingTarget UserShortInfoDto userShortInfoDto);
+    void convert(User user, @MappingTarget UserPublicInfoDto userPublicInfoDto);
 
-    void convert(UserShortInfoDto userShortInfoDto, @MappingTarget User user);
+    void convert(UserPublicInfoDto userPublicInfoDto, @MappingTarget User user);
 
     void convert(User user, @MappingTarget UserExtendedInfoDto userExtendedInfoDto);
 

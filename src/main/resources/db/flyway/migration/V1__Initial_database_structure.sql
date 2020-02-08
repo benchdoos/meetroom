@@ -58,7 +58,7 @@ create table if not exists meeting_events
             references users
 );
 
-alter table meeting_events
+alter table events
     owner to meetroom;
 
 create table if not exists users_roles

@@ -1,6 +1,6 @@
 package com.github.benchdoos.meetroom.controller;
 
-import com.github.benchdoos.meetroom.service.IndexViewService;
+import com.github.benchdoos.meetroom.service.ModelViewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,16 +22,16 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/")
 public class IndexController {
-    private final IndexViewService indexViewService;
+    private final ModelViewService modelViewService;
 
     @GetMapping
     public String getAllAvailableRooms(@PageableDefault(sort = "name", direction = Sort.Direction.ASC, size = 9) Pageable pageable, Model model) {
-        return indexViewService.getAllAvailable(pageable, model);
+        return modelViewService.getAllAvailable(pageable, model);
     }
 
     @GetMapping("/all")
     public String getAllRooms(@PageableDefault(sort = "name", direction = Sort.Direction.ASC, size = 9) Pageable pageable, Model model) {
-        return indexViewService.getAllRooms(pageable, model);
+        return modelViewService.getAllRooms(pageable, model);
     }
 
 
@@ -46,9 +46,9 @@ public class IndexController {
 
         if (day != null) {
             final ZonedDateTime fromDate = ZonedDateTime.ofInstant(day.toInstant(), ZoneId.systemDefault());
-            return indexViewService.getMeetingRoomById(uuid, fromDate, pageable, model);
+            return modelViewService.getMeetingRoomById(uuid, fromDate, pageable, model);
         }
 
-        return indexViewService.getMeetingRoomById(uuid, null, pageable, model);
+        return modelViewService.getMeetingRoomById(uuid, null, pageable, model);
     }
 }

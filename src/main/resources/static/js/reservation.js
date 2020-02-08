@@ -127,7 +127,7 @@ function drawTimePanel() {
     }
 }
 
-function createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, elementId) {
+function createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, elementId) {
     let element = document.createElement("a");
     element.setAttribute("style",
         "background-color:" + eventBackgroundColor + "; " +
@@ -138,7 +138,7 @@ function createLink(eventBackgroundColor, eventForegroundColor, event, fromHours
     element.setAttribute("data-placement", "top");
     element.setAttribute("class", "btn btn-primary");
     element.setAttribute("title", "User: " + event.user.firstName + " " + event.user.lastName);
-    element.setAttribute("href", "/event/" + event.id);
+    element.setAttribute("href", rootUrl + event.id);
     element.innerText = fromHours + ":" + fromMinutes + " - " + toHours + ":" + toMinutes;
 
     let brElement = document.createElement("br");
@@ -222,7 +222,7 @@ function fillDays(range) {
  * @param events to fill with
  * @param dateRange of given panel
  */
-function fillTimePanel(events, dateRange) {
+function fillTimePanel(rootUrl, events, dateRange) {
     function fixFirstCellIndex(j) {
         return j < 10 ? "0" + j : j;
     }
@@ -258,12 +258,12 @@ function fillTimePanel(events, dateRange) {
                     if (fromDayNumber + i === fromDayNumber) {
                         for (let j = fromHours; j <= 23; j++) {
                             let id = fixFirstCellIndex(j) + ZERO_MINUTES + (indexFrom + 1);
-                            createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                            createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                         }
                     } else if (fromDayNumber + i === toDayNumber) {
                         for (let j = 0; j <= toHours; j++) {
                             let id = fixFirstCellIndex(j) + ZERO_MINUTES + (indexFrom + 1);
-                            createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                            createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                         }
                     }
                 } else {
@@ -272,14 +272,14 @@ function fillTimePanel(events, dateRange) {
                     if (indexTo >= 0 && indexTo <= 7) {
                         for (let j = 0; j <= toHours; j++) {
                             let id = fixFirstCellIndex(j) + ZERO_MINUTES + (indexTo + 1);
-                            createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                            createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                         }
                     } else {
                         let indexFixed = 7 - i;
                         console.log("indexFixed: ", indexFixed);
                         for (let j = fromHours; j <= 23; j++) {
                             let id = fixFirstCellIndex(j) + ZERO_MINUTES + (indexFixed + 1);
-                            createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                            createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                         }
                     }
 
@@ -290,11 +290,11 @@ function fillTimePanel(events, dateRange) {
             for (var j = fromHours; j <= toHours; j++) {
                 if (toMinutes !== ZERO_MINUTES) {
                     let id = fixFirstCellIndex(j) + ZERO_MINUTES + fromDay;
-                    createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                    createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                 } else {
                     if (j !== toHours) { //prevents duplicates to next hour
                         let id = fixFirstCellIndex(j) + ZERO_MINUTES + fromDay;
-                        createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
+                        createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                     }
                 }
             }

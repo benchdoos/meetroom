@@ -18,12 +18,12 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "meeting_events")
+@Table(name = "events")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class MeetingEvent {
+public class Event {
     @Id
     @GeneratedValue
     private UUID id;

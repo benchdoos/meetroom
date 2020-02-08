@@ -10,7 +10,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserExtendedInfoDto extends UserShortInfoDto {
+public class UserExtendedInfoDto extends UserPublicInfoDto {
 
     private Set<UserRole> roles;
 }

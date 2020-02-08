@@ -4,7 +4,7 @@ import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.UserRole;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
-import com.github.benchdoos.meetroom.domain.dto.UserShortInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.exceptions.UserDisabledException;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
@@ -29,13 +29,13 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserShortInfoDto getUserShortInfoDtoByUsername(String username) {
+    public UserPublicInfoDto getUserPublicInfoDtoByUsername(String username) {
         final User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
-        final UserShortInfoDto userShortInfoDto = new UserShortInfoDto();
+        final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
 
-        userMapper.convert(user, userShortInfoDto);
+        userMapper.convert(user, userPublicInfoDto);
 
-        return userShortInfoDto;
+        return userPublicInfoDto;
     }
 
     public UserExtendedInfoDto getExtendedUserInfoDtoByUsername(String username) {

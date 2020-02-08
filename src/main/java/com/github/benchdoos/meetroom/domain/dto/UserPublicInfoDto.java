@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * Dto with important public personal information for {@link User}
@@ -15,7 +16,11 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Data
 @Builder
-public class UserShortInfoDto {
+public class UserPublicInfoDto {
+
+    @NotNull
+    private UUID id;
+
     @NotNull
     private String username;
 

@@ -2,7 +2,7 @@ package com.github.benchdoos.meetroom.controller;
 
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
 import com.github.benchdoos.meetroom.domain.dto.MeetingRoomDto;
-import com.github.benchdoos.meetroom.service.IndexViewService;
+import com.github.benchdoos.meetroom.service.ModelViewService;
 import com.github.benchdoos.meetroom.service.MeetingRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
@@ -21,7 +21,7 @@ import java.util.UUID;
 public class MeetroomController {
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
     private final MeetingRoomService meetingRoomService;
-    private final IndexViewService indexViewService;
+    private final ModelViewService modelViewService;
 
 
     @Secured("ROLE_ADMIN")
@@ -29,7 +29,7 @@ public class MeetroomController {
     public String createMeetRoom(@Validated MeetingRoomDto meetingRoomDto, Model model) {
         final MeetingRoom meetingRoom = meetingRoomService.createMeetingRoom(meetingRoomDto);
         final UUID id = meetingRoom.getId();
-        return indexViewService.getMeetingRoomById(id, null, model);
+        return modelViewService.getMeetingRoomById(id, null, model);
     }
 
     @Secured(ROLE_ADMIN)
@@ -39,6 +39,6 @@ public class MeetroomController {
                                Model model) {
         final MeetingRoom meetingRoom = meetingRoomService.updateMeetingRoomInfo(uuid, meetingRoomDto);
         final UUID id = meetingRoom.getId();
-        return indexViewService.getMeetingRoomById(id, null, model);
+        return modelViewService.getMeetingRoomById(id, null, model);
     }
 }
