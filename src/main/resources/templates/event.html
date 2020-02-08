@@ -8,26 +8,46 @@
     <link href="/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet">
 </head>
 <body>
+<div class="w-100 alert alert-danger" role="alert" th:if="${event.deleted} ? hidden">
+    Event is deleted
+</div>
 <div class="header" style="background-color: cornflowerblue">
     <div style="color: white; display: flex;">
         <div class="w-100">
-            <a class="btn btn-info h1" th:href="@{'/' + ${event.meetingRoom.id}}"><i class="fas fa-chevron-left"></i></a>
-            <span class="h3">Event info</span></div>
-        <div class="edit-meeting-room-block">
+            <a class="btn btn-info h1"
+               th:href="@{'/' + ${event.meetingRoom.id}(day=${#temporals.format(event.fromDate,'dd.MM.yyyy')})}">
+                <i class="fas fa-chevron-left"></i></a>
+            <span class="h3">Event info</span>
+        </div>
+        <div style="display: flex">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editEventModal">
-                Edit event
+                Edit
+            </button>
+            &nbsp;
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteEventModal">
+                Delete
             </button>
         </div>
     </div>
 </div>
 
 <div>
-     <span th:text="
+    <div class="w-100" style="text-align: center">
+        <span th:text="
                 ${#temporals.format(event.fromDate,'dd.MM.yyyy hh:mm')}
                 + ' - ' +
-                ${#temporals.format(event.toDate,'dd.MM.yyyy hh:mm')}"></span>
-    <p class="h3" th:text="${event.meetingRoom.name}"></p>
-    <p class="h4" th:text="${event.meetingRoom.location}"></p>
+                ${#temporals.format(event.toDate,'dd.MM.yyyy hh:mm')}"
+              class="h2"></span>
+    </div>
+    <p class="h2">Where:</p>
+    <p class="h4" th:text="${event.meetingRoom.name}"></p>
+    <p class="h5" th:text="${event.meetingRoom.location}"></p>
+    <br>
+    <p class="h2">Organizer:</p>
+    <a class="h4"
+       th:text="|${event.creator.firstName} ${event.creator.lastName}|"
+       th:href="@{/user(username=${event.creator.username})}"></a>
+
 </div>
 
 </body>
