@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Title</title>
@@ -27,6 +27,10 @@
                             <div th:include="modal/modal-manage-event :: fr-create-event"></div>
                         </div>
                     </div>
+
+                    <input type="hidden" name="userId" th:value="${#authentication.getPrincipal().getId()}" hidden />
+                    <input type="hidden" name="meetingRoomId" th:value="${room.id}" hidden />
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" form="create-event-form" class="btn btn-primary">Save changes</button>

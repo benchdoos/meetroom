@@ -3,7 +3,9 @@ package com.github.benchdoos.meetroom.utils;
 import com.github.benchdoos.meetroom.domain.DateRange;
 
 import java.time.DayOfWeek;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 /**
  * Date utilities
@@ -35,6 +37,16 @@ public class DateUtils {
 
     public static ZonedDateTime truncateSecondsToEnd(ZonedDateTime dateTime) {
         return dateTime.withSecond(59).withNano(999999999);
+    }
+
+    /**
+     * Convert {@link Date} to {@link ZonedDateTime} with system default {@link ZoneId}
+     *
+     * @param date to convert
+     * @return formated
+     */
+    public static ZonedDateTime toZoneDateTime(Date date) {
+        return ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }
 
     /**

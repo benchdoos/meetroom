@@ -6,6 +6,8 @@ import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.UUID;
+
 /**
  * Service that gives ability to operate with {@link User}
  */
@@ -19,4 +21,12 @@ public interface UserService extends UserDetailsService {
     UserPublicInfoDto getUserPublicInfoDtoByUsername(String username);
 
     UserExtendedInfoDto getExtendedUserInfoDtoByUsername(String username);
+
+    /**
+     * Get user by id
+     *
+     * @param id of user
+     * @return user with given id
+     */
+    User getById(UUID id);
 }

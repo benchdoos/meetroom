@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  * Default implementation for {@link UserService}
@@ -45,6 +46,11 @@ public class UserServiceImpl implements UserService {
         userMapper.convert(user, userExtendedInfoDto);
 
         return userExtendedInfoDto;
+    }
+
+    @Override
+    public User getById(UUID id) {
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
     @Override

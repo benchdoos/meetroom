@@ -35,4 +35,23 @@ public class MeetroomProperties {
     @Min(value = 1)
     @Max(value = 10080) //7 days
     private Integer maximumReservationValue;
+
+    public String getViewableDurationString() {
+        final String minimumDuration = getDurationMessage(minimumReservationValue);
+        final String maximumDuration = getDurationMessage(maximumReservationValue);
+
+        return String.format("from %s to %s", minimumDuration, maximumDuration);
+    }
+
+    private String getDurationMessage(int value) {
+        if (value < 60) {
+            return String.format("%s minutes", value);
+        } else {
+            if (value < 1440) { //24h
+                return String.format("%s hours %s minutes", value / 60, value % 60);
+            } else {
+                return String.format("%s days %s hours %s minutes", value / 24, value / (60 * 24), value % (60 * 24));
+            }
+        }
+    }
 }

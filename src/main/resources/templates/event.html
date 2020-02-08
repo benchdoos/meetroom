@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Event info</title>
@@ -11,6 +11,11 @@
 <div class="w-100 alert alert-danger" role="alert" th:if="${event.deleted} ? hidden">
     Event is deleted
 </div>
+<div class="w-100 alert alert-danger" role="alert"
+     th:with="meetingRoomAvailable = ${event.meetingRoom.enabled}"
+     th:if="!meetingRoomAvailable ? hidden">
+    Meeting room is unavailable
+</div>
 <div class="header" style="background-color: cornflowerblue">
     <div style="color: white; display: flex;">
         <div class="w-100">
@@ -19,7 +24,8 @@
                 <i class="fas fa-chevron-left"></i></a>
             <span class="h3">Event info</span>
         </div>
-        <div style="display: flex">
+        <div style="display: flex" sec:authorize="isAuthenticated()"
+             th:if="(${event.creator.username} == ${#authentication.getPrincipal().getUsername()}) or ${#authorization.expression('hasRole(''ADMIN'')')}"> <!--todo test this!-->
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editEventModal">
                 Edit
             </button>

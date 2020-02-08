@@ -24,7 +24,7 @@ public class MeetroomController {
     private final ModelViewService modelViewService;
 
 
-    @Secured("ROLE_ADMIN")
+    @Secured(ROLE_ADMIN)
     @PostMapping
     public String createMeetRoom(@Validated MeetingRoomDto meetingRoomDto, Model model) {
         final MeetingRoom meetingRoom = meetingRoomService.createMeetingRoom(meetingRoomDto);

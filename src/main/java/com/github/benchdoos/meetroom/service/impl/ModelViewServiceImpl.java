@@ -3,6 +3,7 @@ package com.github.benchdoos.meetroom.service.impl;
 import com.github.benchdoos.meetroom.domain.DateRange;
 import com.github.benchdoos.meetroom.domain.Event;
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
+import com.github.benchdoos.meetroom.domain.dto.CreateEventDto;
 import com.github.benchdoos.meetroom.domain.dto.EventDto;
 import com.github.benchdoos.meetroom.service.ModelViewService;
 import com.github.benchdoos.meetroom.service.EventService;
@@ -57,8 +58,8 @@ public class ModelViewServiceImpl implements ModelViewService {
         final List<Event> events = eventService.getEvents(
                 meetingRoom,
                 dateRange.getFromDate(),
-                dateRange.getToDate(),
-                pageable);
+                dateRange.getToDate()
+        );
 
         model.addAttribute("room", meetingRoom);
         model.addAttribute("events", events);
@@ -75,6 +76,13 @@ public class ModelViewServiceImpl implements ModelViewService {
         model.addAttribute("event", eventDto);
 
         return "event.html";
+    }
+
+    @Override
+    public String createEvent(CreateEventDto createEventDto, Model model) {
+        final Event event = eventService.createEvent(createEventDto);
+
+        return getMeetingEventInfoById(event.getId(), model);
     }
 
     /**
