@@ -107,6 +107,15 @@ public class EventServiceImpl implements EventService {
         Assert.isTrue(fromDate.isBefore(toDate), "Start date must be before the end date.");
     }
 
+    /**
+     * Create {@link Specification} to look for Events in date range. Returns only events that are already deleted and
+     * in date range
+     *
+     * @param meetingRoom meeting room to look by
+     * @param fromDate start of time range
+     * @param toDate end of time range
+     * @return specification with needed queries
+     */
     private Specification<Event> prepareMeetingEventSpecification(MeetingRoom meetingRoom,
                                                                   ZonedDateTime fromDate,
                                                                   ZonedDateTime toDate) {
