@@ -47,14 +47,13 @@ public class ModelViewServiceImpl implements ModelViewService {
     }
 
     @Override
-    public String getMeetingRoomById(UUID uuid, Pageable pageable, Model model) {
-        return getMeetingRoomById(uuid, null, pageable, model);
+    public String getMeetingRoomById(UUID uuid, Model model) {
+        return getMeetingRoomById(uuid, null, model);
     }
 
     @Override
     public String getMeetingRoomById(UUID uuid,
                                      ZonedDateTime day,
-                                     Pageable pageable,
                                      Model model) {
         final MeetingRoom meetingRoom = roomService.getById(uuid);
 
@@ -100,11 +99,12 @@ public class ModelViewServiceImpl implements ModelViewService {
     @Override
     public String deleteEvent(UUID id, Model model, HttpServletRequest request) {
         final Event event = eventService.getEventById(id);
+        @NotNull final ZonedDateTime fromDate = event.getFromDate();
         @NotNull final MeetingRoom meetingRoom = event.getMeetingRoom();
         final boolean deleted = eventService.deleteEvent(id);
         log.info("Event with id: {} is deleted: {}", id, deleted);
 
-        return getMeetingEventInfoById(meetingRoom.getId(), model);
+        return getMeetingRoomById(meetingRoom.getId(), fromDate, model);
 
     }
 

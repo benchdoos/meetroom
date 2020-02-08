@@ -15,9 +15,9 @@ public interface ModelViewService {
 
     String getAllAvailable(Pageable pageable, Model model);
 
-    String getMeetingRoomById(UUID uuid, Pageable pageable, Model model);
+    String getMeetingRoomById(UUID uuid, Model model);
 
-    String getMeetingRoomById(UUID uuid, ZonedDateTime fromDate, Pageable pageable, Model model);
+    String getMeetingRoomById(UUID uuid, ZonedDateTime fromDate, Model model);
 
     String getMeetingEventInfoById(UUID id, Model model);
 

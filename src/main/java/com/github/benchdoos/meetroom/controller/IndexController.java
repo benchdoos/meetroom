@@ -41,14 +41,13 @@ public class IndexController {
                                      @RequestParam(value = "day", required = false)
                                      @DateTimeFormat(pattern = "dd.MM.yyyy") Date day,
 
-                                     @PageableDefault Pageable pageable,
                                      Model model) {
 
         if (day != null) {
             final ZonedDateTime fromDate = ZonedDateTime.ofInstant(day.toInstant(), ZoneId.systemDefault());
-            return modelViewService.getMeetingRoomById(uuid, fromDate, pageable, model);
+            return modelViewService.getMeetingRoomById(uuid, fromDate, model);
         }
 
-        return modelViewService.getMeetingRoomById(uuid, null, pageable, model);
+        return modelViewService.getMeetingRoomById(uuid, null, model);
     }
 }
