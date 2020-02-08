@@ -223,6 +223,10 @@ function fillDays(range) {
  * @param dateRange of given panel
  */
 function fillTimePanel(events, dateRange) {
+    function fixFirstCellIndex(j) {
+        return j < 10 ? "0" + j : j;
+    }
+
     events.forEach(event => {
         console.log("placing event:", event, dateRange);
 
@@ -253,14 +257,12 @@ function fillTimePanel(events, dateRange) {
                 if (indexFrom >= 0 && indexFrom <= 7) {
                     if (fromDayNumber + i === fromDayNumber) {
                         for (let j = fromHours; j <= 23; j++) {
-                            var fixedJ = j < 10 ? "0" + j : j;
-                            let id = fixedJ + ZERO_MINUTES + (indexFrom + 1);
+                            let id = fixFirstCellIndex(j) + ZERO_MINUTES + (indexFrom + 1);
                             createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                         }
                     } else if (fromDayNumber + i === toDayNumber) {
                         for (let j = 0; j <= toHours; j++) {
-                            var fixedJ = j < 10 ? "0" + j : j;
-                            let id = fixedJ + ZERO_MINUTES + (indexFrom + 1);
+                            let id = fixFirstCellIndex(j) + ZERO_MINUTES + (indexFrom + 1);
                             createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                         }
                     }
@@ -269,16 +271,14 @@ function fillTimePanel(events, dateRange) {
                     console.log("indexTo: ", indexTo);
                     if (indexTo >= 0 && indexTo <= 7) {
                         for (let j = 0; j <= toHours; j++) {
-                            var fixedJ = j < 10 ? "0" + j : j;
-                            let id = fixedJ + ZERO_MINUTES + (indexTo + 1);
+                            let id = fixFirstCellIndex(j) + ZERO_MINUTES + (indexTo + 1);
                             createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                         }
                     } else {
                         let indexFixed = 7 - i;
                         console.log("indexFixed: ", indexFixed);
                         for (let j = fromHours; j <= 23; j++) {
-                            var fixedJ = j < 10 ? "0" + j : j;
-                            let id = fixedJ + ZERO_MINUTES + (indexFixed + 1);
+                            let id = fixFirstCellIndex(j) + ZERO_MINUTES + (indexFixed + 1);
                             createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                         }
                     }
@@ -289,11 +289,11 @@ function fillTimePanel(events, dateRange) {
             console.log("ELSE: ", fromDayNumber, toDayNumber ); //todo fixme отображение корявое
             for (var j = fromHours; j <= toHours; j++) {
                 if (toMinutes !== ZERO_MINUTES) {
-                    let id = j + ZERO_MINUTES + fromDay;
+                    let id = fixFirstCellIndex(j) + ZERO_MINUTES + fromDay;
                     createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                 } else {
                     if (j !== toHours) { //prevents duplicates to next hour
-                        let id = j + ZERO_MINUTES + fromDay;
+                        let id = fixFirstCellIndex(j) + ZERO_MINUTES + fromDay;
                         createLink(eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                     }
                 }
