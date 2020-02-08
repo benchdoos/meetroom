@@ -25,7 +25,7 @@ public class MeetroomProperties {
      */
     @NotNull
     @Min(value = 1)
-    @Max(value = 1440)
+    @Max(value = 10089) //7 days - 1 minute
     private Integer minimumReservationValue;
 
     /**
@@ -33,6 +33,6 @@ public class MeetroomProperties {
      */
     @NotNull
     @Min(value = 1)
-    @Max(value = 1440)
+    @Max(value = 10080) //7 days
     private Integer maximumReservationValue;
 }
