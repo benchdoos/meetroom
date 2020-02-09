@@ -15,11 +15,18 @@ public interface UserService extends UserDetailsService {
 
     /**
      * Get user by username or throws {@link UserNotFoundException}
+     *
      * @param username username
      * @return user
      */
     UserPublicInfoDto getUserPublicInfoDtoByUsername(String username);
 
+    /**
+     * Get user extended dto
+     *
+     * @param username username
+     * @return user
+     */
     UserExtendedInfoDto getExtendedUserInfoDtoByUsername(String username);
 
     /**

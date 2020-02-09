@@ -45,15 +45,10 @@ public class ModelViewServiceImpl implements ModelViewService {
     }
 
     @Override
-    public String getMeetingRoomById(UUID uuid, Model model) {
-        return getMeetingRoomById(uuid, null, model);
-    }
-
-    @Override
-    public String getMeetingRoomById(UUID uuid,
+    public String getMeetingRoomById(UUID id,
                                      ZonedDateTime day,
                                      Model model) {
-        final MeetingRoom meetingRoom = roomService.getById(uuid);
+        final MeetingRoom meetingRoom = roomService.getById(id);
 
         final DateRange dateRange = DateUtils.getWeekRange(day != null ? day : ZonedDateTime.now());
 
@@ -72,7 +67,7 @@ public class ModelViewServiceImpl implements ModelViewService {
     }
 
     @Override
-    public String getMeetingEventInfoById(UUID id, Model model) {
+    public String getEventInfoById(UUID id, Model model) {
         final EventDto eventDto = eventService.getEventDtoById(id);
 
         model.addAttribute("event", eventDto);
@@ -84,14 +79,14 @@ public class ModelViewServiceImpl implements ModelViewService {
     public String createEvent(CreateEventDto createEventDto, Model model) {
         final Event event = eventService.createEvent(createEventDto);
 
-        return getMeetingEventInfoById(event.getId(), model);
+        return getEventInfoById(event.getId(), model);
     }
 
     @Override
     public String updateEvent(UUID id, UpdateEventDto updateEventDto, Model model) {
         final Event event = eventService.updateEvent(id, updateEventDto);
 
-        return getMeetingEventInfoById(event.getId(), model);
+        return getEventInfoById(event.getId(), model);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class EventController {
     @Secured({ROLE_ADMIN, ROLE_USER})
     @GetMapping("/{id}")
     public String getDtoById(@PathVariable UUID id, Model model) {
-        return modelViewService.getMeetingEventInfoById(id, model);
+        return modelViewService.getEventInfoById(id, model);
     }
 
     @Secured({ROLE_ADMIN, ROLE_USER})
