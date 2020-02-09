@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Title</title>
@@ -45,18 +45,18 @@
             <label for="toDate">To <span class="text-muted"
                                          th:text="${#temporals.format(event.toDate, 'MM/dd/yyyy HH:mm')}"></span></label>
             <input type="datetime-local" id="toDate" name="toDate" class="form-control"
-
                    min="1000-01-01T00:00"
                    max="3000-12-31T23:59">
         </div>
         <div class="form-group">
             <label for="title" hidden></label>
-            <input type="text" class="form-control" id="title" name="title" placeholder="Event title">
+            <input type="text" class="form-control" id="title" name="title" placeholder="Event title"
+                   th:value="${event.title}">
         </div>
         <div class="form-group">
             <label for="description" hidden></label>
             <textarea class="form-control" id="description" name="description" placeholder="Event description"
-                      rows="3"></textarea>
+                      rows="3" th:text="${event.description}"></textarea>
         </div>
     </div>
 </div>
