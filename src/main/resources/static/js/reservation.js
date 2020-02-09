@@ -57,17 +57,26 @@ function drawTimePanel(dateRange) {
     }
 }
 
+function addTitle(event, element) {
+    let userFullName = event.user.firstName + " " + event.user.lastName;
+    if (event.title != null) {
+        element.setAttribute("title", userFullName + " : " + event.title);
+    } else {
+        element.setAttribute("title", userFullName);
+    }
+}
+
 function createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, elementId) {
     let element = document.createElement("a");
     element.setAttribute("style",
         "background-color:" + eventBackgroundColor + "; " +
-        "border-color: " + shadeColor(eventBackgroundColor,100) + "; " +
+        "border-color: " + shadeColor(eventBackgroundColor, 100) + "; " +
         "color: " + eventForegroundColor + "; " +
         "margin: 2px;");
-    element.setAttribute("data-toggle", "tooltip");
+    element.setAttribute("data-toggle", "");
     element.setAttribute("data-placement", "top");
     element.setAttribute("class", "btn btn-primary");
-    element.setAttribute("title", "User: " + event.user.firstName + " " + event.user.lastName);
+    addTitle(event, element);
     element.setAttribute("href", rootUrl + event.id);
     element.innerText = fromHours + ":" + fromMinutes + " - " + toHours + ":" + toMinutes;
 
