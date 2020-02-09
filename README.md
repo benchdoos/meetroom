@@ -72,3 +72,29 @@ There are 2 pre-made user accounts:
 | admin | admin    | ROLE_ADMIN |
 | user  | user     | ROLE_USER  |
 
+Admins can:
+
+- create, edit, disable meeting rooms
+- create, edit and delete **all** events
+
+Users can:
+
+- create events, edit, delete their own events
+
+
+
+## Additional Information
+
+Meeting rooms must have unique name and location.
+
+Meeting events can not cross each other.
+
+Event duration must be 30 minutes or more but less then 24 hours by default.
+
+To override VM options:
+
+```
+-Dmeetroom.minimum-reservation-value
+-Dmeetroom.maximum-reservation-value
+```
+
