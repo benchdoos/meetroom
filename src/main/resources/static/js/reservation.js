@@ -199,19 +199,24 @@ function fillDays(range) {
     }
 }
 
+function getRangeInHours(to, from) {
+    let seconds = Math.round((to - (from)) / 1000);
+    let minutes = Math.round(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+    return hours;
+}
+
 /**
  * Fills panel with given elements
  *
+ * @param rootUrl url path to create wih event info
  * @param events to fill with
  * @param dateRange of given panel
  */
 function fillTimePanel(rootUrl, events, dateRange) {
-    function fixFirstCellIndex(j) {
-        return j < 10 ? "0" + j : j;
-    }
 
     events.forEach(event => {
-        console.log("placing event:", event, dateRange);
+        console.log("placing event:", dateRange);
 
         let eventColor = generateEventColorForEvent(event);
         let eventBackgroundColor = "#" + eventColor;
@@ -220,68 +225,26 @@ function fillTimePanel(rootUrl, events, dateRange) {
         let from = new Date(event.fromDate);
         let fromHours = from.getHours();
         let fromMinutes = from.getMinutes() < 10 ? "0" + from.getMinutes() : from.getMinutes();
-        let fromDay = from.getDay();
-        let fromDayNumber = from.getDate();
 
         let to = new Date(event.toDate);
-        let toDay = to.getDay();
         let toHours = to.getHours();
         let toMinutes = to.getMinutes() < 10 ? "0" + to.getMinutes() : to.getMinutes();
-        let toDayNumber = to.getDate();
 
         const ZERO_MINUTES = "00";
 
-        console.log("event date: ", fromDayNumber, toDayNumber);
+        let hours = getRangeInHours(to, from);
 
-        if (fromDayNumber !== toDayNumber) {
-            for (let i = 0; i < (toDayNumber - fromDayNumber) + 1; i++) {
-                let indexFrom = fromDayNumber + i - new Date(dateRange.fromDate).getDate();
-                console.log("indexFrom: ", indexFrom);
-                if (indexFrom >= 0 && indexFrom <= 7) {
-                    if (fromDayNumber + i === fromDayNumber) {
-                        for (let j = fromHours; j <= 23; j++) {
-                            let id = fixFirstCellIndex(j) + ZERO_MINUTES + (indexFrom + 1);
-                            createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
-                        }
-                    } else if (fromDayNumber + i === toDayNumber) {
-                        for (let j = 0; j <= toHours; j++) {
-                            let id = fixFirstCellIndex(j) + ZERO_MINUTES + (indexFrom + 1);
-                            createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
-                        }
-                    }
-                } else {
-                    let indexTo = toDayNumber + i - new Date(dateRange.fromDate).getDate();
-                    console.log("indexTo: ", indexTo);
-                    if (indexTo >= 0 && indexTo <= 7) {
-                        for (let j = 0; j <= toHours; j++) {
-                            let id = fixFirstCellIndex(j) + ZERO_MINUTES + (indexTo + 1);
-                            createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
-                        }
-                        break;
-                    } else {
-                        let indexFixed = 7 - i;
-                        console.log("indexFixed: ", indexFixed);
-                        for (let j = fromHours; j <= 23; j++) {
-                            let id = fixFirstCellIndex(j) + ZERO_MINUTES + (indexFixed + 1);
-                            createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
-                        }
-                    }
+        for (let i = 0; i <= hours; i++) {
+            let nextHour = new Date(from);
+            nextHour.setHours(nextHour.getHours() + i, nextHour.getMinutes(), nextHour.getSeconds(), nextHour.getMilliseconds());
+            let hourNumber = nextHour.getHours();
 
-                }
-            }
-        } else {
-            console.log("ELSE: ", fromDayNumber, toDayNumber ); //todo fixme отображение корявое
-            for (let j = fromHours; j <= toHours; j++) {
-                if (toMinutes !== ZERO_MINUTES) {
-                    let id = fixFirstCellIndex(j) + ZERO_MINUTES + fromDay;
-                    createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
-                } else {
-                    if (j !== toHours) { //prevents duplicates to next hour
-                        let id = fixFirstCellIndex(j) + ZERO_MINUTES + fromDay;
-                        createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
-                    }
-                }
-            }
+            // console.log("next Hour: ", nextHour);
+            let strHour = hourNumber < 10 ? '0' + hourNumber : hourNumber;
+
+            let cellId = nextHour.getDate() + "." + (nextHour.getMonth() + 1) + "." + nextHour.getFullYear() + "-" + strHour + ":" + ZERO_MINUTES;
+
+            createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, cellId);
         }
     });
 
