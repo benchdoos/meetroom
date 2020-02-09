@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 @ResponseStatus(HttpStatus.CONFLICT)
 public class TimeNotAvailableException extends RuntimeException {
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public TimeNotAvailableException(Event event) {
         super(String.format(
