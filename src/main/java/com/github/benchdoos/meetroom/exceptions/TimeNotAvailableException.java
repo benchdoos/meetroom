@@ -13,7 +13,7 @@ public class TimeNotAvailableException extends RuntimeException {
 
     public TimeNotAvailableException(Event event) {
         super(String.format(
-                "Meeting room \"%s\" is busy from %s to %s",
+                "Meeting room \"%s\" is busy since %s till %s",
                 event.getMeetingRoom().getName(),
                 event.getFromDate().format(FORMATTER),
                 event.getToDate().format(FORMATTER)
