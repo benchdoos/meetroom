@@ -3,28 +3,25 @@ create table if not exists meeting_rooms
     id       uuid not null
         constraint meeting_rooms_pkey
             primary key,
-    disabled boolean,
     location varchar(255)
         constraint uk_aqs0hc33i3102g2tyerwdh11
             unique,
     name     varchar(255)
         constraint uk_4dh7tu7n2yb9upgkaydm1p8er
-            unique
+            unique,
+    enabled  boolean
 );
-
-alter table meeting_rooms
-    owner to meetroom;
 
 create table if not exists roles
 (
     id   uuid         not null
         constraint roles_pkey
             primary key,
-    role varchar(255) not null
+    role varchar(255) not null,
+    name varchar(255)
+        constraint uk_ofx66keruapi6vyqpv6f2or37
+            unique
 );
-
-alter table roles
-    owner to meetroom;
 
 create table if not exists users
 (
@@ -40,10 +37,7 @@ create table if not exists users
             unique
 );
 
-alter table users
-    owner to meetroom;
-
-create table if not exists meeting_events
+create table if not exists events
 (
     id              uuid      not null
         constraint meeting_events_pkey
@@ -55,11 +49,11 @@ create table if not exists meeting_events
             references meeting_rooms,
     user_id         uuid      not null
         constraint fkp5sgdxtbdmb1r2de6bblh7cvx
-            references users
+            references users,
+    deleted         boolean,
+    description     varchar(3000),
+    title           varchar(255)
 );
-
-alter table events
-    owner to meetroom;
 
 create table if not exists users_roles
 (
@@ -74,7 +68,4 @@ create table if not exists users_roles
     constraint users_roles_pkey
         primary key (user_id, roles_id)
 );
-
-alter table users_roles
-    owner to meetroom;
 
