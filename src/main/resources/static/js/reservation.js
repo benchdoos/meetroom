@@ -57,6 +57,12 @@ function drawTimePanel(dateRange) {
     }
 }
 
+/**
+ * Add title to element by event
+ *
+ * @param event event info
+ * @param element to add attribute
+ */
 function addTitle(event, element) {
     let userFullName = event.user.firstName + " " + event.user.lastName;
     if (event.title != null) {
@@ -66,6 +72,19 @@ function addTitle(event, element) {
     }
 }
 
+/**
+ * Create link for event
+ *
+ * @param rootUrl root url to append
+ * @param eventBackgroundColor element background color
+ * @param eventForegroundColor element foreground color
+ * @param event event
+ * @param fromHours event start hour
+ * @param fromMinutes event start minutes
+ * @param toHours event end hour
+ * @param toMinutes event end minutes
+ * @param elementId element id to add created link
+ */
 function createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, elementId) {
     let element = document.createElement("a");
     element.setAttribute("style",
@@ -92,6 +111,13 @@ function createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, 
 }
 
 
+/**
+ * Shades color on given %
+ *
+ * @param color color
+ * @param percent percent to shade
+ * @returns {string} color in HEX
+ */
 function shadeColor(color, percent) {
 
     let R = parseInt(color.substring(1, 3), 16);
@@ -106,9 +132,9 @@ function shadeColor(color, percent) {
     G = (G < 255) ? G : 255;
     B = (B < 255) ? B : 255;
 
-    let RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
-    let GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
-    let BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
+    let RR = ((R.toString(16).length === 1) ? "0" + R.toString(16) : R.toString(16));
+    let GG = ((G.toString(16).length === 1) ? "0" + G.toString(16) : G.toString(16));
+    let BB = ((B.toString(16).length === 1) ? "0" + B.toString(16) : B.toString(16));
 
     return "#" + RR + GG + BB;
 }
@@ -126,6 +152,11 @@ function generateEventColorForEvent(event) {
     return Math.random().toString(16).slice(2, 8);
 }
 
+/**
+ * Fill days by range
+ *
+ * @param range of dates
+ */
 function fillDays(range) {
     let from = new Date(range.fromDate);
     for (let i = 1; i <= 7; i++) {
@@ -140,11 +171,9 @@ function fillDays(range) {
         let fixedMonth = tomorrow.getMonth() + 1;
         // date.innerText = tomorrow.getDate() + "." + fixedMonth + "." + tomorrow.getFullYear();
 
-        const fixedDate = ("0" + tomorrow.getDate()).slice(-2) + "."
+        dateSpan.innerText = ("0" + tomorrow.getDate()).slice(-2) + "."
             + ("0" + (tomorrow.getMonth() + 1)).slice(-2) + "."
             + tomorrow.getFullYear();
-
-        dateSpan.innerText = fixedDate;
         dateSpan.style.color = "cornflowerblue";
 
         cell.firstChild.appendChild(dateSpan);
