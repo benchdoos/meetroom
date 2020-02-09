@@ -26,7 +26,6 @@ import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.Predicate;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -142,8 +141,7 @@ public class EventServiceImpl implements EventService {
      * @see MeetroomProperties
      */
     private void validateEventDuration(ZonedDateTime fromDate, ZonedDateTime toDate) {
-        final ChronoUnit chronoUnit = ChronoUnit.MINUTES;
-        final long eventDuration = chronoUnit.between(fromDate, toDate);
+        final long eventDuration = DateUtils.getDateRangeDuration(fromDate, toDate);
 
         Assert.isTrue(eventDuration >= properties.getMinimumReservationValue()
                 && eventDuration <= properties.getMaximumReservationValue(),
