@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 
 /**
- * Dto for {@link MeetingRoom}
+ * DTOfor {@link MeetingRoom}
  */
 @NoArgsConstructor
 @AllArgsConstructor

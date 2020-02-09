@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 import java.util.Date;
 
 /**
- * Dto to update {@link Event}
+ * DTOto update {@link Event}
  */
 @AllArgsConstructor
 @NoArgsConstructor

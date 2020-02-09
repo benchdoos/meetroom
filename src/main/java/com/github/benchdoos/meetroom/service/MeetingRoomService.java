@@ -24,7 +24,7 @@ public interface MeetingRoomService {
     /**
      * Create meeting room
      *
-     * @param meetingRoomDto dto of {@link MeetingRoom} to create
+     * @param meetingRoomDto DTOof {@link MeetingRoom} to create
      * @return created meeting room
      */
     MeetingRoom createMeetingRoom(CreateMeetingRoomDto meetingRoomDto);

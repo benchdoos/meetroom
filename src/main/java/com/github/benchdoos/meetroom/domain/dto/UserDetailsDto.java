@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Dto with User Authorities and {@link UserDetails} info
+ * DTOwith User Authorities and {@link UserDetails} info
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

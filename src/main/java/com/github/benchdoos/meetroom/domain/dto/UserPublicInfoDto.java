@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
- * Dto with important public personal information for {@link User}
+ * DTOwith important public personal information for {@link User}
  */
 @NoArgsConstructor
 @AllArgsConstructor

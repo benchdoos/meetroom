@@ -54,7 +54,7 @@ public interface EventService {
     /**
      * Create event
      *
-     * @param createEventDto dto
+     * @param createEventDto DTO
      * @return created event
      */
     Event createEvent(CreateEventDto createEventDto);
@@ -63,7 +63,7 @@ public interface EventService {
      * Update event
      *
      * @param id of event
-     * @param updateEventDto dto with data to update
+     * @param updateEventDto DTO with data to update
      * @return updated event
      */
     Event updateEvent(UUID id, UpdateEventDto updateEventDto);

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.util.Set;
 
 /**
- * Dto with extended {@link User} information
+ * DTOwith extended {@link User} information
  */
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor

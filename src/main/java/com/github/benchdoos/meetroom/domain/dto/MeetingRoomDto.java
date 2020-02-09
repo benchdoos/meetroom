@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
- * Dto with information about {@link MeetingRoom}
+ * DTOwith information about {@link MeetingRoom}
  */
 @NoArgsConstructor
 @AllArgsConstructor

@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * Dto to create {@link Event}
+ * DTOto create {@link Event}
  */
 @AllArgsConstructor
 @NoArgsConstructor

@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 
 /**
- * Dto with information about {@link Event}
+ * DTOwith information about {@link Event}
  */
 @AllArgsConstructor
 @NoArgsConstructor
