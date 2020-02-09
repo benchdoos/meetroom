@@ -1,68 +1,11 @@
-const WEEKDAY = {"MONDAY": 1, "TUESDAY": 2, "WEDNESDAY": 3, "THURSDAY": 4, "FRIDAY": 5};
-const BGCOLOR = ["#00FFFF", "#7FFFD4", "#0000FF", "#8A2BE2", "#A52A2A", "#DEB887", "#5F9EA0", "#6495ED", "#FF1493"];
-const FONTCOLOR = ["#000000", "#000000", "#7FFFD4", "#00FFFF", "#00FFFF", "#A52A2A", "#000000", "#7FFF00", "#FFE4C4"];
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
-/**
- * 예약하기 모달 띄우기
- */
-$('#create-reservation-modal').on('shown.bs.modal', function () {
-    $('#create-reservation').trigger('focus')
-});
-
-/**
- * 회의실 생성 모달 띄우기
- */
-$('#create-meetingroom-modal').on('shown.bs.modal', function () {
-    $('#create-meetingroom').trigger('focus')
-});
-
-/**
- * 예약 생성버튼 클릭
- */
-$("#cr-save").on("click", function () {
-    var postData = {
-        memberName: $("#cr-member").val(),
-        roomName: $("#cr-room").val(),
-        date: $("#cr-date").val(),
-        time: $("#cr-time").val(),
-        repeat: $("#cr-repeat").val(),
-        comment: $("#cr-comment").val()
-    };
-
-    $.ajax({
-        url: "/reservation",
-        type: "POST",
-        data: JSON.stringify(postData),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json"
-    }).always(function (response) {
-        if (response && response.code == "0000") {
-            clearTimeScheduleTable();
-            drawTimePanel();
-            getReservationsByRoomName(selectedRoom.roomName);
-        } else {
-            alert(response.responseJSON.message);
-        }
-    });
-});
-
-/**
- * 예약 스케쥴 테이블 내용 삭제
- */
-function clearTimeScheduleTable() {
-    var table = document.getElementById("timetable");
-    while (table.hasChildNodes()) {
-        table.removeChild(table.firstChild);
-    }
-}
 
 /**
  * Draw time panel
  */
 function drawTimePanel(dateRange) {
-    var table = document.getElementById("timetable");
-    var head = table.insertRow(0);
+    let table = document.getElementById("timetable");
+    let head = table.insertRow(0);
     head.insertCell(0).innerHTML = '';
 
     for (let i = 1; i <= DAYS.length; i++) {
@@ -79,20 +22,20 @@ function drawTimePanel(dateRange) {
         dayCell.appendChild(container);
     }
 
-    var hour = 0;
-    var min = 0;
+    let hour = 0;
+    let min = 0;
     const MAXIMUM_DAYS = 7;
     const MAXIMUM_HOURS = 23;
 
     let fromDate = new Date(dateRange.fromDate);
 
-    for (var i = 0; i <= MAXIMUM_HOURS; i++) {
-        var row = table.insertRow(i + 1);
+    for (let i = 0; i <= MAXIMUM_HOURS; i++) {
+        let row = table.insertRow(i + 1);
 
         const tomorrow = new Date(fromDate);
 
-        for (var j = 0; j <= MAXIMUM_DAYS; j++) {
-            var cell = row.insertCell(j);
+        for (let j = 0; j <= MAXIMUM_DAYS; j++) {
+            let cell = row.insertCell(j);
             cell.width = 100;
 
             let strHour = hour < 10 ? '0' + hour : hour;
@@ -199,11 +142,17 @@ function fillDays(range) {
     }
 }
 
+/**
+ * Get number hours between two dates
+ *
+ * @param to future date
+ * @param from past date
+ * @returns {number} of hours between
+ */
 function getRangeInHours(to, from) {
-    let seconds = Math.round((to - (from)) / 1000);
-    let minutes = Math.round(seconds / 60);
-    let hours = Math.floor(minutes / 60);
-    return hours;
+    let seconds = Math.floor((to - (from)) / 1000);
+    let minutes = Math.floor(seconds / 60);
+    return Math.floor(minutes / 60);
 }
 
 /**
@@ -266,148 +215,3 @@ function pickTextColorBasedOnBgColorSimple(bgColor, lightColor, darkColor) {
     return (((r * 0.299) + (g * 0.587) + (b * 0.114)) > 186) ?
         darkColor : lightColor;
 }
-
-/*
-* 회의실에 예약된 방 조회.
-* */
-let selectedRoom = {};
-
-function getReservationsByRoomName(name, li) {
-    document.querySelectorAll(".list-group-item").forEach(r => {
-        if (r.innerHTML == name) {
-            $(r).css("background-color", "#DAA520");
-        } else {
-            $(r).css("background-color", "#FFFFFF");
-        }
-    });
-
-    selectedRoom.roomName = name;
-    clearTimeScheduleTable();
-    drawTimePanel();
-
-    const today = $("#today").text();
-
-    $.get("/reservations/" + name + "?date=" + today, function (result) {
-        let colorIndex = Math.floor(Math.random() * BGCOLOR.length);
-        Array.from(result).forEach(r => {
-            let comment = r.comment;
-            let weekOfDay = WEEKDAY[r.dayOfWeek];
-            let from = r.reservedTimeFrom;
-            let to = r.reservedTimeTo;
-            let user = r.member.name;
-            let repeatSeq = r.repeatSeq;
-            let repeatTotal = r.repeatTotal;
-            let repeatText = "";
-            if (repeatTotal > 1) {
-                repeatText = "<br/>[반복 " + (repeatSeq + 1) + "회 /" + repeatTotal + "]";
-            }
-            $("#" + from + weekOfDay).html(comment + "<br/>(" + user + ")" + repeatText);
-            colorIndex = colorIndex % (BGCOLOR.length - 1);
-            colorIndex++;
-
-            for (let i = from; i <= to;) {
-                let id = "#" + i + weekOfDay;
-                $(id).css("background-color", BGCOLOR[colorIndex]);
-                $(id).css("color", FONTCOLOR[colorIndex]);
-                $(id).css("font-size", "12px");
-                $(id).css("text-align", "center");
-                $(id).attr("data-from", from);
-                $(id).attr("data-to", to);
-                $(id).on("click", function () {
-                    popupReservationDialog($(this).attr("id"))
-                });
-
-                let increase = parseInt(i) + 30;
-                if ((increase % 100) === 60) {
-                    increase = increase - 60 + 100;
-                }
-                i = parseInt(increase);
-                i = i < 1000 ? '0' + i : i;
-            }
-        });
-    });
-}
-
-/**
- * 예약된 방 수정을 위한 다이얼로그 띄우기
- */
-function popupReservationDialog(tdId) {
-    //ex) tdId=12303 = 12시30분, 수(3)
-    $('#update-reservation-modal').modal('show');
-
-    let yyyyMMddMonday = $("#hidden-monday").text();
-    let mon = new Date(yyyyMMddMonday.substring(0, 4) + "-" + yyyyMMddMonday.substring(4, 6) + "-" + yyyyMMddMonday.substring(6));
-    let weekOfDay = tdId.substring(4);
-    let targetDate = new Date();
-    targetDate.setDate(mon.getDate() + (parseInt(weekOfDay) - 1));
-    let fromTime = $("#" + tdId).data().from;
-    let toTime = $("#" + tdId).data().to;
-
-    $.get("/reservations/" + selectedRoom.roomName + "/" + targetDate.yyyymmdd() + "/" + fromTime + "/" + toTime, function (result) {
-        $("#hidden-reservation-id").text(result.reservationId);
-        $("#ur-date").val(result.reservedDate);
-        $("#ur-time").val(result.reservedTimeFrom + "~" + result.reservedTimeTo);
-        $("#ur-comment").val(result.comment);
-    });
-}
-
-/**
- * 예약된 방 삭제 버튼을 눌렀을 때.
- */
-$("#ur-delete").on("click", function () {
-    let reservationId = $("#hidden-reservation-id").text();
-
-    $.ajax({
-        url: "/reservation/" + reservationId,
-        type: "DELETE",
-        data: JSON.stringify(reservationId),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json"
-    }).always(function (response) {
-        if (response && response.code == "0000") {
-            clearTimeScheduleTable();
-            drawTimePanel();
-            getReservationsByRoomName(selectedRoom.roomName);
-        } else {
-            alert(response.responseJSON.message);
-        }
-    });
-});
-
-/**
- * 예약된 방 수정 버튼을 눌렀을 때
- */
-$("#ur-save").on("click", function () {
-    let reservationId = $("#hidden-reservation-id").text();
-    let postData = {
-        reservedDate: $("#ur-date").val(),
-        reservedTime: $("#ur-time").val(),
-        comment: $("#ur-comment").val()
-    };
-
-    $.ajax({
-        url: "/reservation/" + reservationId,
-        type: "PUT",
-        data: JSON.stringify(postData),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json"
-    }).always(function (response) {
-        if (response && response.code == "0000") {
-            clearTimeScheduleTable();
-            drawTimePanel();
-            getReservationsByRoomName(selectedRoom.roomName);
-        } else {
-            alert(response.responseJSON.message);
-        }
-    });
-});
-
-Date.prototype.yyyymmdd = function () {
-    let mm = this.getMonth() + 1;
-    let dd = this.getDate();
-
-    return [this.getFullYear(),
-        (mm > 9 ? '' : '0') + mm,
-        (dd > 9 ? '' : '0') + dd
-    ].join('');
-};

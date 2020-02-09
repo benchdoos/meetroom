@@ -5,6 +5,7 @@ import com.github.benchdoos.meetroom.domain.DateRange;
 import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 /**
@@ -12,15 +13,20 @@ import java.util.Date;
  */
 public class DateUtils {
     /**
-     * Sets time of dateTime to 0:00.00.000
+     * Sets hours, minutes, seconds and milliseconds of given dateTime to 0:00.00.000
      *
-     * @param dateTime
-     * @return
+     * @param dateTime date to change time
+     * @return time with changed
      */
     public static ZonedDateTime truncateTimeToDayStart(ZonedDateTime dateTime) {
         return dateTime.withHour(0).withMinute(0).withSecond(0).withNano(0);
     }
-
+    /**
+     * Sets hours, minutes, seconds and milliseconds of given dateTime to 0:00.00.999999999
+     *
+     * @param dateTime date to change time
+     * @return time with changed
+     */
     public static ZonedDateTime truncateTimeToDayEnd(ZonedDateTime dateTime) {
         return dateTime.withHour(23).withMinute(59).withSecond(59).withNano(999999999);
     }
@@ -34,7 +40,12 @@ public class DateUtils {
     public static ZonedDateTime truncateSecondsToStart(ZonedDateTime dateTime) {
         return dateTime.withSecond(0).withNano(0);
     }
-
+    /**
+     * Sets seconds and milliseconds of given dateTime to 59.99999.
+     *
+     * @param dateTime to truncate
+     * @return truncated dateTime
+     */
     public static ZonedDateTime truncateSecondsToEnd(ZonedDateTime dateTime) {
         return dateTime.withSecond(59).withNano(99999); //prevents from saving plus 1 minute
     }
@@ -66,10 +77,41 @@ public class DateUtils {
                 DateUtils.truncateTimeToDayEnd(sundayDay));
     }
 
+    /**
+     * Creates {@link DateRange} from two given times, truncating their seconds to start and end
+     *
+     * @param fromDate from date
+     * @param toDate to date
+     * @return date range within two dates
+     * @see #truncateSecondsToStart(ZonedDateTime)
+     * @see #truncateSecondsToEnd(ZonedDateTime)
+     */
     public static DateRange createDateRange(ZonedDateTime fromDate, ZonedDateTime toDate) {
         return new DateRange(
                 truncateSecondsToStart(fromDate),
                 truncateSecondsToEnd(toDate)
         );
+    }
+
+    /**
+     * Gives date range duration in minutes. First minute is counted as full.
+     * <pre>
+     *      Example:
+     *      09:00, 09:30 -> 31
+     *      09:30, 09:59 -> 30
+     *      10:00, 10:28 -> 29
+     * </pre>
+     *
+     * @param firstDate date
+     * @param secondDate date
+     * @return duration in minutes
+     */
+    public static long getDateRangeDuration(ZonedDateTime firstDate, ZonedDateTime secondDate) {
+        final ChronoUnit chronoUnit = ChronoUnit.MINUTES;
+        final long between = chronoUnit.between(firstDate, secondDate);
+
+        //This prevents incorrect duration counting. Ex: 09:00 -> 09:29 duration is 29 minutes.
+        //But physically toDate has 59 sec, so actually we can accept that duration is 30 minutes.
+        return between + 1;
     }
 }
