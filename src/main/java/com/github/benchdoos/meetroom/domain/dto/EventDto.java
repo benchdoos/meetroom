@@ -32,5 +32,11 @@ public class EventDto {
     private ZonedDateTime toDate;
 
     @Nullable
+    private String title;
+
+    @Nullable
+    private String description;
+
+    @Nullable
     private Boolean deleted;
 }

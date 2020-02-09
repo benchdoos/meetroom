@@ -90,6 +90,8 @@ public class EventServiceImpl implements EventService {
                 .meetingRoom(meetingRoom)
                 .fromDate(dateRange.getFromDate())
                 .toDate(dateRange.getToDate())
+                .title(createEventDto.getTitle())
+                .description(createEventDto.getDescription())
                 .deleted(false)
                 .build();
 
@@ -121,6 +123,8 @@ public class EventServiceImpl implements EventService {
 
         event.setFromDate(dateRange.getFromDate());
         event.setToDate(dateRange.getToDate());
+        event.setTitle(updateEventDto.getTitle());
+        event.setDescription(updateEventDto.getDescription());
 
         return eventRepository.save(event);
     }
@@ -129,7 +133,8 @@ public class EventServiceImpl implements EventService {
     public boolean deleteEvent(UUID id) {
         final Event event = eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
         event.setDeleted(true);
-        return eventRepository.save(event).getDeleted();
+        final Event save = eventRepository.save(event);
+        return save.getDeleted() != null && save.getDeleted();
     }
 
     /**

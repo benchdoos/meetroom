@@ -5,8 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.UUID;
 
@@ -29,5 +31,14 @@ public class CreateEventDto {
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date toDate;
+
+    @Nullable
+    @Size(max = 256)
+    private String title;
+
+    @Nullable
+    @Size(max = 3000)
+    private String description;
+
 
 }

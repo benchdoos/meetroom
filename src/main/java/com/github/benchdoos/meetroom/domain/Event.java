@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,18 +30,29 @@ public class Event {
     private UUID id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH) //todo check
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     private MeetingRoom meetingRoom;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH) //todo check
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     private User user;
 
     @NotNull
+    @Column(name = "from_date")
     private ZonedDateTime fromDate;
 
     @NotNull
+    @Column(name = "to_date")
     private ZonedDateTime toDate;
 
+    @Nullable
+    @Column(name = "title")
+    private String title;
+
+    @Nullable
+    @Column(name = "description", length = 3000)
+    private String description;
+
+    @Nullable
     private Boolean deleted;
 }

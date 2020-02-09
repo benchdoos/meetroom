@@ -46,6 +46,8 @@
                 + ' - ' +
                 ${#temporals.format(event.toDate,'dd.MM.yyyy HH:mm')}"
               class="h2"></span>
+        <p class="h4" th:text="${event?.title}"></p>
+        <p class="h5 text-muted" th:text="${event?.description}"></p>
     </div>
     <p class="h2">Where:</p>
     <p class="h4" th:text="${event.meetingRoom.name}"></p>
