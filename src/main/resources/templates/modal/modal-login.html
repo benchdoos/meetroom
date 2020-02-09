@@ -9,7 +9,7 @@
 <body>
 <div th:fragment="fr-login">
     <div class="login-block">
-        <div sec:authorize="isAuthenticated() && hasAnyRole('ROLE_ADMIN', 'ROLE_USER')">
+        <div sec:authorize="isAuthenticated()">
             <a th:href="@{/user}">
                 <i class="fas fa-user h1" style="color: black"></i>
             </a>
