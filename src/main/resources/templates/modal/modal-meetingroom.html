@@ -14,7 +14,8 @@
             <a class="btn btn-secondary"
                th:href="@{'/' + ${room.id}(day=${#temporals.format(prevWeek.fromDate,'dd.MM.yyyy')})}">previous week</a>
 
-            <a th:href="@{'/' + ${room.id}}" style="color: black; padding-left: 20px; padding-right: 20px;"
+            <a class="btn btn-link" th:href="@{'/' + ${room.id}}"
+               style="color: black; padding-left: 20px; padding-right: 20px;"
                data-toggle="tooltip" data-placement="top" title="Go to current week">
                 <span id="beginDay" class="h4" th:text="${#temporals.format(dateRange.fromDate, 'dd.MM.yyyy')}"></span>
                 <span class="h4"> - </span>
