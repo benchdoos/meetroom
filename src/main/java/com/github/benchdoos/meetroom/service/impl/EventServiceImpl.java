@@ -166,7 +166,7 @@ public class EventServiceImpl implements EventService {
                                                                   ZonedDateTime toDate) {
         return (root, criteriaQuery, criteriaBuilder) -> {
 
-            final Predicate idPredicate = criteriaBuilder.equal(root.get("meetingRoom"), meetingRoom);
+            final Predicate meetingRoomPredicate = criteriaBuilder.equal(root.get("meetingRoom"), meetingRoom);
 
             final Predicate deletedPredicate = criteriaBuilder.and(
                     criteriaBuilder.isNotNull(root.get("deleted").as(Boolean.class)),
@@ -177,7 +177,7 @@ public class EventServiceImpl implements EventService {
             datePredicates.add(criteriaBuilder.between(root.get("toDate"), fromDate, toDate));
 
             return criteriaBuilder.and(
-                    idPredicate,
+                    meetingRoomPredicate,
                     criteriaBuilder.not(deletedPredicate),
                     criteriaBuilder.or(datePredicates.toArray(new Predicate[0])));
         };
