@@ -22,8 +22,6 @@ import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Service
@@ -117,15 +115,6 @@ public class ModelViewServiceImpl implements ModelViewService {
      */
     private String prepareListRoomPage(Model model, Page<MeetingRoom> meetingRooms) {
         model.addAttribute("rooms", meetingRooms);
-
-        final int totalPages = meetingRooms.getTotalPages();
-        if (totalPages > 1) {
-            final List<Integer> pageNumbers = IntStream.rangeClosed(0, totalPages - 1)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
-
         return "list-rooms.html";
     }
 }
