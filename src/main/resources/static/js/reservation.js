@@ -18,31 +18,6 @@ $('#create-meetingroom-modal').on('shown.bs.modal', function () {
 });
 
 /**
- * 회의실 생성버튼 클릭
- */
-// $("#cmr-save").on("click", function () {
-//     var roomName = $("#cmr-name").val();
-//
-//     var postData = {
-//         roomName: roomName,
-//     };
-//
-//     $.ajax({
-//         url: "/room",
-//         type: "POST",
-//         data: JSON.stringify(postData),
-//         contentType: "application/json; charset=utf-8",
-//         dataType: "json",
-//     }).always(function (response) {
-//         if (response && response.code == "0000") {
-//             drawMeetingRoom();
-//         } else {
-//             alert(response.responseJSON.message);
-//         }
-//     });
-// });
-
-/**
  * 예약 생성버튼 클릭
  */
 $("#cr-save").on("click", function () {
@@ -85,7 +60,7 @@ function clearTimeScheduleTable() {
 /**
  * Draw time panel
  */
-function drawTimePanel() {
+function drawTimePanel(dateRange) {
     var table = document.getElementById("timetable");
     var head = table.insertRow(0);
     head.insertCell(0).innerHTML = '';
@@ -108,20 +83,32 @@ function drawTimePanel() {
     var min = 0;
     const MAXIMUM_DAYS = 7;
     const MAXIMUM_HOURS = 23;
+
+    let fromDate = new Date(dateRange.fromDate);
+
     for (var i = 0; i <= MAXIMUM_HOURS; i++) {
         var row = table.insertRow(i + 1);
+
+        const tomorrow = new Date(fromDate);
+
         for (var j = 0; j <= MAXIMUM_DAYS; j++) {
             var cell = row.insertCell(j);
-            // min = i % 2 !== 0 ? 30 : 0;
-            var strHour = hour < 10 ? '0' + hour : hour;
-            var strMin = min < 10 ? '0' + min : min;
+            cell.width = 100;
+
+            let strHour = hour < 10 ? '0' + hour : hour;
+            let strMin = min < 10 ? '0' + min : min;
             if (j === 0) {
                 cell.innerText = strHour + ":" + strMin;
             } else {
                 cell.setAttribute("class", "eventCell");
+
             }
-            cell.setAttribute("id", strHour.toString() + strMin.toString() + j.toString());
-            cell.width = 100;
+
+            if (j !== 0) {
+                let dayInfo = tomorrow.getDate() + "." + (tomorrow.getMonth() + 1) + "." + tomorrow.getFullYear();
+                cell.setAttribute("id", dayInfo + "-" + strHour.toString() + ":" + strMin.toString());
+                tomorrow.setDate(tomorrow.getDate() + 1);
+            }
         }
         hour++;
     }
@@ -155,23 +142,23 @@ function createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, 
 
 function shadeColor(color, percent) {
 
-    var R = parseInt(color.substring(1,3),16);
-    var G = parseInt(color.substring(3,5),16);
-    var B = parseInt(color.substring(5,7),16);
+    let R = parseInt(color.substring(1, 3), 16);
+    let G = parseInt(color.substring(3, 5), 16);
+    let B = parseInt(color.substring(5, 7), 16);
 
     R = parseInt(R * (100 + percent) / 100);
     G = parseInt(G * (100 + percent) / 100);
     B = parseInt(B * (100 + percent) / 100);
 
-    R = (R<255)?R:255;
-    G = (G<255)?G:255;
-    B = (B<255)?B:255;
+    R = (R < 255) ? R : 255;
+    G = (G < 255) ? G : 255;
+    B = (B < 255) ? B : 255;
 
-    var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
-    var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
-    var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+    let RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
+    let GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
+    let BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
 
-    return "#"+RR+GG+BB;
+    return "#" + RR + GG + BB;
 }
 /**
  * Pseudo - random color generation by uuid
@@ -189,11 +176,7 @@ function generateEventColorForEvent(event) {
 
 function fillDays(range) {
     let from = new Date(range.fromDate);
-    console.log(">>>");
     for (let i = 1; i <= 7; i++) {
-
-        console.log("cell:", i, from);
-
         const tomorrow = new Date(from);
         tomorrow.setDate(tomorrow.getDate() + (i - 1));
 
@@ -274,6 +257,7 @@ function fillTimePanel(rootUrl, events, dateRange) {
                             let id = fixFirstCellIndex(j) + ZERO_MINUTES + (indexTo + 1);
                             createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
                         }
+                        break;
                     } else {
                         let indexFixed = 7 - i;
                         console.log("indexFixed: ", indexFixed);
@@ -287,7 +271,7 @@ function fillTimePanel(rootUrl, events, dateRange) {
             }
         } else {
             console.log("ELSE: ", fromDayNumber, toDayNumber ); //todo fixme отображение корявое
-            for (var j = fromHours; j <= toHours; j++) {
+            for (let j = fromHours; j <= toHours; j++) {
                 if (toMinutes !== ZERO_MINUTES) {
                     let id = fixFirstCellIndex(j) + ZERO_MINUTES + fromDay;
                     createLink(rootUrl, eventBackgroundColor, eventForegroundColor, event, fromHours, fromMinutes, toHours, toMinutes, id);
@@ -323,7 +307,7 @@ function pickTextColorBasedOnBgColorSimple(bgColor, lightColor, darkColor) {
 /*
 * 회의실에 예약된 방 조회.
 * */
-var selectedRoom = {};
+let selectedRoom = {};
 
 function getReservationsByRoomName(name, li) {
     document.querySelectorAll(".list-group-item").forEach(r => {
@@ -341,16 +325,16 @@ function getReservationsByRoomName(name, li) {
     const today = $("#today").text();
 
     $.get("/reservations/" + name + "?date=" + today, function (result) {
-        var colorIndex = Math.floor(Math.random() * BGCOLOR.length);
+        let colorIndex = Math.floor(Math.random() * BGCOLOR.length);
         Array.from(result).forEach(r => {
-            var comment = r.comment;
-            var weekOfDay = WEEKDAY[r.dayOfWeek];
-            var from = r.reservedTimeFrom;
-            var to = r.reservedTimeTo;
-            var user = r.member.name;
-            var repeatSeq = r.repeatSeq;
-            var repeatTotal = r.repeatTotal;
-            var repeatText = "";
+            let comment = r.comment;
+            let weekOfDay = WEEKDAY[r.dayOfWeek];
+            let from = r.reservedTimeFrom;
+            let to = r.reservedTimeTo;
+            let user = r.member.name;
+            let repeatSeq = r.repeatSeq;
+            let repeatTotal = r.repeatTotal;
+            let repeatText = "";
             if (repeatTotal > 1) {
                 repeatText = "<br/>[반복 " + (repeatSeq + 1) + "회 /" + repeatTotal + "]";
             }
@@ -388,13 +372,13 @@ function popupReservationDialog(tdId) {
     //ex) tdId=12303 = 12시30분, 수(3)
     $('#update-reservation-modal').modal('show');
 
-    var yyyyMMddMonday = $("#hidden-monday").text();
-    var mon = new Date(yyyyMMddMonday.substring(0, 4) + "-" + yyyyMMddMonday.substring(4, 6) + "-" + yyyyMMddMonday.substring(6));
-    var weekOfDay = tdId.substring(4);
-    var targetDate = new Date();
+    let yyyyMMddMonday = $("#hidden-monday").text();
+    let mon = new Date(yyyyMMddMonday.substring(0, 4) + "-" + yyyyMMddMonday.substring(4, 6) + "-" + yyyyMMddMonday.substring(6));
+    let weekOfDay = tdId.substring(4);
+    let targetDate = new Date();
     targetDate.setDate(mon.getDate() + (parseInt(weekOfDay) - 1));
-    var fromTime = $("#" + tdId).data().from;
-    var toTime = $("#" + tdId).data().to;
+    let fromTime = $("#" + tdId).data().from;
+    let toTime = $("#" + tdId).data().to;
 
     $.get("/reservations/" + selectedRoom.roomName + "/" + targetDate.yyyymmdd() + "/" + fromTime + "/" + toTime, function (result) {
         $("#hidden-reservation-id").text(result.reservationId);
@@ -408,7 +392,7 @@ function popupReservationDialog(tdId) {
  * 예약된 방 삭제 버튼을 눌렀을 때.
  */
 $("#ur-delete").on("click", function () {
-    var reservationId = $("#hidden-reservation-id").text();
+    let reservationId = $("#hidden-reservation-id").text();
 
     $.ajax({
         url: "/reservation/" + reservationId,
@@ -431,8 +415,8 @@ $("#ur-delete").on("click", function () {
  * 예약된 방 수정 버튼을 눌렀을 때
  */
 $("#ur-save").on("click", function () {
-    var reservationId = $("#hidden-reservation-id").text();
-    var postData = {
+    let reservationId = $("#hidden-reservation-id").text();
+    let postData = {
         reservedDate: $("#ur-date").val(),
         reservedTime: $("#ur-time").val(),
         comment: $("#ur-comment").val()
@@ -456,8 +440,8 @@ $("#ur-save").on("click", function () {
 });
 
 Date.prototype.yyyymmdd = function () {
-    var mm = this.getMonth() + 1;
-    var dd = this.getDate();
+    let mm = this.getMonth() + 1;
+    let dd = this.getDate();
 
     return [this.getFullYear(),
         (mm > 9 ? '' : '0') + mm,
