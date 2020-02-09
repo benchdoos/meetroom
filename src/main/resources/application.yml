@@ -37,6 +37,7 @@ spring:
     locations: classpath:/db/flyway/migration/
     validate-on-migrate: true
     baseline-on-migrate: true
+
 server:
   servlet:
     context-path: /meetroom
@@ -48,7 +49,7 @@ spring:
   profiles: PRODUCTION
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/meetroom_zrazhevsky
+    url: jdbc:postgresql://localhost:5432/meetroom_zrazhevsky #change it in VM options
     username: meetroom
     password: meetroom
     type: com.zaxxer.hikari.HikariDataSource
@@ -68,7 +69,8 @@ spring:
     locations: classpath:/db/flyway/migration/
     validate-on-migrate: true
     baseline-on-migrate: true
+
 server:
   servlet:
     context-path: /meetroom
-    port: 80
+    port: 8080
