@@ -9,7 +9,6 @@ import org.springframework.lang.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -27,14 +26,15 @@ import java.util.UUID;
 public class Event {
     @Id
     @GeneratedValue
+    @Column(name = "id")
     private UUID id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = CascadeType.DETACH)
     private MeetingRoom meetingRoom;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = CascadeType.DETACH)
     private User user;
 
     @NotNull
@@ -54,5 +54,6 @@ public class Event {
     private String description;
 
     @Nullable
+    @Column(name = "deleted")
     private Boolean deleted;
 }

@@ -1,7 +1,8 @@
 package com.github.benchdoos.meetroom.service;
 
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
-import com.github.benchdoos.meetroom.domain.dto.MeetingRoomDto;
+import com.github.benchdoos.meetroom.domain.dto.CreateMeetingRoomDto;
+import com.github.benchdoos.meetroom.domain.dto.EditMeetingRoomDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -26,7 +27,7 @@ public interface MeetingRoomService {
      * @param meetingRoomDto dto of {@link MeetingRoom} to create
      * @return created meeting room
      */
-    MeetingRoom createMeetingRoom(MeetingRoomDto meetingRoomDto);
+    MeetingRoom createMeetingRoom(CreateMeetingRoomDto meetingRoomDto);
 
     /**
      * Find all available meeting rooms
@@ -47,8 +48,8 @@ public interface MeetingRoomService {
     /**
      * Updates meeting room info by id
      * @param id id of meeting room
-     * @param meetingRoomDto
+     * @param editMeetingRoomDto
      * @return
      */
-    MeetingRoom updateMeetingRoomInfo(UUID id, MeetingRoomDto meetingRoomDto);
+    MeetingRoom updateMeetingRoomInfo(UUID id, EditMeetingRoomDto editMeetingRoomDto);
 }

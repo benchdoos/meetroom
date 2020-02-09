@@ -1,5 +1,6 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
+import com.github.benchdoos.meetroom.domain.Event;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +12,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
+/**
+ * Dto to update {@link Event}
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

@@ -1,7 +1,8 @@
 package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
-import com.github.benchdoos.meetroom.domain.dto.MeetingRoomDto;
+import com.github.benchdoos.meetroom.domain.dto.CreateMeetingRoomDto;
+import com.github.benchdoos.meetroom.domain.dto.EditMeetingRoomDto;
 import com.github.benchdoos.meetroom.exceptions.MeetingRoomAlreadyExistException;
 import com.github.benchdoos.meetroom.exceptions.MeetingRoomNotFoundException;
 import com.github.benchdoos.meetroom.mappers.MeetingRoomMapper;
@@ -27,7 +28,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
     }
 
     @Override
-    public MeetingRoom createMeetingRoom(MeetingRoomDto meetingRoomDto) {
+    public MeetingRoom createMeetingRoom(CreateMeetingRoomDto meetingRoomDto) {
         final Optional<MeetingRoom> firstByNameOrLocation = meetingRoomsRepository
                 .findFirstByNameOrLocation(meetingRoomDto.getName(), meetingRoomDto.getLocation());
         if (firstByNameOrLocation.isPresent()) {
@@ -54,9 +55,9 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
     }
 
     @Override
-    public MeetingRoom updateMeetingRoomInfo(UUID id, MeetingRoomDto meetingRoomDto) {
+    public MeetingRoom updateMeetingRoomInfo(UUID id, EditMeetingRoomDto editMeetingRoomDto) {
         final Optional<MeetingRoom> firstByNameOrLocation = meetingRoomsRepository
-                .findFirstByNameOrLocation(meetingRoomDto.getName(), meetingRoomDto.getLocation());
+                .findFirstByNameOrLocation(editMeetingRoomDto.getName(), editMeetingRoomDto.getLocation());
         if (firstByNameOrLocation.isPresent()) {
             if (!firstByNameOrLocation.get().getId().equals(id)) {
                 throw new MeetingRoomAlreadyExistException(firstByNameOrLocation.get());
@@ -65,11 +66,11 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
 
         final MeetingRoom meetingRoom = meetingRoomsRepository.findById(id).orElseThrow(MeetingRoomNotFoundException::new);
 
-        meetingRoom.setName(meetingRoomDto.getName());
-        meetingRoom.setLocation(meetingRoomDto.getLocation());
+        meetingRoom.setName(editMeetingRoomDto.getName());
+        meetingRoom.setLocation(editMeetingRoomDto.getLocation());
 
-        if (meetingRoomDto.getEnabled() != null) {
-            meetingRoom.setEnabled(meetingRoomDto.getEnabled());
+        if (editMeetingRoomDto.getEnabled() != null) {
+            meetingRoom.setEnabled(editMeetingRoomDto.getEnabled());
         }
 
         return meetingRoomsRepository.save(meetingRoom);

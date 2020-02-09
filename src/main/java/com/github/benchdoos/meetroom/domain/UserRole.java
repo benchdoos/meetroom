@@ -22,13 +22,14 @@ import java.util.UUID;
 public class UserRole {
     @Id
     @GeneratedValue
+    @Column(name = "id")
     UUID id;
 
     @NotBlank
-    @Column(unique = true)
+    @Column(name = "role", unique = true)
     String role;
 
     @NotBlank
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     String name;
 }

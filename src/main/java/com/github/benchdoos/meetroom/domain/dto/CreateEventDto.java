@@ -1,5 +1,6 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
+import com.github.benchdoos.meetroom.domain.Event;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,9 @@ import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Dto to create {@link Event}
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

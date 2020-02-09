@@ -1,5 +1,6 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
+import com.github.benchdoos.meetroom.domain.Event;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +11,9 @@ import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+/**
+ * Dto with information about {@link Event}
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -23,7 +27,7 @@ public class EventDto {
     private UserPublicInfoDto creator;
 
     @NotNull
-    private MeetingRoomInfoDto meetingRoom;
+    private MeetingRoomDto meetingRoom;
 
     @NotNull
     private ZonedDateTime fromDate;

@@ -7,20 +7,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.util.UUID;
 
 /**
- * Dto with information about {@link MeetingRoom}
+ * Dto for {@link MeetingRoom}
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class MeetingRoomDto {
-
-    @NotNull
-    private UUID id;
+public class CreateMeetingRoomDto {
 
     @NotBlank
     private String name;
@@ -28,5 +23,5 @@ public class MeetingRoomDto {
     @NotBlank
     private String location;
 
-    private boolean enabled;
+    private Boolean enabled;
 }

@@ -22,24 +22,26 @@ import java.util.UUID;
 public class MeetingRoom {
     @Id
     @GeneratedValue
+    @Column(name = "id")
     private UUID id;
 
     /**
      * Name of meeting room
      */
     @NotBlank
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     private String name;
 
     /**
      * Room location
      */
     @NotBlank
-    @Column(unique = true)
+    @Column(name = "location", unique = true)
     private String location;
 
     /**
      * Is room disabled
      */
+    @Column(name = "enabled")
     private boolean enabled;
 }

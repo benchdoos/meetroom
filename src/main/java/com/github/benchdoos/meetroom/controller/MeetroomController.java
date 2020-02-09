@@ -1,7 +1,8 @@
 package com.github.benchdoos.meetroom.controller;
 
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
-import com.github.benchdoos.meetroom.domain.dto.MeetingRoomDto;
+import com.github.benchdoos.meetroom.domain.dto.CreateMeetingRoomDto;
+import com.github.benchdoos.meetroom.domain.dto.EditMeetingRoomDto;
 import com.github.benchdoos.meetroom.service.ModelViewService;
 import com.github.benchdoos.meetroom.service.MeetingRoomService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class MeetroomController {
 
     @Secured({ROLE_ADMIN, ROLE_USER})
     @PostMapping
-    public String createMeetRoom(@Validated MeetingRoomDto meetingRoomDto, Model model) {
+    public String createMeetRoom(@Validated CreateMeetingRoomDto meetingRoomDto, Model model) {
         final MeetingRoom meetingRoom = meetingRoomService.createMeetingRoom(meetingRoomDto);
         final UUID id = meetingRoom.getId();
         return modelViewService.getMeetingRoomById(id, null, model);
@@ -36,9 +37,9 @@ public class MeetroomController {
     @Secured({ROLE_ADMIN, ROLE_USER})
     @PostMapping("/edit/{uuid}")
     public String editMeetRoom(@PathVariable UUID uuid,
-                               @Validated MeetingRoomDto meetingRoomDto,
+                               @Validated EditMeetingRoomDto editMeetingRoomDto,
                                Model model) {
-        final MeetingRoom meetingRoom = meetingRoomService.updateMeetingRoomInfo(uuid, meetingRoomDto);
+        final MeetingRoom meetingRoom = meetingRoomService.updateMeetingRoomInfo(uuid, editMeetingRoomDto);
         final UUID id = meetingRoom.getId();
         return modelViewService.getMeetingRoomById(id, null, model);
     }

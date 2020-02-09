@@ -27,22 +27,27 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue
+    @Column(name = "id")
     private UUID id;
 
     @NotBlank
-    @Column(unique = true)
+    @Column(name = "username", unique = true)
     private String username;
 
     @NotBlank
+    @Column(name = "password")
     private String password;
 
     @NotBlank
+    @Column(name = "first_name")
     private String firstName;
 
     @NotBlank
+    @Column(name = "last_name")
     private String lastName;
 
     @NotNull
+    @Column(name = "enabled")
     private boolean enabled;
 
     @NotEmpty
