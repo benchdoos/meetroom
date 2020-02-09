@@ -15,16 +15,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.UUID;
 
+import static com.github.benchdoos.meetroom.config.constants.SecurityConstants.ROLE_ADMIN;
+import static com.github.benchdoos.meetroom.config.constants.SecurityConstants.ROLE_USER;
+
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/meetroom")
 public class MeetroomController {
-    private static final String ROLE_ADMIN = "ROLE_ADMIN";
     private final MeetingRoomService meetingRoomService;
     private final ModelViewService modelViewService;
 
-
-    @Secured(ROLE_ADMIN)
+    @Secured({ROLE_ADMIN, ROLE_USER})
     @PostMapping
     public String createMeetRoom(@Validated MeetingRoomDto meetingRoomDto, Model model) {
         final MeetingRoom meetingRoom = meetingRoomService.createMeetingRoom(meetingRoomDto);
@@ -32,7 +33,7 @@ public class MeetroomController {
         return modelViewService.getMeetingRoomById(id, null, model);
     }
 
-    @Secured(ROLE_ADMIN)
+    @Secured({ROLE_ADMIN, ROLE_USER})
     @PostMapping("/edit/{uuid}")
     public String editMeetRoom(@PathVariable UUID uuid,
                                @Validated MeetingRoomDto meetingRoomDto,
