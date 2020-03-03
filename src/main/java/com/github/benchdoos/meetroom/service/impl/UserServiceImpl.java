@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.support.WebExchangeBindException;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -112,6 +113,10 @@ public class UserServiceImpl implements UserService {
 
         if (!createUserDto.getPassword().equals(createUserDto.getConfirmPassword())) {
             bindingResult.rejectValue("password", "passwords not match", "Passwords do not match");
+        }
+
+        if (bindingResult.hasErrors()) {
+            throw new WebExchangeBindException(null ,bindingResult); //todo fix null
         }
     }
 
