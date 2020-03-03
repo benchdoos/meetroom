@@ -7,7 +7,6 @@ import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.validation.BindingResult;
 
 import java.util.UUID;
 
@@ -44,8 +43,7 @@ public interface UserService extends UserDetailsService {
      * Create user with role {@link SecurityConstants#ROLE_USER}
      *
      * @param createUserDto user to create
-     * @param bindingResult
      * @return created user info
      */
-    UserPublicInfoDto createUser(CreateUserDto createUserDto, BindingResult bindingResult);
+    UserPublicInfoDto createUser(CreateUserDto createUserDto);
 }

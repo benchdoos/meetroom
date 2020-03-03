@@ -18,9 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.support.WebExchangeBindException;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -39,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RolesRepository rolesRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserPublicInfoDto getUserPublicInfoDtoByUsername(String username) {
@@ -65,19 +65,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserPublicInfoDto createUser(CreateUserDto createUserDto, BindingResult bindingResult) {
-        validateNewUser(createUserDto, bindingResult);
+    public UserPublicInfoDto createUser(CreateUserDto createUserDto) {
+        validateNewUser(createUserDto);
 
-        if (bindingResult.hasErrors()) {
-//            throw new DataBindingException();
-        }
         final UserRole userRole = rolesRepository.findFirstByName(SecurityConstants.ROLE_USER);
 
         final User user = User.builder()
                 .firstName(createUserDto.getFirstName())
                 .lastName(createUserDto.getLastName())
                 .username(createUserDto.getUsername())
-                .password(createUserDto.getPassword()) //todo md5?
+                .password(passwordEncoder.encode(createUserDto.getPassword())) //todo md5?
                 .roles(Collections.singletonList(userRole))
                 .enabled(true)
                 .build();
@@ -112,21 +109,13 @@ public class UserServiceImpl implements UserService {
      * Validate user for creation
      *
      * @param createUserDto dto with user
-     * @param bindingResult bindingResult for rejection
      */
-    private void validateNewUser(CreateUserDto createUserDto, BindingResult bindingResult) {
+    private void validateNewUser(CreateUserDto createUserDto) {
         final Optional<User> byUsername = userRepository.findByUsername(createUserDto.getUsername());
         if (byUsername.isPresent()) {
             throw new UserAlreadyExistsException(createUserDto.getUsername());
         }
 
-        if (!createUserDto.getPassword().equals(createUserDto.getConfirmPassword())) {
-            bindingResult.rejectValue("password", "passwords not match", "Passwords do not match");
-        }
-
-        if (bindingResult.hasErrors()) {
-            throw new WebExchangeBindException(null ,bindingResult); //todo fix null
-        }
     }
 
     /**
