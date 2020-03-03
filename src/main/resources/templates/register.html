@@ -19,11 +19,11 @@
         <span>Registration</span>
     </span>
 
-    <form th:action="@{/user/register}" method="post">
+    <form th:action="@{/user/register}" th:object="${createUserDto}" method="post">
         <div class="form-group">
             <label class="sr-only" for="firstName">First name</label>
             <div class="input-group mb-2">
-                <input type="text" class="form-control" id="firstName" name="username"
+                <input type="text" class="form-control" id="firstName" name="username" th:field="*{firstName}"
                        placeholder="First name">
             </div>
         </div>
@@ -31,7 +31,7 @@
         <div class="form-group">
             <label class="sr-only" for="lastName">Last name</label>
             <div class="input-group mb-2">
-                <input type="text" class="form-control" id="lastName" name="username"
+                <input type="text" class="form-control" id="lastName" name="username" th:field="*{lastName}"
                        placeholder="Last name">
             </div>
         </div>
@@ -42,20 +42,21 @@
                 <div class="input-group-prepend">
                     <div class="input-group-text">@</div>
                 </div>
-                <input type="text" class="form-control" id="inlineFormInputGroup" name="username"
+                <input type="text" class="form-control" id="inlineFormInputGroup" name="username" th:field="*{username}"
                        placeholder="Username">
             </div>
         </div>
 
         <div class="form-group">
             <label for="passwordInput" hidden></label>
-            <input type="password" class="form-control" id="passwordInput" name="password"
+            <input type="password" class="form-control" id="passwordInput" name="password" th:field="*{password}"
                    placeholder="Password">
         </div>
 
         <div class="form-group">
             <label for="passwordConfirm" hidden></label>
             <input type="password" class="form-control" id="passwordConfirm" name="confirmPassword"
+                   th:field="*{confirmPassword}"
                    placeholder="Password">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>

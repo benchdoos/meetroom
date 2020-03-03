@@ -15,6 +15,7 @@ import com.github.benchdoos.meetroom.repository.RolesRepository;
 import com.github.benchdoos.meetroom.repository.UserRepository;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ import java.util.UUID;
 /**
  * Default implementation for {@link UserService}
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
@@ -81,7 +83,7 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         final User savedUser = userRepository.save(user);
-
+        log.info("Successfully created user with username: {}", savedUser.getUsername());
         final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
         userMapper.convert(savedUser, userPublicInfoDto);
 
@@ -90,7 +92,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+
+        final Optional<User> byUsername = userRepository.findByUsername(username);
+
+        if (!byUsername.isPresent()) {
+            throw new UsernameNotFoundException("Can not find user by username: " + username);
+        }
+
+        final User user = byUsername.get();
 
         checkUserIsNotDisabled(user);
 
