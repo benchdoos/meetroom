@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  * Dto to create {@link User}
@@ -28,6 +29,7 @@ public class CreateUserDto {
 
     @Username
     @NotBlank
+    @Size(min = 4, max = 16)
     private String username;
 
     @NotBlank

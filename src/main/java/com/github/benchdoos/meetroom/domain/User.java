@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -32,6 +33,7 @@ public class User {
 
     @NotBlank
     @Column(name = "username", unique = true)
+    @Size(min = 4, max = 16)
     private String username;
 
     @NotBlank
@@ -45,6 +47,9 @@ public class User {
     @NotBlank
     @Column(name = "last_name")
     private String lastName;
+
+//    @Column(name = "email")
+//    private String email;
 
     @NotNull
     @Column(name = "enabled")
