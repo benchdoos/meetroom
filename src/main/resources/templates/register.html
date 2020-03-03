@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Registration</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
+</head>
+<body style="width: 500px; margin: 0 auto; padding: 20px">
+<div th:if="${param.error}" class="alert alert-danger" role="alert" style="padding-bottom: 20px; text-align: center;">
+    Invalid username or password.
+</div>
+<div th:if="${param.logout}" class="alert alert-primary" role="alert" style="padding-bottom: 20px; text-align: center;">
+    <span>You have been logged out.</span>
+    <a th:href="@{/}">Main page</a>
+</div>
+
+<div sec:authorize="!isAuthenticated()">
+    <span class="h2">
+        <span>Registration</span>
+        <hr class="">
+    </span>
+
+    <form th:action="@{/user/register}" method="post">
+        <div class="form-group">
+            <label class="sr-only" for="firstName">First name</label>
+            <div class="input-group mb-2">
+                <input type="text" class="form-control" id="firstName" name="username"
+                       placeholder="First name">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="sr-only" for="lastName">Last name</label>
+            <div class="input-group mb-2">
+                <input type="text" class="form-control" id="lastName" name="username"
+                       placeholder="Last name">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="sr-only" for="inlineFormInputGroup">Username</label>
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">@</div>
+                </div>
+                <input type="text" class="form-control" id="inlineFormInputGroup" name="username"
+                       placeholder="Username">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="passwordInput" hidden></label>
+            <input type="password" class="form-control" id="passwordInput" name="password"
+                   placeholder="Password">
+        </div>
+
+        <div class="form-group">
+            <label for="passwordConfirm" hidden></label>
+            <input type="password" class="form-control" id="passwordConfirm" name="password"
+                   placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+
+<div sec:authorize="isAuthenticated()" class="alert alert-primary" role="alert">
+    <span>You are logged in. Go to <a th:href="@{/}">Main page</a></span>
+    <br>
+    <br>
+    <form name="logoutForm" th:action="@{/logout}" method="post" style="text-align: center">
+        <input type="submit" class="btn btn-danger" value="Sign Out"/>
+    </form>
+</div>
+</body>
+</html>

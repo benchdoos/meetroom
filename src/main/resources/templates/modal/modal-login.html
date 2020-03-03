@@ -14,8 +14,9 @@
                 <i class="fas fa-user h1" style="color: black"></i>
             </a>
         </div>
-        <div sec:authorize="!isAuthenticated()">
-            <a th:href="@{/login}" class="btn btn-primary">Login</a>
+        <div sec:authorize="!isAuthenticated()" style="display: inline-flex;">
+            <a th:href="@{/login}" class="btn btn-primary" style="margin-right: 10px;">Sign in</a>
+            <a th:href="@{/register}" class="btn btn-secondary" style="left: 10px;">Sign up</a>
         </div>
     </div>
 </div>
