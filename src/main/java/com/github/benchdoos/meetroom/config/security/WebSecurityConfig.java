@@ -1,4 +1,4 @@
-package com.github.benchdoos.meetroom.config;
+package com.github.benchdoos.meetroom.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
