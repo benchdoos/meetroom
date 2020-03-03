@@ -65,7 +65,9 @@ Open link: [http://localhost:8080/meetroom/](http://localhost:8080/meetroom/)
 
 To open secured pages you need to log in.
 
-There are 2 pre-made user accounts:
+You can create new account if needed. It will have role `ROLE_USER`.
+
+Or you can use one of 2 pre-made user accounts:
 
 | Login | Password | Role       |
 | ----- | -------- | ---------- |
