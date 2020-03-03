@@ -8,12 +8,12 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.Valid;
 import java.security.Principal;
 
 import static com.github.benchdoos.meetroom.config.constants.SecurityConstants.ROLE_ADMIN;
@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/register")
-    public String registerUser(@Valid CreateUserDto createUserDto) {
+    public String registerUser(@Validated CreateUserDto createUserDto, Model model) {
         System.out.println("Hello!");
         //todo add validation here
         return "index.html";

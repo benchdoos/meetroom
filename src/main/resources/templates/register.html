@@ -17,7 +17,6 @@
 <div sec:authorize="!isAuthenticated()">
     <span class="h2">
         <span>Registration</span>
-        <hr class="">
     </span>
 
     <form th:action="@{/user/register}" method="post">
@@ -56,7 +55,7 @@
 
         <div class="form-group">
             <label for="passwordConfirm" hidden></label>
-            <input type="password" class="form-control" id="passwordConfirm" name="password"
+            <input type="password" class="form-control" id="passwordConfirm" name="confirmPassword"
                    placeholder="Password">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>

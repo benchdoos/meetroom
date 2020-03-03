@@ -7,4 +7,11 @@ import java.util.UUID;
 
 public interface RolesRepository extends JpaRepository<UserRole, UUID> {
 
+    /**
+     * Get role by name
+     *
+     * @param name role name
+     * @return UserRole by given name
+     */
+    UserRole findFirstByName(String name);
 }
