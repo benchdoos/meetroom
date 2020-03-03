@@ -68,13 +68,13 @@ public class UserServiceImpl implements UserService {
     public UserPublicInfoDto createUser(CreateUserDto createUserDto) {
         validateNewUser(createUserDto);
 
-        final UserRole userRole = rolesRepository.findFirstByName(SecurityConstants.ROLE_USER);
+        final UserRole userRole = rolesRepository.findFirstByRole(SecurityConstants.ROLE_USER);
 
         final User user = User.builder()
                 .firstName(createUserDto.getFirstName())
                 .lastName(createUserDto.getLastName())
                 .username(createUserDto.getUsername())
-                .password(passwordEncoder.encode(createUserDto.getPassword())) //todo md5?
+                .password(passwordEncoder.encode(createUserDto.getPassword()))
                 .roles(Collections.singletonList(userRole))
                 .enabled(true)
                 .build();

@@ -13,5 +13,5 @@ public interface RolesRepository extends JpaRepository<UserRole, UUID> {
      * @param name role name
      * @return UserRole by given name
      */
-    UserRole findFirstByName(String name);
+    UserRole findFirstByRole(String name);
 }
