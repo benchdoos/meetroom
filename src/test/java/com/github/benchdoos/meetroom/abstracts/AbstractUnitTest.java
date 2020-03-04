@@ -12,10 +12,10 @@ import org.springframework.test.context.ActiveProfiles;
 @RequiredArgsConstructor
 public abstract class AbstractUnitTest extends AbstractTest {
 
-    protected final EasyRandom easyRandom;
+    protected final EasyRandom easyRandom = new EasyRandom();
 
     @Override
-    public void init() throws Exception {
+    public void setUp() throws Exception {
         //no-op
     }
 

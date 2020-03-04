@@ -19,7 +19,7 @@ public abstract class AbstractTest {
     private ObjectMapper objectMapper;
 
     @Before
-    public abstract void init() throws Exception;
+    public abstract void setUp() throws Exception;
 
     @After
     public abstract void tearDown() throws Exception;
