@@ -100,3 +100,8 @@ To override VM options:
 -Dmeetroom.maximum-reservation-value
 ```
 
+## Some screenshots:
+
+![Main page](https://i.postimg.cc/V6tKLXw8/image.png)
+![Meeting room page](https://i.postimg.cc/CKTBp8cD/image.png)
+![Meeting info page with editing](https://i.postimg.cc/hth6RzXS/image.png)
