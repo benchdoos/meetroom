@@ -76,5 +76,5 @@ spring:
 
 server:
   servlet:
-    context-path: /meetroom
+    context-path: /
   port: 80
