@@ -1,3 +1,7 @@
+spring:
+  profiles:
+    active: PRODUCTION
+
 management:
   endpoints:
     web:
@@ -11,10 +15,10 @@ management:
 meetroom:
   minimum-reservation-value: 30 #in minutes
   maximum-reservation-value: 1440 #24h in minutes
+---
 
 spring:
-  profiles:
-    active: DEVELOP
+  profiles: DEVELOP
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/meetroom
@@ -41,7 +45,7 @@ spring:
 server:
   servlet:
     context-path: /meetroom
-    port: 8080
+  port: 8030
 
 ---
 
@@ -49,9 +53,9 @@ spring:
   profiles: PRODUCTION
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/meetroom_zrazhevsky #change it in VM options
-    username: meetroom
-    password: meetroom
+    url: jdbc:postgresql://ec2-54-75-231-215.eu-west-1.compute.amazonaws.com:5432/d67dhfrv46bibi #change it in VM options
+    username: oddotruckbompv
+    password: ab55ddeb91fed362a903c593f23da9a5059a58f5d1ec5f827f40a81e212f975f
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       connection-test-query: SELECT 1;
@@ -72,5 +76,5 @@ spring:
 
 server:
   servlet:
-    context-path: /meetroom
-    port: 8080
+    context-path: /
+  port: 80
