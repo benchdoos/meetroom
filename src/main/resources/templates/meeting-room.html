@@ -68,11 +68,15 @@
 
 <script th:src="@{/js/reservation.js}"></script>
 <script th:inline="javascript">
-    $(document).ready(function () {
-        drawTimePanel([[${dateRange}]]);
-        fillDays([[${dateRange}]]);
-        fillTimePanel("/meetroom/event/",[[${events}]], [[${dateRange}]]);
-    });
+    /*<![CDATA[*/
+    var context = [[@{/}]];
+        /*]]>*/
+
+        $(document).ready(function () {
+            drawTimePanel([[${dateRange}]]);
+            fillDays([[${dateRange}]]);
+            fillTimePanel(context + "event/", [[${events}]], [[${dateRange}]]);
+        });
 </script>
 </body>
 </html>
