@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
                 .lastName(createUserDto.getLastName())
                 .username(createUserDto.getUsername())
                 .password(passwordEncoder.encode(createUserDto.getPassword()))
-                .roles(Collections.singletonList(userRole))
+                .roles(Collections.singleton(userRole))
                 .enabled(true)
                 .build();
 
