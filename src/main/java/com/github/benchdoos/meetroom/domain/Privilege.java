@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.Collection;
 import java.util.UUID;
 
 @Entity
@@ -26,7 +24,4 @@ public class Privilege {
     private UUID id;
 
     private String name;
-
-    @ManyToMany(mappedBy = "privileges")
-    private Collection<UserRole> roles;
 }
