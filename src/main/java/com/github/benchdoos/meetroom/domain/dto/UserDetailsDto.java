@@ -1,7 +1,6 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
 import com.github.benchdoos.meetroom.domain.User;
-import com.github.benchdoos.meetroom.utils.AuthoritiesUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.beans.BeanUtils;
@@ -21,7 +20,6 @@ public class UserDetailsDto extends User implements UserDetails {
 
     public UserDetailsDto(User user) {
         BeanUtils.copyProperties(user, this);
-        authorities = AuthoritiesUtils.getGrantedAuthoritiesFromUserRoles(this.getRoles());
     }
 
     @Override
