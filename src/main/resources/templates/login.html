@@ -11,26 +11,34 @@
 </div>
 <div th:if="${param.logout}" class="alert alert-primary" role="alert" style="padding-bottom: 20px; text-align: center;">
     <span>You have been logged out.</span>
-    <a th:href="@{/}">Main page</a>
 </div>
 
-<form sec:authorize="!isAuthenticated()" th:action="@{/login}" method="post">
-    <div class="form-group">
-        <label class="sr-only" for="inlineFormInputGroup">Username</label>
-        <div class="input-group mb-2">
-            <div class="input-group-prepend">
-                <div class="input-group-text">@</div>
+<div sec:authorize="!isAuthenticated()">
+    <div>
+        <span class="h2">Login</span>
+        <a th:href="@{/}" class="btn btn-info" style="float: right">Main page</a>
+    </div>
+    <br><br>
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <label class="sr-only" for="inlineFormInputGroup">Username</label>
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">@</div>
+                </div>
+                <input type="text" class="form-control" id="inlineFormInputGroup" name="username"
+                       placeholder="Username">
             </div>
-            <input type="text" class="form-control" id="inlineFormInputGroup" name="username"
-                   placeholder="Username">
         </div>
-    </div>
-    <div class="form-group">
-        <label for="exampleInputPassword1" hidden></label>
-        <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Password">
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+        <div class="form-group">
+            <label for="exampleInputPassword1" hidden></label>
+            <input type="password" class="form-control" id="exampleInputPassword1" name="password"
+                   placeholder="Password">
+        </div>
+        <a th:href="@{/registration}" class="btn btn-secondary">Sign up</a>
+        <button type="submit" class="btn btn-primary" style="float: right">Submit</button>
+    </form>
+</div>
 
 
 <div sec:authorize="isAuthenticated()" class="alert alert-primary" role="alert">
