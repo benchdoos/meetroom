@@ -90,6 +90,7 @@ public class ModelViewServiceImpl implements ModelViewService {
     }
 
     @Override
+    //todo add check that only admin or creator can do this
     public String deleteEvent(UUID id, Model model, HttpServletRequest request) {
         final Event event = eventService.getEventById(id);
         @NotNull final ZonedDateTime fromDate = event.getFromDate();
