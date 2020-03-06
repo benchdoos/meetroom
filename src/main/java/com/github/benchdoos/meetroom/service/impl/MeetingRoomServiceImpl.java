@@ -58,10 +58,9 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
     public MeetingRoom updateMeetingRoomInfo(UUID id, EditMeetingRoomDto editMeetingRoomDto) {
         final Optional<MeetingRoom> firstByNameOrLocation = meetingRoomsRepository
                 .findFirstByNameOrLocation(editMeetingRoomDto.getName(), editMeetingRoomDto.getLocation());
-        if (firstByNameOrLocation.isPresent()) {
-            if (!firstByNameOrLocation.get().getId().equals(id)) {
-                throw new MeetingRoomAlreadyExistException(firstByNameOrLocation.get());
-            }
+
+        if (firstByNameOrLocation.isPresent() && !firstByNameOrLocation.get().getId().equals(id)) {
+            throw new MeetingRoomAlreadyExistException(firstByNameOrLocation.get());
         }
 
         final MeetingRoom meetingRoom = meetingRoomsRepository.findById(id).orElseThrow(MeetingRoomNotFoundException::new);
