@@ -94,13 +94,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        final Optional<User> byUsername = userRepository.findByUsername(username);
-
-        if (!byUsername.isPresent()) {
-            throw new UsernameNotFoundException("Can not find user by username: " + username);
-        }
-
-        final User user = byUsername.get();
+        final User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Can not find user by username: " + username));
 
         checkUserIsNotDisabled(user);
 

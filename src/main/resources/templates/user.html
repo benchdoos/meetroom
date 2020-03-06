@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title th:text="|User page - ${user.username}|"></title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
+    <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
 <div style="padding: 20px">
@@ -52,10 +53,5 @@
     </div>
 </div>
 
-<script>
-    function goBack() {
-        window.history.back();
-    }
-</script>
 </body>
 </html>
