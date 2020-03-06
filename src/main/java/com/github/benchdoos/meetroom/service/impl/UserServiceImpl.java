@@ -16,15 +16,19 @@ import com.github.benchdoos.meetroom.repository.UserRepository;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -100,9 +104,11 @@ public class UserServiceImpl implements UserService {
 
         checkUserIsNotDisabled(user);
 
-        @NotEmpty final Collection<UserRole> roles = user.getRoles();
+        final UserDetailsDto userDetailsDto = new UserDetailsDto(user);
 
-        return new UserDetailsDto(user);
+        userDetailsDto.setAuthorities(getGrantedAuthoritiesFromUserRoles(user.getRoles()));
+
+        return userDetailsDto;
     }
 
     /**
@@ -111,11 +117,12 @@ public class UserServiceImpl implements UserService {
      * @param createUserDto dto with user
      */
     private void validateNewUser(CreateUserDto createUserDto) {
+
         final Optional<User> byUsername = userRepository.findByUsername(createUserDto.getUsername());
+
         if (byUsername.isPresent()) {
             throw new UserAlreadyExistsException(createUserDto.getUsername());
         }
-
     }
 
     /**
@@ -127,5 +134,22 @@ public class UserServiceImpl implements UserService {
         if (!user.isEnabled()) {
             throw new UserDisabledException(user.getUsername());
         }
+    }
+
+    /**
+     * Transforms list of {@link UserRole} to {@link GrantedAuthority} final List<>  = new ();
+     *
+     * @param roles list of user's roles
+     * @return list of granted authorities
+     */
+    private List<GrantedAuthority> getGrantedAuthoritiesFromUserRoles(Collection<UserRole> roles) {
+        final List<GrantedAuthority> grantList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(roles)) {
+            roles.forEach(role -> {
+                grantList.add(new SimpleGrantedAuthority(role.getRole()));
+                role.getPrivileges().forEach(privilege -> grantList.add(new SimpleGrantedAuthority(privilege.getName())));
+            });
+        }
+        return grantList;
     }
 }
