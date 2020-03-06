@@ -60,7 +60,7 @@
                    th:field="*{confirmPassword}"
                    placeholder="Password">
         </div>
-        <button class="btn btn-secondary" onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
+        <a th:href="@{/}" class="btn btn-secondary"><i class="fas fa-chevron-left"></i></a>
         <button type="submit" class="btn btn-primary" style="float: right">Submit</button>
     </form>
 </div>
