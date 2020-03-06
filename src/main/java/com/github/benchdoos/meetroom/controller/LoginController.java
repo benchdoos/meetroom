@@ -3,6 +3,7 @@ package com.github.benchdoos.meetroom.controller;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,16 +20,18 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login() {
-        return "login.html";
+        return "login";
     }
 
+    @PreAuthorize("!isAuthenticated()")
     @GetMapping("/registration")
     public String getRegisterPage(Model model) {
         final CreateUserDto createUserDto = new CreateUserDto();
         model.addAttribute("createUserDto", createUserDto);
-        return "registration.html";
+        return "registration";
     }
 
+    @PreAuthorize("!isAuthenticated()")
     @PostMapping(value = "/registration")
     public String registerUser(@ModelAttribute("createUserDto") @Valid CreateUserDto createUserDto,
                                Model model) {
