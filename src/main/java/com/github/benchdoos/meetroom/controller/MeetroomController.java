@@ -3,10 +3,10 @@ package com.github.benchdoos.meetroom.controller;
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
 import com.github.benchdoos.meetroom.domain.dto.CreateMeetingRoomDto;
 import com.github.benchdoos.meetroom.domain.dto.EditMeetingRoomDto;
-import com.github.benchdoos.meetroom.service.ModelViewService;
 import com.github.benchdoos.meetroom.service.MeetingRoomService;
+import com.github.benchdoos.meetroom.service.ModelViewService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.UUID;
 
-import static com.github.benchdoos.meetroom.config.constants.SecurityConstants.ROLE_ADMIN;
-import static com.github.benchdoos.meetroom.config.constants.SecurityConstants.ROLE_USER;
-
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/meetroom")
@@ -26,7 +23,7 @@ public class MeetroomController {
     private final MeetingRoomService meetingRoomService;
     private final ModelViewService modelViewService;
 
-    @Secured({ROLE_ADMIN, ROLE_USER})
+    @PreAuthorize("hasAnyAuthority('MEETING_ROOM:CREATE')")
     @PostMapping
     public String createMeetRoom(@Validated CreateMeetingRoomDto meetingRoomDto, Model model) {
         final MeetingRoom meetingRoom = meetingRoomService.createMeetingRoom(meetingRoomDto);
@@ -34,7 +31,7 @@ public class MeetroomController {
         return modelViewService.getMeetingRoomById(id, null, model);
     }
 
-    @Secured({ROLE_ADMIN, ROLE_USER})
+    @PreAuthorize("hasAnyAuthority('MEETING_ROOM:UPDATE')")
     @PostMapping("/edit/{uuid}")
     public String editMeetRoom(@PathVariable UUID uuid,
                                @Validated EditMeetingRoomDto editMeetingRoomDto,
