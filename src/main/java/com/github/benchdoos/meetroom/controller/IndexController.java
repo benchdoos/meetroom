@@ -44,7 +44,6 @@ public class IndexController {
                                      @DateTimeFormat(pattern = "dd.MM.yyyy") Date day,
 
                                      Model model) {
-
         if (day != null) {
             final ZonedDateTime fromDate = ZonedDateTime.ofInstant(day.toInstant(), ZoneId.systemDefault());
             return modelViewService.getMeetingRoomById(uuid, fromDate, model);
