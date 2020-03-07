@@ -3,6 +3,7 @@ package com.github.benchdoos.meetroom.mappers;
 import com.github.benchdoos.meetroom.abstracts.AbstractUnitTest;
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
 import com.github.benchdoos.meetroom.domain.dto.CreateMeetingRoomDto;
+import com.github.benchdoos.meetroom.domain.dto.EditMeetingRoomDto;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
@@ -24,19 +25,26 @@ public class MeetingRoomMapperTest extends AbstractUnitTest {
 
     @Test
     public void convertMeetingRoomToCreateMeetingRoomDto() {
-        final MeetingRoom testMeetingRoom = easyRandom.nextObject(MeetingRoom.class);
-        final CreateMeetingRoomDto correctDto = createCorrectCreateMeetingRoomDto(testMeetingRoom);
+        final MeetingRoom testEntity = easyRandom.nextObject(MeetingRoom.class);
+        final CreateMeetingRoomDto correctDto = createCorrectCreateMeetingRoomDto(testEntity);
 
-        final CreateMeetingRoomDto testCreateMeetingRoomDto = new CreateMeetingRoomDto();
-        meetingRoomMapper.convert(testMeetingRoom, testCreateMeetingRoomDto);
+        final CreateMeetingRoomDto testDto = new CreateMeetingRoomDto();
+        meetingRoomMapper.convert(testEntity, testDto);
 
-        assertThat(testCreateMeetingRoomDto).isNotNull();
-        assertThat(testCreateMeetingRoomDto).isEqualTo(correctDto);
+        assertThat(testDto).isNotNull();
+        assertThat(testDto).isEqualTo(correctDto);
     }
 
-    @Ignore
     @Test
     public void convertMeetingRoomToEditMeetingRoomDto() {
+        final MeetingRoom testEntity = easyRandom.nextObject(MeetingRoom.class);
+        final EditMeetingRoomDto correctDto = createCorrectEditMeetingRoomDto(testEntity);
+
+        final EditMeetingRoomDto testDto = new EditMeetingRoomDto();
+        meetingRoomMapper.convert(testEntity, testDto);
+
+        assertThat(testDto).isNotNull();
+        assertThat(testDto).isEqualTo(correctDto);
     }
 
     @Ignore
@@ -49,16 +57,36 @@ public class MeetingRoomMapperTest extends AbstractUnitTest {
     public void convertEditMeetingRoomDtoToMeetingRoom() {
     }
 
-    private CreateMeetingRoomDto createCorrectCreateMeetingRoomDto(MeetingRoom testMeetingRoom) {
-        return CreateMeetingRoomDto.builder()
-                .name(testMeetingRoom.getName())
-                .location(testMeetingRoom.getLocation())
-                .enabled(testMeetingRoom.isEnabled())
-                .build();
-    }
-
     @Ignore
     @Test
     public void convertCreateMeetingRoomDtoToMeetingRoom() {
+    }
+
+    /**
+     * Creates correct dto from entity
+     *
+     * @param entity entity
+     * @return correct entity from dto
+     */
+    private CreateMeetingRoomDto createCorrectCreateMeetingRoomDto(MeetingRoom entity) {
+        return CreateMeetingRoomDto.builder()
+                .name(entity.getName())
+                .location(entity.getLocation())
+                .enabled(entity.isEnabled())
+                .build();
+    }
+
+    /**
+     * Creates dto from entity
+     *
+     * @param entity entity
+     * @return correct entity from dto
+     */
+    private EditMeetingRoomDto createCorrectEditMeetingRoomDto(MeetingRoom entity) {
+        return EditMeetingRoomDto.builder()
+                .name(entity.getName())
+                .location(entity.getLocation())
+                .enabled(entity.isEnabled())
+                .build();
     }
 }
