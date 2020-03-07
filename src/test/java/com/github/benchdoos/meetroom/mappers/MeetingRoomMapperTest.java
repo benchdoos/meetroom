@@ -4,6 +4,7 @@ import com.github.benchdoos.meetroom.abstracts.AbstractUnitTest;
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
 import com.github.benchdoos.meetroom.domain.dto.CreateMeetingRoomDto;
 import com.github.benchdoos.meetroom.domain.dto.EditMeetingRoomDto;
+import com.github.benchdoos.meetroom.domain.dto.MeetingRoomDto;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
@@ -47,9 +48,16 @@ public class MeetingRoomMapperTest extends AbstractUnitTest {
         assertThat(testDto).isEqualTo(correctDto);
     }
 
-    @Ignore
     @Test
     public void convertMeetingRoomToMeetingRoomDto() {
+        final MeetingRoom testEntity = easyRandom.nextObject(MeetingRoom.class);
+        final MeetingRoomDto correctDto = createCorrectMeetingRoomDto(testEntity);
+
+        final MeetingRoomDto testDto = new MeetingRoomDto();
+        meetingRoomMapper.convert(testEntity, testDto);
+
+        assertThat(testDto).isNotNull();
+        assertThat(testDto).isEqualTo(correctDto);
     }
 
     @Ignore
@@ -87,6 +95,21 @@ public class MeetingRoomMapperTest extends AbstractUnitTest {
                 .name(entity.getName())
                 .location(entity.getLocation())
                 .enabled(entity.isEnabled())
+                .build();
+    }
+
+    /**
+     * Creates dto from entity
+     *
+     * @param testEntity entity
+     * @return correct entity from dto
+     */
+    private MeetingRoomDto createCorrectMeetingRoomDto(MeetingRoom testEntity) {
+        return MeetingRoomDto.builder()
+                .id(testEntity.getId())
+                .name(testEntity.getName())
+                .location(testEntity.getLocation())
+                .enabled(testEntity.isEnabled())
                 .build();
     }
 }
