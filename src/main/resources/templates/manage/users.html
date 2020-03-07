@@ -3,6 +3,7 @@
 <head>
     <title>Meeting users</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.12.0/css/all.css}">
     <link href="/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet">
@@ -16,7 +17,9 @@
         <h2>Manage users</h2>
         <div sec:authorize="hasAnyAuthority('MANAGE_USERS:USE')" style="display: flex; padding-left: 20px">
             <div>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">+
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+                        title="Create new user">
+                    <i class="fas fa-plus"></i>
                 </button>
             </div>
         </div>
@@ -26,19 +29,56 @@
     </div>
 </div>
 
-<!--<div class="card-list">
-    <div class="card" style="min-width: 18rem; margin: 10px;" th:each="user : ${users.content}">
-        <div class="card-body">
-            <span th:class="|${user.enabled ? 'badge badge-primary' : 'badge badge-danger'}|"
-                  th:text="${user.enabled ? 'enabled' : 'disabled'}"></span>
-            <h5 class="card-title" th:text="${user.name}"></h5>
-            <h6 class="card-subtitle mb-2 text-muted" th:text="${user.location}">Card subtitle</h6>
-            <a th:href="@{'/' + ${user.id}}" class="card-link">Open</a>
-        </div>
-    </div>
-</div>-->
+<div class="content" sec:authorize="hasAnyAuthority('MANAGE_USERS:USE')">
+    <table class="table table-striped" id="users-table">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Roles</th>
+            <th>Enabled</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
 
-<nav aria-label="Pagination" th:if="${users.totalPages gt 0}" style="text-align: center">
+        <tbody>
+        <tr th:each="user : ${users.content}">
+            <th th:text="${user.username}"></th>
+            <th th:text="${user.firstName}"></th>
+            <th th:text="${user.lastName}"></th>
+            <th style="max-width: 300px;">
+                <span th:each="role : ${user.roles}">
+                    <a th:href="@{/manage/roles(role=${role.role})}" class="badge badge-info" style="margin: 5px;">
+                    <span th:text="${role.name}" th:title="${role.role}"></span>
+                </a>
+                </span>
+            </th>
+            <th>
+                <span th:if="${user.enabled}" title="Enabled">
+                    <i class="fas fa-check-square" style="color:green"></i>
+                </span>
+                <span th:if="${!user.enabled}" title="Disabled">
+                    <i class="fas fa-times" style="color:red"></i>
+                </span>
+            </th>
+            <th>
+                <i class="fas fa-edit" title="Edit user"></i>
+            </th>
+            <th>
+                <i class="fas fa-user-shield" title="Reset user password"></i>
+            </th>
+            <th>
+                <i class="fas fa-user-cog" title="Manage user enable ability"></i>
+            </th>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<nav aria-label="Pagination" th:if="${users.totalPages gt 1}" style="text-align: center">
     <ul class="pagination justify-content-center font-weight-medium">
         <li class="page-item" th:classappend="${users.number eq 0} ? 'disabled'">
             <a class="page-link svg-icon"

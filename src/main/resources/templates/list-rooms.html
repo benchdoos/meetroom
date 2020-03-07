@@ -22,8 +22,11 @@
                         Actions
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" th:href="@{/all}">Show all</a>
-                        <a class="dropdown-item" th:href="@{/}">Show available</a>
+                        <a class="dropdown-item" th:href="@{/all}">Show all rooms</a>
+                        <a class="dropdown-item" th:href="@{/}">Show available rooms</a>
+                        <hr>
+                        <a class="dropdown-item" th:href="@{/manage/users}"
+                           sec:authorize="hasAnyAuthority('MANAGE_USERS:USE')">Manage users</a>
                     </div>
                 </div>
         </div>
