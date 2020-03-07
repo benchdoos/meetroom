@@ -5,7 +5,6 @@ import com.github.benchdoos.meetroom.domain.MeetingRoom;
 import com.github.benchdoos.meetroom.domain.dto.CreateMeetingRoomDto;
 import com.github.benchdoos.meetroom.domain.dto.EditMeetingRoomDto;
 import com.github.benchdoos.meetroom.domain.dto.MeetingRoomDto;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
 
@@ -14,13 +13,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MeetingRoomMapperTest extends AbstractUnitTest {
 
-    private EventMapper eventMapper;
-    private UserMapper userMapper;
     private MeetingRoomMapper meetingRoomMapper;
 
     public MeetingRoomMapperTest() {
-        this.eventMapper = Mappers.getMapper(EventMapper.class);
-        this.userMapper = Mappers.getMapper(UserMapper.class);
         this.meetingRoomMapper = Mappers.getMapper(MeetingRoomMapper.class);
     }
 
@@ -60,14 +55,32 @@ public class MeetingRoomMapperTest extends AbstractUnitTest {
         assertThat(testDto).isEqualTo(correctDto);
     }
 
-    @Ignore
     @Test
     public void convertEditMeetingRoomDtoToMeetingRoom() {
+        final MeetingRoom correctEntity = easyRandom.nextObject(MeetingRoom.class);
+        correctEntity.setId(null); //important for this test, EditMeetingRoomDto does not have such information
+
+        final EditMeetingRoomDto correctDto = createCorrectEditMeetingRoomDto(correctEntity);
+
+        final MeetingRoom testEntity = new MeetingRoom();
+        meetingRoomMapper.convert(correctDto, testEntity);
+
+        assertThat(testEntity).isNotNull();
+        assertThat(testEntity).isEqualTo(correctEntity);
     }
 
-    @Ignore
     @Test
     public void convertCreateMeetingRoomDtoToMeetingRoom() {
+        final MeetingRoom correctEntity = easyRandom.nextObject(MeetingRoom.class);
+        correctEntity.setId(null); //important for this test, EditMeetingRoomDto does not have such information
+
+        final CreateMeetingRoomDto correctDto = createCorrectCreateMeetingRoomDto(correctEntity);
+
+        final MeetingRoom testEntity = new MeetingRoom();
+        meetingRoomMapper.convert(correctDto, testEntity);
+
+        assertThat(testEntity).isNotNull();
+        assertThat(testEntity).isEqualTo(correctEntity);
     }
 
     /**
