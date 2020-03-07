@@ -16,6 +16,8 @@ import com.github.benchdoos.meetroom.repository.UserRepository;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -89,6 +91,11 @@ public class UserServiceImpl implements UserService {
         userMapper.convert(savedUser, userPublicInfoDto);
 
         return userPublicInfoDto;
+    }
+
+    @Override
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     @Override
