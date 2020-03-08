@@ -41,6 +41,7 @@
             <th>&nbsp;</th>
             <th>&nbsp;</th>
             <th>&nbsp;</th>
+            <th>&nbsp;</th>
         </tr>
         </thead>
 
@@ -65,11 +66,18 @@
                 </span>
             </th>
             <th>
-                <button class="btn btn-link" data-toggle="modal"
+                <a href="#" data-toggle="modal"
                         th:attrappend="data-target=|#edit-user-modal-${user.id}|"
                         data-placement="top">
                     <i class="fas fa-edit" title="Edit user"></i>
-                </button>
+                </a>
+            </th>
+            <th>
+                <a href="#" data-toggle="modal"
+                   th:attrappend="data-target=|#edit-user-roles-modal-${user.id}|"
+                   data-placement="top">
+                    <i class="fas fa-user-tag" title="Set user roles"></i>
+                </a>
             </th>
             <th>
                 <i class="fas fa-user-shield" title="Reset user password"></i>
@@ -119,6 +127,7 @@
 
 <div id="modals">
     <div th:include="modal/modal-manage-users :: fr-edit-user" th:each="user : ${users.content}"></div>
+    <div th:include="modal/modal-manage-users :: fr-edit-user-roles" th:each="user : ${users.content}"></div>
 </div>
 
 <!-- /Modals -->
