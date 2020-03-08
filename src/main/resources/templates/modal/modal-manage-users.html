@@ -115,5 +115,41 @@
     </div>
 </div>
 
+<div th:fragment="fr-edit-user-enable">
+    <div class="modal" tabindex="-1" role="dialog" th:id="|edit-user-enable-modal-${user.id}|">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Switch user enable</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:id="|edit-user-enable-form-${user.id}|"
+                          th:action="|@{/manage/users/switch-enable/}${user.id}|"
+                          method="post">
+                        <div class="form-check" style="display: grid;">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" value=""
+                                       th:checked="${user.enabled}">
+                                User
+                                <a th:text="|@${user.username}|" th:href="@{/user(username=${user.username})}"></a>
+                                enable
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" th:form="|edit-user-enable-form-${user.id}|" class="btn btn-primary">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

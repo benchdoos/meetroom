@@ -67,8 +67,8 @@
             </th>
             <th>
                 <a href="#" data-toggle="modal"
-                        th:attrappend="data-target=|#edit-user-modal-${user.id}|"
-                        data-placement="top">
+                   th:attrappend="data-target=|#edit-user-modal-${user.id}|"
+                   data-placement="top">
                     <i class="fas fa-edit" title="Edit user"></i>
                 </a>
             </th>
@@ -87,7 +87,11 @@
                 </a>
             </th>
             <th>
-                <i class="fas fa-user-cog" title="Manage user enable ability"></i>
+                <a href="#" data-toggle="modal"
+                   th:attrappend="data-target=|#edit-user-enable-modal-${user.id}|"
+                   data-placement="top">
+                    <i class="fas fa-user-cog" title="Manage user enable ability" style="color: darkred"></i>
+                </a>
             </th>
         </tr>
         </tbody>
@@ -133,6 +137,7 @@
     <div th:include="modal/modal-manage-users :: fr-edit-user" th:each="user : ${users.content}"></div>
     <div th:include="modal/modal-manage-users :: fr-edit-user-roles" th:each="user : ${users.content}"></div>
     <div th:include="modal/modal-manage-users :: fr-reset-user-password" th:each="user : ${users.content}"></div>
+    <div th:include="modal/modal-manage-users :: fr-edit-user-enable" th:each="user : ${users.content}"></div>
 </div>
 
 <!-- /Modals -->
