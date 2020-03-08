@@ -65,7 +65,11 @@
                 </span>
             </th>
             <th>
-                <i class="fas fa-edit" title="Edit user"></i>
+                <button class="btn btn-link" data-toggle="modal"
+                        th:attrappend="data-target=|#edit-user-modal-${user.id}|"
+                        data-placement="top">
+                    <i class="fas fa-edit" title="Edit user"></i>
+                </button>
             </th>
             <th>
                 <i class="fas fa-user-shield" title="Reset user password"></i>
@@ -111,6 +115,16 @@
     </ul>
 </nav>
 
+<!-- Modals -->
+
+<div id="modals">
+    <div th:include="modal/modal-manage-users :: fr-edit-user" th:each="user : ${users.content}"></div>
+</div>
+
+<!-- /Modals -->
+
+<script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.1.3/js/bootstrap.min.js}"></script>
 <script>
     $('#myModal').on('shown.bs.modal', function () {
         $('#myInput').trigger('focus')
