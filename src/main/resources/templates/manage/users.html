@@ -80,7 +80,11 @@
                 </a>
             </th>
             <th>
-                <i class="fas fa-user-shield" title="Reset user password"></i>
+                <a href="#" data-toggle="modal"
+                   th:attrappend="data-target=|#reset-user-password-modal-${user.id}|"
+                   data-placement="top">
+                    <i class="fas fa-user-shield" title="Reset user password" style="color: darkred"></i>
+                </a>
             </th>
             <th>
                 <i class="fas fa-user-cog" title="Manage user enable ability"></i>
@@ -128,6 +132,7 @@
 <div id="modals">
     <div th:include="modal/modal-manage-users :: fr-edit-user" th:each="user : ${users.content}"></div>
     <div th:include="modal/modal-manage-users :: fr-edit-user-roles" th:each="user : ${users.content}"></div>
+    <div th:include="modal/modal-manage-users :: fr-reset-user-password" th:each="user : ${users.content}"></div>
 </div>
 
 <!-- /Modals -->
