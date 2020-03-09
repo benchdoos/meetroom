@@ -17,7 +17,7 @@
         <h2>Manage users</h2>
         <div sec:authorize="hasAnyAuthority('MANAGE_USERS:USE')" style="display: flex; padding-left: 20px">
             <div>
-                <button type="button" class="btn btn-primary h2" data-toggle="modal" data-target="#exampleModal"
+                <button type="button" class="btn btn-primary h2" data-toggle="modal" data-target="#create-user-modal"
                         title="Create new user">
                     <i class="fas fa-plus"></i>
                 </button>
@@ -137,10 +137,11 @@
 <!-- Modals -->
 
 <div id="modals">
-    <div th:include="modal/modal-manage-users :: fr-edit-user" th:each="user : ${users.content}"></div>
-    <div th:include="modal/modal-manage-users :: fr-edit-user-roles" th:each="user : ${users.content}"></div>
-    <div th:include="modal/modal-manage-users :: fr-reset-user-password" th:each="user : ${users.content}"></div>
-    <div th:include="modal/modal-manage-users :: fr-edit-user-enable" th:each="user : ${users.content}"></div>
+    <div th:include="modal/modal-manage-user :: fr-create-user-modal"></div>
+    <div th:include="modal/modal-manage-user :: fr-edit-user" th:each="user : ${users.content}"></div>
+    <div th:include="modal/modal-manage-user :: fr-edit-user-roles" th:each="user : ${users.content}"></div>
+    <div th:include="modal/modal-manage-user :: fr-reset-user-password" th:each="user : ${users.content}"></div>
+    <div th:include="modal/modal-manage-user :: fr-edit-user-enable" th:each="user : ${users.content}"></div>
 </div>
 
 <!-- /Modals -->
