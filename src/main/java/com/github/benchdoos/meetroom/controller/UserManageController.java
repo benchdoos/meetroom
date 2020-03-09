@@ -48,7 +48,7 @@ public class UserManageController {
 
         userService.createOtherUser(createOtherUserDto);
 
-        return getMainPage(Pageable.unpaged(), model);
+        return "redirect:/manage/users";
     }
 
 }
