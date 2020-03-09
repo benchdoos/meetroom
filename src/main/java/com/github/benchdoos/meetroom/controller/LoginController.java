@@ -32,7 +32,7 @@ public class LoginController {
     }
 
     @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE') || !isAuthenticated()")
-    @PostMapping(value = "/registration")
+    @PostMapping("/registration")
     public String registerUser(@ModelAttribute("createUserDto") @Valid CreateUserDto createUserDto,
                                Model model) {
         userService.createUser(createUserDto);

@@ -2,6 +2,7 @@ package com.github.benchdoos.meetroom.service;
 
 import com.github.benchdoos.meetroom.config.constants.SecurityConstants;
 import com.github.benchdoos.meetroom.domain.User;
+import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
@@ -56,4 +57,11 @@ public interface UserService extends UserDetailsService {
      * @return pageable of all users
      */
     Page<User> getAllUsers(Pageable pageable);
+
+    /**
+     * Create other user with random password and disabled account that is needed to be activated
+     *
+     * @param createOtherUserDto user dto
+     */
+    void createOtherUser(CreateOtherUserDto createOtherUserDto);
 }

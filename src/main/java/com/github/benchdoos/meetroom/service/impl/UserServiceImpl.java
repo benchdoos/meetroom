@@ -2,7 +2,9 @@ package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.config.constants.SecurityConstants;
 import com.github.benchdoos.meetroom.domain.User;
+import com.github.benchdoos.meetroom.domain.UserInfo;
 import com.github.benchdoos.meetroom.domain.UserRole;
+import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
@@ -32,6 +34,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -41,6 +44,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
+    private static final int RANDOM_PASSWORD_LENGTH = 10;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RolesRepository rolesRepository;
@@ -99,6 +103,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void createOtherUser(CreateOtherUserDto createOtherUserDto) {
+        validateNewUser(createOtherUserDto);
+
+        final String password = alphaNumericString(RANDOM_PASSWORD_LENGTH);
+
+        final UserRole userRole = rolesRepository.findFirstByRole(SecurityConstants.ROLE_USER);
+
+        final User userToSave = User.builder()
+                .username(createOtherUserDto.getUsername())
+                .firstName(createOtherUserDto.getFirstName())
+                .lastName(createOtherUserDto.getLastName())
+                .password(passwordEncoder.encode(password))
+                .roles(Collections.singletonList(userRole))
+                //todo add .needActivation(boolean bool)
+                .enabled(false)
+                .build();
+
+        userRepository.save(userToSave);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         final User user = userRepository.findByUsername(username)
@@ -116,14 +141,14 @@ public class UserServiceImpl implements UserService {
     /**
      * Validate user for creation
      *
-     * @param createUserDto dto with user
+     * @param userInfo dto with user
      */
-    private void validateNewUser(CreateUserDto createUserDto) {
+    private void validateNewUser(UserInfo userInfo) {
 
-        final Optional<User> byUsername = userRepository.findByUsername(createUserDto.getUsername());
+        final Optional<User> byUsername = userRepository.findByUsername(userInfo.getUsername());
 
         if (byUsername.isPresent()) {
-            throw new UserAlreadyExistsException(createUserDto.getUsername());
+            throw new UserAlreadyExistsException(userInfo.getUsername());
         }
     }
 
@@ -153,5 +178,24 @@ public class UserServiceImpl implements UserService {
             });
         }
         return grantList;
+    }
+
+    /**
+     * Random password generator
+     *
+     * @param length password length
+     * @return password
+     */
+    private static String alphaNumericString(int length) {
+        final String symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_-";
+        final Random random = new Random();
+
+        final StringBuilder stringBuilder = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            stringBuilder.append(symbols.charAt(random.nextInt(symbols.length())));
+        }
+
+        return stringBuilder.toString();
     }
 }

@@ -2,6 +2,7 @@ package com.github.benchdoos.meetroom.controller;
 
 import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.UserRole;
+import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.service.UserRoleService;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +14,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -35,6 +39,16 @@ public class UserManageController {
         model.addAttribute("users", allUsers);
         model.addAttribute("roles", allUserRoles);
         return "manage/users";
+    }
+
+    @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE')")
+    @PostMapping("/registration")
+    public String registerOtherUser(@ModelAttribute("createOtherUserDto") @Valid CreateOtherUserDto createOtherUserDto,
+                                    Model model) {
+
+        userService.createOtherUser(createOtherUserDto);
+
+        return getMainPage(Pageable.unpaged(), model);
     }
 
 }
