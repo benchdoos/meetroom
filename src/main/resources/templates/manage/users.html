@@ -50,7 +50,13 @@
 
         <tbody>
         <tr th:each="user : ${users.content}">
-            <th th:text="${user.username}"></th>
+            <th>
+                <span th:text="${user.username}"></span>&nbsp;
+                <i class="fas fa-exclamation-circle"
+                   th:if="${user.needActivation}"
+                   style="color: chocolate"
+                   title="User need activation"></i>
+            </th>
             <th th:text="${user.firstName}"></th>
             <th th:text="${user.lastName}"></th>
             <th style="max-width: 300px;">
