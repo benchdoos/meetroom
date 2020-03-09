@@ -4,6 +4,7 @@ import com.github.benchdoos.meetroom.config.constants.SecurityConstants;
 import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
+import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
@@ -64,4 +65,11 @@ public interface UserService extends UserDetailsService {
      * @param createOtherUserDto user dto
      */
     void createOtherUser(CreateOtherUserDto createOtherUserDto);
+
+    /**
+     * Edit other user
+     *
+     * @param editOtherUserDto user dto
+     */
+    void editOtherUser(EditOtherUserDto editOtherUserDto);
 }

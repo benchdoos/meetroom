@@ -3,6 +3,7 @@ package com.github.benchdoos.meetroom.controller;
 import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.UserRole;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
+import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.service.UserRoleService;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,15 @@ public class UserManageController {
                                     Model model) {
 
         userService.createOtherUser(createOtherUserDto);
+
+        return "redirect:/manage/users";
+    }
+
+    @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE')")
+    @PostMapping("/edit-user")
+    public String editUser(@ModelAttribute("editUser") @Valid EditOtherUserDto editOtherUserDto) {
+
+        userService.editOtherUser(editOtherUserDto);
 
         return "redirect:/manage/users";
     }

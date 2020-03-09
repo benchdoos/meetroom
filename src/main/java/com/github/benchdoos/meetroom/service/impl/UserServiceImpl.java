@@ -6,6 +6,7 @@ import com.github.benchdoos.meetroom.domain.UserInfo;
 import com.github.benchdoos.meetroom.domain.UserRole;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
+import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
@@ -122,6 +123,12 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         userRepository.save(userToSave);
+    }
+
+    @Override
+    public void editOtherUser(EditOtherUserDto editOtherUserDto) {
+        //todo implement
+        throw new UnsupportedOperationException("Not supported yet");
     }
 
     @Override
