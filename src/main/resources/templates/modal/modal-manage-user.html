@@ -198,7 +198,7 @@
                           th:action="|@{/manage/users/reset-password/}${user.id}|"
                           method="post">
                         <span>Are you sure you want to reset user password for
-                            <a th:text="|@${user.username}|" th:href="@{/user(username=${user.username})}"></a>?</span>
+                            <span th:include="modal/modal-user :: fr-user-username"></span>?</span>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -230,9 +230,7 @@
                             <label class="form-check-label">
                                 <input type="checkbox" class="form-check-input" value=""
                                        th:checked="${user.enabled}">
-                                User
-                                <a th:text="|@${user.username}|" th:href="@{/user(username=${user.username})}"></a>
-                                enable
+                                User <span th:include="modal/modal-user :: fr-user-username"></span> enable
                             </label>
                         </div>
                     </form>
