@@ -86,6 +86,7 @@ public class UserServiceImpl implements UserService {
                 .username(createUserDto.getUsername())
                 .password(passwordEncoder.encode(createUserDto.getPassword()))
                 .roles(Collections.singleton(userRole))
+                .needActivation(false) //todo add email-activation, change to true
                 .enabled(true)
                 .build();
 
@@ -116,7 +117,7 @@ public class UserServiceImpl implements UserService {
                 .lastName(createOtherUserDto.getLastName())
                 .password(passwordEncoder.encode(password))
                 .roles(Collections.singletonList(userRole))
-                //todo add .needActivation(boolean bool)
+                .needActivation(true)
                 .enabled(false)
                 .build();
 
