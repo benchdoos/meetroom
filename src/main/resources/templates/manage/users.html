@@ -10,14 +10,14 @@
 </head>
 <body>
 <div class="header" style="display: flex">
-    <div style="width: 100%; display: flex;">
-        <a class="btn btn-light h1" th:href="@{/}" data-toggle="tooltip" data-placement="bottom"
+    <div style="width: 100%; display: flex;" class="h2">
+        <a class="btn btn-light h2" th:href="@{/}" data-toggle="tooltip" data-placement="bottom"
            title="Main page"><i class="fas fa-chevron-left"></i></a>
         &nbsp;
         <h2>Manage users</h2>
         <div sec:authorize="hasAnyAuthority('MANAGE_USERS:USE')" style="display: flex; padding-left: 20px">
             <div>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+                <button type="button" class="btn btn-primary h2" data-toggle="modal" data-target="#exampleModal"
                         title="Create new user">
                     <i class="fas fa-plus"></i>
                 </button>
