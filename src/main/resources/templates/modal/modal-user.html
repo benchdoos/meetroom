@@ -9,7 +9,8 @@
 <body>
 
 <div th:fragment="fr-user-username">
-    <a th:href="@{/user(username=${user.username})}" th:text="|@${user.username}|"></a>
+    <a th:href="@{/user(username=${user.username})}" th:text="|@${user.username}|"
+      data-toggle="tooltip" data-placement="top" th:title="|${user.firstName} ${user.lastName}|"></a>
 </div>
 
 </body>
