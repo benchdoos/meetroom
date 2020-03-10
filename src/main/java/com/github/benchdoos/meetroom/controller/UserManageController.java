@@ -4,6 +4,7 @@ import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.UserRole;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
+import com.github.benchdoos.meetroom.domain.dto.EditUserRoles;
 import com.github.benchdoos.meetroom.service.UserRoleService;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,6 +62,17 @@ public class UserManageController {
             @ModelAttribute("editUser") @Valid EditOtherUserDto editOtherUserDto) {
 
         userService.editOtherUser(id, editOtherUserDto);
+
+        return "redirect:/manage/users";
+    }
+
+    @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE')")
+    @PostMapping("/roles/{id}")
+    public String editUserRoles(@PathVariable("id") UUID id,
+                                @ModelAttribute("editUserRoles") @Valid EditUserRoles editUserRoles,
+                                Principal principal) {
+
+        userService.updateUserRoles(id, editUserRoles, principal);
 
         return "redirect:/manage/users";
     }

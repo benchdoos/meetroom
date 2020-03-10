@@ -5,6 +5,7 @@ import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
+import com.github.benchdoos.meetroom.domain.dto.EditUserRoles;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.security.Principal;
 import java.util.UUID;
 
 /**
@@ -68,9 +70,20 @@ public interface UserService extends UserDetailsService {
 
     /**
      * Edit other user
-     *  @param id user id
+     *
+     * @param id user id
      * @param editOtherUserDto user dto
      * @return updated user info
      */
     UserExtendedInfoDto editOtherUser(UUID id, EditOtherUserDto editOtherUserDto);
+
+    /**
+     * Edit roles of user
+     *
+     * @param id user id
+     * @param editUserRoles new roles
+     * @param principal
+     * @return updated user with roles
+     */
+    UserExtendedInfoDto updateUserRoles(UUID id, EditUserRoles editUserRoles, Principal principal);
 }

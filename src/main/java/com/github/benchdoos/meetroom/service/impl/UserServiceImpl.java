@@ -7,9 +7,11 @@ import com.github.benchdoos.meetroom.domain.UserRole;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
+import com.github.benchdoos.meetroom.domain.dto.EditUserRoles;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
+import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimself;
 import com.github.benchdoos.meetroom.exceptions.UserAlreadyExistsException;
 import com.github.benchdoos.meetroom.exceptions.UserDisabledException;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotNull;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -142,6 +145,46 @@ public class UserServiceImpl implements UserService {
         userMapper.convert(user, userExtendedInfoDto);
 
         return userExtendedInfoDto;
+    }
+
+    @Override
+    public UserExtendedInfoDto updateUserRoles(UUID id, EditUserRoles editUserRoles, Principal principal) {
+        final User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
+        validateAdminRoleChange(principal, user, editUserRoles);
+
+        user.setRoles(editUserRoles.getRoles());
+
+        final User savedUser = userRepository.save(user);
+
+        final UserExtendedInfoDto userExtendedInfoDto = new UserExtendedInfoDto();
+        userMapper.convert(savedUser, userExtendedInfoDto);
+
+        return userExtendedInfoDto;
+    }
+
+    /**
+     * Validates if admin can change role for himself
+     *
+     * @param principal of user
+     * @param user user to update
+     * @param editUserRoles with new roles
+     */
+    private void validateAdminRoleChange(Principal principal, User user, EditUserRoles editUserRoles) {
+        final boolean hasAdminRoleInChange = editUserRoles.getRoles().stream()
+                .anyMatch(role -> role.getRole().equals(SecurityConstants.ROLE_ADMIN));
+        if (!hasAdminRoleInChange) {
+            final boolean userAdminRole = user.getRoles().stream().anyMatch(role -> role.getRole().equals(SecurityConstants.ROLE_ADMIN));
+
+            if (userAdminRole) {
+
+                final boolean isCurrentUserEditingHimself = principal.getName().equals(user.getUsername());
+
+                if (isCurrentUserEditingHimself) { //no need to check if user is admin
+                    throw new AdminCanNotRemoveAdminRoleForHimself(user.getUsername());
+                }
+            }
+        }
     }
 
     /**

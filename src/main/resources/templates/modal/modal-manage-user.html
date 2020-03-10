@@ -149,6 +149,7 @@
     </div>
 </div>
 
+<!--todo https://www.baeldung.com/thymeleaf-list-->
 <div th:fragment="fr-edit-user-roles">
     <div class="modal" tabindex="-1" role="dialog" th:id="|edit-user-roles-modal-${user.id}|">
         <div class="modal-dialog" role="document">
@@ -166,8 +167,10 @@
                           method="post">
                         <div style="overflow-y: auto; height: 300px;">
                             <div class="form-check" style="display: grid;">
-                                <label class="form-check-label" th:each="role : ${roles}">
-                                    <input type="checkbox" class="form-check-input" value="" th:text="${role.name}"
+                                <label class="form-check-label" th:each="role, i : *{roles}">
+                                    <input type="checkbox" class="form-check-input"
+                                           th:value="${role}"
+                                           th:text="${role.name}"
                                            th:checked="${user.roles.contains(role)}">
                                 </label>
                             </div>
