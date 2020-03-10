@@ -47,6 +47,11 @@ server:
     context-path: /meetroom
   port: 8030
 
+logging:
+  level:
+    springframework:
+      web: DEBUG
+
 ---
 
 spring:

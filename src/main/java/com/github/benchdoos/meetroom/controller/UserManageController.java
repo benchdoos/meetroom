@@ -43,6 +43,8 @@ public class UserManageController {
 
         model.addAttribute("users", allUsers);
         model.addAttribute("roles", allUserRoles);
+        model.addAttribute("editUserRoles", new EditUserRoles());
+
         return "manage/users";
     }
 

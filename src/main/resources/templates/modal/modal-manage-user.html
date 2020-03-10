@@ -149,7 +149,8 @@
     </div>
 </div>
 
-<!--todo https://www.baeldung.com/thymeleaf-list-->
+<!--todo https://www.baeldung.com/thymeleaf-list
+         https://stackoverflow.com/questions/49462788/how-to-post-a-list-to-controller-in-thymeleaf-->
 <div th:fragment="fr-edit-user-roles">
     <div class="modal" tabindex="-1" role="dialog" th:id="|edit-user-roles-modal-${user.id}|">
         <div class="modal-dialog" role="document">
@@ -163,11 +164,14 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form th:id="|edit-user-roles-form-${user.id}|" th:action="|@{/manage/users/roles/}${user.id}|"
-                          method="post">
+                    <form th:id="|edit-user-roles-form-${user.id}|"
+                          th:action="|@{/manage/users/roles/}${user.id}|"
+                          method="post"
+                          th:object="${editUserRoles}">
+
                         <div style="overflow-y: auto; height: 300px;">
                             <div class="form-check" style="display: grid;">
-                                <label class="form-check-label" th:each="role, i : *{roles}">
+                                <label class="form-check-label" th:each="role, i : ${roles}">
                                     <input type="checkbox" class="form-check-input"
                                            th:value="${role}"
                                            th:text="${role.name}"
