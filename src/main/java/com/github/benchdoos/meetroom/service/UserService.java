@@ -68,8 +68,9 @@ public interface UserService extends UserDetailsService {
 
     /**
      * Edit other user
-     *
+     *  @param id user id
      * @param editOtherUserDto user dto
+     * @return
      */
-    void editOtherUser(EditOtherUserDto editOtherUserDto);
+    UserExtendedInfoDto editOtherUser(UUID id, EditOtherUserDto editOtherUserDto);
 }

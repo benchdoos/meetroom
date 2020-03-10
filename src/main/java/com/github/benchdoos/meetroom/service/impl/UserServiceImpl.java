@@ -13,6 +13,7 @@ import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.exceptions.UserAlreadyExistsException;
 import com.github.benchdoos.meetroom.exceptions.UserDisabledException;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
+import com.github.benchdoos.meetroom.exceptions.UserWithSuchUsernameAlreadyExists;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.repository.RolesRepository;
 import com.github.benchdoos.meetroom.repository.UserRepository;
@@ -126,9 +127,41 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void editOtherUser(EditOtherUserDto editOtherUserDto) {
-        //todo implement
-        throw new UnsupportedOperationException("Not supported yet");
+    public UserExtendedInfoDto editOtherUser(UUID id, EditOtherUserDto editOtherUserDto) {
+        final User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
+        validateUsernameChange(editOtherUserDto, user);
+
+        user.setUsername(editOtherUserDto.getUsername());
+        user.setFirstName(editOtherUserDto.getFirstName());
+        user.setLastName(editOtherUserDto.getLastName());
+
+        final User savedUser = userRepository.save(user);
+
+        final UserExtendedInfoDto userExtendedInfoDto = new UserExtendedInfoDto();
+        userMapper.convert(user, userExtendedInfoDto);
+
+        return userExtendedInfoDto;
+    }
+
+    /**
+     * Validates username change
+     *
+     * @param editOtherUserDto dto with username to change
+     * @param user user from db
+     */
+    private void validateUsernameChange(EditOtherUserDto editOtherUserDto, User user) {
+
+        if (!user.getUsername().equals(editOtherUserDto.getUsername())) {
+
+            final Optional<User> byUsername = userRepository.findByUsername(editOtherUserDto.getUsername());
+
+            if (byUsername.isPresent()) {
+                if (!user.getId().equals(byUsername.get().getId())) {
+                    throw new UserWithSuchUsernameAlreadyExists(editOtherUserDto.getUsername());
+                }
+            }
+        }
     }
 
     @Override

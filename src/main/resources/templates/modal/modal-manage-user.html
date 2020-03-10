@@ -118,7 +118,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form th:id="|edit-user-form-${user.id}|" th:action="|@{/manage/users/}${user.id}|" method="post">
+                    <form th:id="|edit-user-form-${user.id}|" th:action="| @{/manage/users/}${user.id} |" method="post">
                         <div class="form-group">
                             <label>Username:</label>
                             <input type="text" class="form-control" name="username" placeholder="Username"
