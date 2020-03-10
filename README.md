@@ -78,6 +78,7 @@ Admins can:
 
 - create, edit, disable meeting rooms
 - create, edit and delete **all** events
+- act all management options
 
 Users can:
 
