@@ -110,7 +110,8 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit user (<span th:text="${user.username}"></span>)
+                    <h5 class="modal-title">
+                        Edit user: <span th:include="modal/modal-user :: fr-user-username"></span>
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -153,8 +154,9 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit user roles (<span
-                            th:text="${user.username}"></span>)</h5>
+                    <h5 class="modal-title">
+                        Edit user roles: <span th:include="modal/modal-user :: fr-user-username"></span>
+                    </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
