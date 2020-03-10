@@ -70,7 +70,7 @@ public interface UserService extends UserDetailsService {
      * Edit other user
      *  @param id user id
      * @param editOtherUserDto user dto
-     * @return
+     * @return updated user info
      */
     UserExtendedInfoDto editOtherUser(UUID id, EditOtherUserDto editOtherUserDto);
 }
