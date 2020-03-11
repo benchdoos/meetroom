@@ -28,7 +28,8 @@
                 <i th:class="${page.getIcon()}"></i>
             </div>
             <span class="text-muted" th:text="${page.getDescription()}"></span>
-            <br>
+        </div>
+        <div class="card-footer">
             <a th:href="|@{/manage/}${page.getPath()}|" class="card-link">Open</a>
         </div>
     </div>
