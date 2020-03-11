@@ -1,5 +1,6 @@
 package com.github.benchdoos.meetroom.controller;
 
+import com.github.benchdoos.meetroom.config.properties.ManagePageProperties;
 import com.github.benchdoos.meetroom.service.ModelViewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,7 @@ import java.util.UUID;
 @RequestMapping("/")
 public class IndexController {
     private final ModelViewService modelViewService;
+    private final ManagePageProperties managePageProperties;
 
     @GetMapping
     public String getAllAvailableRooms(@PageableDefault(sort = "name", direction = Sort.Direction.ASC, size = 9) Pageable pageable, Model model) {
@@ -50,5 +52,12 @@ public class IndexController {
         }
 
         return modelViewService.getMeetingRoomById(uuid, null, model);
+    }
+
+    @PreAuthorize("hasAnyAuthority('MANAGE:USE','MANAGE_USERS:USE')")
+    @GetMapping("/manage")
+    public String getManagePage(Model model) {
+        model.addAttribute("pages", managePageProperties.getPages());
+        return "manage";
     }
 }

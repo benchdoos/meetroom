@@ -15,6 +15,12 @@ management:
 meetroom:
   minimum-reservation-value: 30 #in minutes
   maximum-reservation-value: 1440 #24h in minutes
+
+manage-pages:
+  pages:
+    - name: Manage users
+      path: users
+      icon: fas fa-user-cog
 ---
 
 spring:
