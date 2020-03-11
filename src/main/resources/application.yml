@@ -22,10 +22,10 @@ manage-pages:
       path: users
       description: "Manage users: register, edit, disable users. Manage user roles and reset password."
       icon: fas fa-user-cog
-    - name: Manage roles
-      path: roles
-      description: "Manage roles: create and edit roles, set permissions to each role."
-      icon: fas fa-user-tag
+#    - name: Manage roles
+#      path: roles
+#      description: "Manage roles: create and edit roles, set permissions to each role."
+#      icon: fas fa-user-tag
 ---
 
 spring:
