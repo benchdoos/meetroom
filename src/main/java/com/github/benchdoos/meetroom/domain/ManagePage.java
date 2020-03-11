@@ -29,6 +29,11 @@ public class ManagePage {
     private String path;
 
     /**
+     * Description of page
+     */
+    private String description;
+
+    /**
      * Icon from font awesome
      * @see <a href="http://fontawesome.io/icons/">Font awesome page</a>
      */

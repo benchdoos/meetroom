@@ -20,6 +20,7 @@ manage-pages:
   pages:
     - name: Manage users
       path: users
+      description: "Manage users: register, edit, disable users. Manage user roles and reset password."
       icon: fas fa-user-cog
 ---
 
