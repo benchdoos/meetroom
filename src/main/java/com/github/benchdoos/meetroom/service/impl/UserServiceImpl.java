@@ -3,7 +3,6 @@ package com.github.benchdoos.meetroom.service.impl;
 import com.github.benchdoos.meetroom.config.constants.SecurityConstants;
 import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
 import com.github.benchdoos.meetroom.domain.User;
-import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
 import com.github.benchdoos.meetroom.domain.UserRole;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
@@ -13,6 +12,7 @@ import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
+import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
 import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimself;
 import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePassword;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpired;
@@ -32,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,6 +41,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
@@ -340,6 +343,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public Page<User> searchByUsernameAndNames(String request, Pageable pageable) {
+        return userRepository.findAll(prepareUserSearchByUsernameOrLastAndFirstNameSpecification(request), pageable);
+    }
+
     /**
      * Transforms list of {@link UserRole} to {@link GrantedAuthority} final List<>  = new ();
      *
@@ -384,5 +392,38 @@ public class UserServiceImpl implements UserService {
      */
     private User getUser(@NotNull UUID id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    }
+
+    /**
+     * Create {@link Specification} to look for users with username or last or first name are like request.
+     *
+     * @return specification with needed queries
+     */
+    private Specification<User> prepareUserSearchByUsernameOrLastAndFirstNameSpecification(String request) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            final String requestPattern = "%" + request.toUpperCase() + "%";
+
+            final Predicate username = criteriaBuilder.like(criteriaBuilder.upper(root.get("username")), requestPattern);
+
+            final Expression<String> lastNameAndFirstNameExpression = criteriaBuilder.upper(
+                    criteriaBuilder.concat(
+                            criteriaBuilder.concat(root.get("lastName"), " "),
+                            root.get("firstName")
+                    )
+            );
+
+            final Predicate lastNameAndFirstNamePredicate = criteriaBuilder.like(lastNameAndFirstNameExpression, requestPattern);
+
+            final Expression<String> firstNameAndLastNameExpression = criteriaBuilder.upper(
+                    criteriaBuilder.concat(
+                            criteriaBuilder.concat(root.get("firstName"), " "),
+                            root.get("lastName")
+                    )
+            );
+
+            final Predicate firstNameAndLastNamePredicate = criteriaBuilder.like(firstNameAndLastNameExpression, requestPattern);
+
+            return criteriaBuilder.or(username, firstNameAndLastNamePredicate, lastNameAndFirstNamePredicate);
+        };
     }
 }

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
@@ -40,11 +41,16 @@ public class UserManageController {
     @GetMapping
     public String getMainPage(@PageableDefault Pageable pageable, Model model) {
         final Page<User> allUsers = userService.getAllUsers(pageable);
-        final List<UserRole> allUserRoles = userRoleService.getAllUserRoles(Sort.by(Sort.Order.asc("name")));
+        return prepareManageUserPage(model, allUsers);
+    }
 
-        model.addAttribute("users", allUsers);
-        model.addAttribute("roles", allUserRoles);
-        return "manage/users";
+    @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE')")
+    @GetMapping("/search")
+    public String searchUsers(@PathParam("request") String request,
+                              @PageableDefault Pageable pageable,
+                              Model model) {
+        final Page<User> usersBySearch = userService.searchByUsernameAndNames(request, pageable);
+        return prepareManageUserPage(model, usersBySearch);
     }
 
     @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE')")
@@ -60,7 +66,7 @@ public class UserManageController {
     @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE')")
     @PostMapping("/{id}")
     public String editUser(@PathVariable("id") UUID id,
-            @ModelAttribute("editUser") @Valid EditOtherUserDto editOtherUserDto) {
+                           @ModelAttribute("editUser") @Valid EditOtherUserDto editOtherUserDto) {
 
         userService.editOtherUser(id, editOtherUserDto);
 
@@ -98,4 +104,19 @@ public class UserManageController {
         return "redirect:/manage/users";
     }
 
+
+    /**
+     * Creates manage page with given users
+     *
+     * @param model model
+     * @param users users to show
+     * @return manage users page
+     */
+    private String prepareManageUserPage(Model model, Page<User> users) {
+        final List<UserRole> allUserRoles = userRoleService.getAllUserRoles(Sort.by(Sort.Order.asc("name")));
+
+        model.addAttribute("users", users);
+        model.addAttribute("roles", allUserRoles);
+        return "manage/users";
+    }
 }

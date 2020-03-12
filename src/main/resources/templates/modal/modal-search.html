@@ -9,10 +9,10 @@
 <body>
 <div th:fragment="fr-search-user">
     <form class="form-inline" id="search-user" sec:authorize="isAuthenticated()"
-          th:action="|@{/manage/users/search}|" method="post"
+          th:action="|@{/manage/users/search(request=${request})}|" method="get"
           style="display: -webkit-inline-box;">
         <div class="input-group mb-3">
-            <input type="text" class="form-control" id="userCredentials" placeholder="Search user">
+            <input type="text" class="form-control" id="userCredentials" placeholder="Search user" name="request">
             <div class="input-group-append">
                 <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
             </div>

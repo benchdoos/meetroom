@@ -20,7 +20,7 @@ import java.util.UUID;
 /**
  * Service that gives ability to operate with {@link User}
  */
-public interface UserService extends UserDetailsService {
+public interface UserService extends UserDetailsService{
 
     /**
      * Get user by username or throws {@link UserNotFoundException}
@@ -121,4 +121,13 @@ public interface UserService extends UserDetailsService {
      * @param principal principal
      */
     void updateUserEnable(UUID id, boolean enabled, Principal principal);
+
+    /**
+     * Get users by username and last and first names
+     *
+     * @param request request string
+     * @param pageable pageable
+     * @return users
+     */
+    Page<User> searchByUsernameAndNames(String request, Pageable pageable);
 }
