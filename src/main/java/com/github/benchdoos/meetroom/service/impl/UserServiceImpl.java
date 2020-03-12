@@ -11,6 +11,7 @@ import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditUserRoles;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimself;
 import com.github.benchdoos.meetroom.exceptions.UserAlreadyExistsException;
@@ -136,7 +137,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserExtendedInfoDto editOtherUser(UUID id, EditOtherUserDto editOtherUserDto) {
-        final User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        final User user = getUser(id);
 
         validateUsernameChange(editOtherUserDto, user);
 
@@ -154,7 +155,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserExtendedInfoDto updateUserRoles(UUID id, EditUserRoles editUserRoles, Principal principal) {
-        final User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        final User user = getUser(id);
 
         validateAdminRoleChange(principal, user, editUserRoles);
 
@@ -173,7 +174,7 @@ public class UserServiceImpl implements UserService {
     public void callForUserPasswordReset(@NotNull UUID id, @NotNull Principal principal) {
         final ZonedDateTime requestTime = ZonedDateTime.now();
 
-        final User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        final User user = getUser(id);
 
         final Collection<PasswordResetRequest> allActivePasswordResetRequests =
                 passwordResetRequestRepository.findAllUserForAndExpiresIsAfterAndActiveIsTrue(user, requestTime);
@@ -194,6 +195,15 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         passwordResetRequestRepository.save(passwordResetRequest);
+    }
+
+    @Override
+    public void changeUserPassword(UUID id, UserPasswordChangeDto userPasswordChangeDto) {
+        final User user = getUser(id);
+
+        user.setPassword(passwordEncoder.encode(userPasswordChangeDto.getPassword()));
+
+        userRepository.save(user);
     }
 
     /**
@@ -314,5 +324,15 @@ public class UserServiceImpl implements UserService {
         }
 
         return stringBuilder.toString();
+    }
+
+    /**
+     * Get user or throw exception
+     *
+     * @param id user id
+     * @return user
+     */
+    private User getUser(@NotNull UUID id) {
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 }

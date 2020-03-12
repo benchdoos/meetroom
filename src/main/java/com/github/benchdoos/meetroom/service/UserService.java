@@ -7,6 +7,7 @@ import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditUserRoles;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
 import org.springframework.data.domain.Page;
@@ -95,4 +96,12 @@ public interface UserService extends UserDetailsService {
      */
     void callForUserPasswordReset(UUID id, Principal principal);
 
+
+    /**
+     * Change user password
+     *
+     * @param id user id
+     * @param userPasswordChangeDto dto with new password
+     */
+    void changeUserPassword(UUID id, UserPasswordChangeDto userPasswordChangeDto);
 }
