@@ -10,6 +10,6 @@ import java.util.UUID;
 
 public interface PasswordResetRequestRepository extends JpaRepository<PasswordResetRequest, UUID> {
 
-    Collection<PasswordResetRequest> findAllUserForAndExpiresIsAfterAndActiveIsTrue(User user, ZonedDateTime now);
+    Collection<PasswordResetRequest> findByRequestedForAndExpiresIsAfterAndActiveIsTrue(User user, ZonedDateTime now);
 
 }

@@ -14,6 +14,7 @@ import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimself;
+import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePassword;
 import com.github.benchdoos.meetroom.exceptions.UserAlreadyExistsException;
 import com.github.benchdoos.meetroom.exceptions.UserDisabledException;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
@@ -177,7 +178,7 @@ public class UserServiceImpl implements UserService {
         final User user = getUser(id);
 
         final Collection<PasswordResetRequest> allActivePasswordResetRequests =
-                passwordResetRequestRepository.findAllUserForAndExpiresIsAfterAndActiveIsTrue(user, requestTime);
+                passwordResetRequestRepository.findByRequestedForAndExpiresIsAfterAndActiveIsTrue(user, requestTime);
 
         if (!CollectionUtils.isEmpty(allActivePasswordResetRequests)) {
             allActivePasswordResetRequests.forEach(passwordResetRequest -> passwordResetRequest.setActive(false));
@@ -198,8 +199,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeUserPassword(UUID id, UserPasswordChangeDto userPasswordChangeDto) {
+    public void changeUserPassword(UUID id, UserPasswordChangeDto userPasswordChangeDto, Principal principal) {
         final User user = getUser(id);
+
+        final User changer = userRepository.findByUsername(principal.getName()).orElseThrow(UserNotFoundException::new);
+
+        if (!user.getId().equals(changer.getId())) {
+            throw new OnlyAccountOwnerCanChangePassword(user.getUsername(), changer.getUsername());
+        }
 
         user.setPassword(passwordEncoder.encode(userPasswordChangeDto.getPassword()));
 
