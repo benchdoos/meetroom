@@ -1,6 +1,6 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
-import com.github.benchdoos.meetroom.domain.UserInfo;
+import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
 import com.github.benchdoos.meetroom.domain.annotations.Username;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

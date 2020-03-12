@@ -1,4 +1,4 @@
-package com.github.benchdoos.meetroom.domain;
+package com.github.benchdoos.meetroom.domain.interfaces;
 
 public interface PasswordConfirmation {
 

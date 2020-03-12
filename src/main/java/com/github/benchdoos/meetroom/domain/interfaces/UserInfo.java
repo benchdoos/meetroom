@@ -1,4 +1,4 @@
-package com.github.benchdoos.meetroom.domain;
+package com.github.benchdoos.meetroom.domain.interfaces;
 
 /**
  * Interface that has minimal user info

@@ -1,6 +1,6 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
-import com.github.benchdoos.meetroom.domain.PasswordConfirmation;
+import com.github.benchdoos.meetroom.domain.interfaces.PasswordConfirmation;
 import com.github.benchdoos.meetroom.domain.annotations.PasswordMatches;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

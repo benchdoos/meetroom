@@ -3,7 +3,7 @@ package com.github.benchdoos.meetroom.service.impl;
 import com.github.benchdoos.meetroom.config.constants.SecurityConstants;
 import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
 import com.github.benchdoos.meetroom.domain.User;
-import com.github.benchdoos.meetroom.domain.UserInfo;
+import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
 import com.github.benchdoos.meetroom.domain.UserRole;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
