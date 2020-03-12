@@ -15,6 +15,9 @@ import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimself;
 import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePassword;
+import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpired;
+import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestIsNotActiveAnyMore;
+import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.UserAlreadyExistsException;
 import com.github.benchdoos.meetroom.exceptions.UserDisabledException;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
@@ -209,6 +212,31 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setPassword(passwordEncoder.encode(userPasswordChangeDto.getPassword()));
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public void resetUserPasswordByResetRequest(UUID id, UserPasswordChangeDto userPasswordChangeDto) {
+        final PasswordResetRequest passwordResetRequest = passwordResetRequestRepository.findById(id)
+                .orElseThrow(PasswordResetRequestNotFoundException::new);
+
+        if (!passwordResetRequest.isActive()) {
+            throw new PasswordResetRequestIsNotActiveAnyMore();
+        }
+
+        if (ZonedDateTime.now().isAfter(passwordResetRequest.getExpires())) {
+            throw new PasswordResetRequestExpired();
+        }
+
+        final User user = passwordResetRequest.getRequestedFor();
+
+        user.setPassword(passwordEncoder.encode(userPasswordChangeDto.getPassword()));
+
+        passwordResetRequest.setActive(false);
+
+        passwordResetRequestRepository.save(passwordResetRequest);
 
         userRepository.save(user);
     }

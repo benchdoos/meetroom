@@ -104,4 +104,12 @@ public interface UserService extends UserDetailsService {
      * @param userPasswordChangeDto dto with new password
      */
     void changeUserPassword(UUID id, UserPasswordChangeDto userPasswordChangeDto, Principal principal);
+
+    /**
+     * Change user password by reset request
+     *
+     * @param id request id
+     * @param userPasswordChangeDto dto with new password
+     */
+    void resetUserPasswordByResetRequest(UUID id, UserPasswordChangeDto userPasswordChangeDto);
 }
