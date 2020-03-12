@@ -112,4 +112,13 @@ public interface UserService extends UserDetailsService {
      * @param userPasswordChangeDto dto with new password
      */
     void resetUserPasswordByResetRequest(UUID id, UserPasswordChangeDto userPasswordChangeDto);
+
+    /**
+     * Update user enable. User can not update himself.
+     *
+     * @param id id of user
+     * @param enabled enabled
+     * @param principal principal
+     */
+    void updateUserEnable(UUID id, boolean enabled, Principal principal);
 }

@@ -19,6 +19,7 @@ import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpired;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestIsNotActiveAnyMore;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.UserAlreadyExistsException;
+import com.github.benchdoos.meetroom.exceptions.UserCanNotUpdateThisDataByHimself;
 import com.github.benchdoos.meetroom.exceptions.UserDisabledException;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.UserWithSuchUsernameAlreadyExists;
@@ -133,7 +134,7 @@ public class UserServiceImpl implements UserService {
                 .password(passwordEncoder.encode(password))
                 .roles(Collections.singletonList(userRole))
                 .needActivation(true)
-                .enabled(false)
+                .enabled(true)
                 .build();
 
         userRepository.save(userToSave);
@@ -231,7 +232,6 @@ public class UserServiceImpl implements UserService {
         }
 
         final User user = passwordResetRequest.getRequestedFor();
-        user.setEnabled(true); //todo maybe move to other place
         user.setNeedActivation(false);
 
         user.setPassword(passwordEncoder.encode(userPasswordChangeDto.getPassword()));
@@ -239,6 +239,19 @@ public class UserServiceImpl implements UserService {
         passwordResetRequest.setActive(false);
 
         passwordResetRequestRepository.save(passwordResetRequest);
+
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUserEnable(@NotNull UUID id, boolean enabled, @NotNull Principal principal) {
+        final User user = getUser(id);
+
+        if (principal.getName().equals(user.getUsername())) {
+            throw new UserCanNotUpdateThisDataByHimself();
+        }
+
+        user.setEnabled(enabled);
 
         userRepository.save(user);
     }

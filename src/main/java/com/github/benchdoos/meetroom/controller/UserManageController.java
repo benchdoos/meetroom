@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -82,6 +83,17 @@ public class UserManageController {
     public String resetUserPassword(@PathVariable("id") UUID id, Principal principal) {
 
         userService.callForUserPasswordReset(id, principal);
+
+        return "redirect:/manage/users";
+    }
+
+    @PreAuthorize(("hasAnyAuthority('MANAGE_USERS:USE')"))
+    @PostMapping("/switch-enable/{id}")
+    public String updateUserEnabled(@PathVariable("id") UUID id,
+                                    @RequestParam boolean enabled,
+                                    Principal principal) {
+
+        userService.updateUserEnable(id, enabled, principal);
 
         return "redirect:/manage/users";
     }
