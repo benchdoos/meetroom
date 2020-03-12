@@ -1,5 +1,6 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
+import com.github.benchdoos.meetroom.domain.PasswordConfirmation;
 import com.github.benchdoos.meetroom.domain.annotations.PasswordMatches;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @Data
 @Builder
-public class UserPasswordChangeDto {
+public class UserPasswordChangeDto implements PasswordConfirmation {
 
     @NotBlank
     private String password;

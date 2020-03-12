@@ -53,14 +53,4 @@ public class LoginController {
 
         return "redirect:/login";
     }
-
-    @PreAuthorize("isAnonymous()")
-    @PostMapping("/reset-password/{id}")
-    public String resetPasswordByResetRequest(@PathVariable("id") UUID id,
-                                              @Valid UserPasswordChangeDto userPasswordChangeDto) {
-
-        userService.resetUserPasswordByResetRequest(id, userPasswordChangeDto);
-
-        return "redirect:/login";
-    }
 }

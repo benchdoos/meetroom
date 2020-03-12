@@ -231,6 +231,8 @@ public class UserServiceImpl implements UserService {
         }
 
         final User user = passwordResetRequest.getRequestedFor();
+        user.setEnabled(true); //todo maybe move to other place
+        user.setNeedActivation(false);
 
         user.setPassword(passwordEncoder.encode(userPasswordChangeDto.getPassword()));
 
