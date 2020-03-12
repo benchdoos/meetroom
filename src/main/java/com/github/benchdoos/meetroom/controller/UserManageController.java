@@ -77,4 +77,13 @@ public class UserManageController {
         return "redirect:/manage/users";
     }
 
+    @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE')")
+    @PostMapping("/reset-password/{id}")
+    public String resetUserPassword(@PathVariable("id") UUID id, Principal principal) {
+
+        userService.callForUserPasswordReset(id, principal);
+
+        return "redirect:/manage/users";
+    }
+
 }

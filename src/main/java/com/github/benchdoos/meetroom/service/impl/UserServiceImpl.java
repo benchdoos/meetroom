@@ -1,6 +1,7 @@
 package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.config.constants.SecurityConstants;
+import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
 import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.UserInfo;
 import com.github.benchdoos.meetroom.domain.UserRole;
@@ -17,6 +18,7 @@ import com.github.benchdoos.meetroom.exceptions.UserDisabledException;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.UserWithSuchUsernameAlreadyExists;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
+import com.github.benchdoos.meetroom.repository.PasswordResetRequestRepository;
 import com.github.benchdoos.meetroom.repository.RolesRepository;
 import com.github.benchdoos.meetroom.repository.UserRepository;
 import com.github.benchdoos.meetroom.service.UserService;
@@ -32,8 +34,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -53,6 +57,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RolesRepository rolesRepository;
+    private final PasswordResetRequestRepository passwordResetRequestRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -112,7 +117,7 @@ public class UserServiceImpl implements UserService {
     public void createOtherUser(CreateOtherUserDto createOtherUserDto) {
         validateNewUser(createOtherUserDto);
 
-        final String password = alphaNumericString(RANDOM_PASSWORD_LENGTH);
+        final String password = generateRandomPassword(RANDOM_PASSWORD_LENGTH);
 
         final UserRole userRole = rolesRepository.findFirstByRole(SecurityConstants.ROLE_USER);
 
@@ -161,6 +166,34 @@ public class UserServiceImpl implements UserService {
         userMapper.convert(savedUser, userExtendedInfoDto);
 
         return userExtendedInfoDto;
+    }
+
+    @Transactional
+    @Override
+    public void callForUserPasswordReset(@NotNull UUID id, @NotNull Principal principal) {
+        final ZonedDateTime requestTime = ZonedDateTime.now();
+
+        final User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
+        final Collection<PasswordResetRequest> allActivePasswordResetRequests =
+                passwordResetRequestRepository.findAllUserForAndExpiresIsAfterAndActiveIsTrue(user, requestTime);
+
+        if (!CollectionUtils.isEmpty(allActivePasswordResetRequests)) {
+            allActivePasswordResetRequests.forEach(passwordResetRequest -> passwordResetRequest.setActive(false));
+            passwordResetRequestRepository.saveAll(allActivePasswordResetRequests);
+        }
+
+        final User byUsername = userRepository.findByUsername(principal.getName()).orElseThrow(UserNotFoundException::new);
+
+        final PasswordResetRequest passwordResetRequest = PasswordResetRequest.builder()
+                .requestedBy(byUsername)
+                .requestedFor(user)
+                .active(true)
+                .requested(requestTime)
+                .expires(requestTime.plusDays(1))
+                .build();
+
+        passwordResetRequestRepository.save(passwordResetRequest);
     }
 
     /**
@@ -270,7 +303,7 @@ public class UserServiceImpl implements UserService {
      * @param length password length
      * @return password
      */
-    private static String alphaNumericString(int length) {
+    private static String generateRandomPassword(int length) {
         final String symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_-";
         final Random random = new Random();
 

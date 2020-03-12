@@ -39,6 +39,6 @@ public class UserDetailsDto extends User implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return isEnabled();
+        return super.isNeedActivation();
     }
 }

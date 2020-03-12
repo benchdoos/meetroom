@@ -82,8 +82,17 @@ public interface UserService extends UserDetailsService {
      *
      * @param id user id
      * @param editUserRoles new roles
-     * @param principal
+     * @param principal principal
      * @return updated user with roles
      */
     UserExtendedInfoDto updateUserRoles(UUID id, EditUserRoles editUserRoles, Principal principal);
+
+    /**
+     * Call for user password reset.
+     *
+     * @param id user id
+     * @param principal principal
+     */
+    void callForUserPasswordReset(UUID id, Principal principal);
+
 }
