@@ -171,6 +171,7 @@
                                 <ul>
                                     <li th:each="role : ${roles}">
                                         <div class="ui checkbox" th:for="|role-checkbox-${role.id}|">
+                                            <!-- FIXME: checked is not working... wtf?-->
                                             <input type="checkbox"
                                                    th:id="|role-checkbox-${role.id}|"
                                                    th:field="*{roles}"
