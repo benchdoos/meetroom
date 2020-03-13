@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
+    <link href="../../static/css/custom.css" th:href="@{/static/css/custom.css}" rel="stylesheet">
+</head>
+<body>
+<!--fixme: change to dynamically changed fragment-->
+
+<div th:fragment="fr-create-user">
+    <form th:action="@{/registration}" method="post">
+        <div class="form-group">
+            <label class="sr-only">First name</label>
+            <div class="input-group mb-2">
+                <input type="text" class="form-control" name="firstName"
+                       placeholder="First name">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="sr-only" for="lastName">Last name</label>
+            <div class="input-group mb-2">
+                <input type="text" class="form-control" id="lastName" name="lastName"
+                       placeholder="Last name">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="sr-only" for="inlineFormInputGroup">Username</label>
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">@</div>
+                </div>
+                <input type="text" class="form-control" id="inlineFormInputGroup" name="username"
+                       placeholder="Username">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="passwordInput" hidden></label>
+            <input type="password" class="form-control" id="passwordInput" name="password"
+                   placeholder="Password">
+        </div>
+
+        <div class="form-group">
+            <label for="passwordConfirm" hidden></label>
+            <input type="password" class="form-control" id="passwordConfirm" name="confirmPassword"
+                   placeholder="Password">
+        </div>
+        <a th:href="@{/}" class="btn btn-secondary"><i class="fas fa-chevron-left"></i></a>
+        <button type="submit" class="btn btn-primary" style="float: right">Submit</button>
+    </form>
+</div>
+
+<div th:fragment="fr-create-user-modal">
+    <div id="create-user-modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create new user</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="create-other-user" th:action="@{/manage/users/registration}" method="post">
+                        <div class="form-group">
+                            <label class="sr-only">First name</label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" name="firstName"
+                                       placeholder="First name">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="sr-only" for="lastName">Last name</label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" name="lastName"
+                                       placeholder="Last name">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="sr-only" for="inlineFormInputGroup">Username</label>
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">@</div>
+                                </div>
+                                <input type="text" class="form-control" name="username"
+                                       placeholder="Username">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" form="create-other-user" class="btn btn-primary">
+                        Register user
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="fr-edit-user">
+    <div class="modal" tabindex="-1" role="dialog" th:id="|edit-user-modal-${user.id}|">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Edit user: <span th:include="modal/modal-user :: fr-user-username"></span>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:id="|edit-user-form-${user.id}|" th:action="| @{/manage/users/}${user.id} |" method="post">
+                        <div class="form-group">
+                            <label>Username:</label>
+                            <input type="text" class="form-control" name="username" placeholder="Username"
+                                   th:value="${user.username}">
+                        </div>
+                        <div class="form-group">
+                            <label>First name:</label>
+                            <input type="text" class="form-control" name="firstName"
+                                   placeholder="First name"
+                                   th:value="${user.firstName}">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last name:</label>
+                            <input type="text" class="form-control" name="lastName"
+                                   placeholder="Last name"
+                                   th:value="${user.lastName}">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" th:form="|edit-user-form-${user.id}|" class="btn btn-primary">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="fr-edit-user-roles">
+    <div class="modal" tabindex="-1" role="dialog" th:id="|edit-user-roles-modal-${user.id}|">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Edit user roles: <span th:include="modal/modal-user :: fr-user-username"></span>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:id="|edit-user-roles-form-${user.id}|" th:action="|@{/manage/users/roles/}${user.id}|"
+                          th:object="${editUserRolesDto}"
+                          method="post">
+                        <div style="overflow-y: auto; height: 300px;">
+                            <div class="form-check" style="display: grid;">
+                                <div class="ui checkbox" th:each="role : ${roles}">
+                                    <input type="checkbox"
+                                           th:id="|role-checkbox-${role.id}|"
+                                           name="roles"
+                                           th:value="${role.getId()}"
+                                           th:checked="${user.roles.contains(role)}">
+                                    <label th:for="|role-checkbox-${role.id}|" th:text="${role.name}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" th:form="|edit-user-roles-form-${user.id}|" class="btn btn-primary">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="fr-reset-user-password">
+    <div class="modal" tabindex="-1" role="dialog" th:id="|reset-user-password-modal-${user.id}|">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reset user password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:id="|reset-user-password-form-${user.id}|"
+                          th:action="|@{/manage/users/reset-password/}${user.id}|"
+                          method="post">
+                        <span>Are you sure you want to reset user password for
+                            <span th:include="modal/modal-user :: fr-user-username"></span>?</span>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" th:form="|reset-user-password-form-${user.id}|" class="btn btn-danger">
+                        Reset password
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="fr-edit-user-enable">
+    <div class="modal" tabindex="-1" role="dialog" th:id="|edit-user-enable-modal-${user.id}|">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Switch user enable</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:id="|edit-user-enable-form-${user.id}|"
+                          th:action="|@{/manage/users/switch-enable/}${user.id}|"
+                          th:object="${editUserEnableDto}"
+                          method="post">
+                        <div class="form-check" style="display: grid;">
+                            <label class="form-check-label">
+                                <input type="checkbox"
+                                       th:id="|user-enable-checkbox-${user.id}|"
+                                       name="enabled"
+                                       value="true"
+                                       th:checked="${user.enabled}">
+                                <input type="hidden" name="enabled" value="false"/>
+
+                                User <span th:include="modal/modal-user :: fr-user-username"></span> enable
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" th:form="|edit-user-enable-form-${user.id}|" class="btn btn-primary">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

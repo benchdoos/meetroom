@@ -12,13 +12,11 @@
     <div style="width: 100%">
         <div>
             <a class="btn btn-info h1" th:href="@{/}"><i class="fas fa-chevron-left"></i></a>
-            <a th:href="@{'/' + ${room.id}}" style="color: white;">
-                <span th:text="${room.name}" class="h3"></span>
-            </a>
+            <a th:href="@{'/' + ${room.id}}" class="h3" style="color: white;" th:text="${room.name}"></a>
             <span class="h3">
-                &nbsp;
                 <span th:class="|${room.enabled ? 'badge badge-primary' : 'badge badge-danger'}|"
-                      th:text="${room.enabled ? 'enabled' : 'disabled'}"></span>
+                      th:text="${room.enabled ? 'enabled' : 'disabled'}"
+                th:hidden="${room.enabled}"></span>
             </span>
 
             <p th:text="${room.location}" class="h6"></p>

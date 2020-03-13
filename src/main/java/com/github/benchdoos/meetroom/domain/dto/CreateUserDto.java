@@ -1,6 +1,8 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
+import com.github.benchdoos.meetroom.domain.interfaces.PasswordConfirmation;
 import com.github.benchdoos.meetroom.domain.User;
+import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
 import com.github.benchdoos.meetroom.domain.annotations.PasswordMatches;
 import com.github.benchdoos.meetroom.domain.annotations.Username;
 import lombok.AllArgsConstructor;
@@ -19,7 +21,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @Data
 @Builder
-public class CreateUserDto {
+public class CreateUserDto implements UserInfo, PasswordConfirmation {
 
     @NotBlank
     private String firstName;
