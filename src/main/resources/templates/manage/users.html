@@ -17,7 +17,9 @@
 <div class="header" style="display: flex">
     <div style="width: 100%; display: flex;" class="h2">
         <a class="btn btn-light h2" th:href="@{/manage/}" data-toggle="tooltip" data-placement="bottom"
-           title="Main page"><i class="fas fa-chevron-left"></i></a>
+           title="Management page">
+            <i class="fas fa-chevron-left"></i>
+        </a>
         &nbsp;
         <span class="h2"><a class="link" th:href="@{/manage/users}">Manage users</a></span>
         <div sec:authorize="hasAnyAuthority('MANAGE_USERS:USE')" style="display: flex; padding-left: 20px">
