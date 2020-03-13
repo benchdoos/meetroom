@@ -54,6 +54,12 @@ public class IndexController {
         return modelViewService.getMeetingRoomById(uuid, null, model);
     }
 
+    /**
+     * Manage page
+     *
+     * @param model model
+     * @return manage page
+     */
     @PreAuthorize("hasAnyAuthority('MANAGE:USE','MANAGE_USERS:USE')")
     @GetMapping("/manage")
     public String getManagePage(Model model) {

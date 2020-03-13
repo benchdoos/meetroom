@@ -10,6 +10,9 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
+/***
+ * Manage page properties. Defines what {@link ManagePage} to show
+ */
 @Getter
 @Setter
 @Validated

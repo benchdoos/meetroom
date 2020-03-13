@@ -5,6 +5,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * Exception thrown when someone want to change user's password
+ */
 @ResponseStatus(code = HttpStatus.CONFLICT)
 public class OnlyAccountOwnerCanChangePassword extends RuntimeException {
 

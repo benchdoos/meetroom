@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Dto to edit user info by admins in manage users page
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

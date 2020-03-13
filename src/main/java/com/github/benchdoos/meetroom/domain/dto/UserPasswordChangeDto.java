@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
+/**
+ * Dto to change user's password
+ */
 @PasswordMatches
 @NoArgsConstructor
 @AllArgsConstructor

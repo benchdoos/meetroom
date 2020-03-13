@@ -35,6 +35,13 @@ public class LoginController {
         return "registration";
     }
 
+    /**
+     * Registration for user
+     *
+     * @param createUserDto dto to create user
+     * @param model model
+     * @return index page
+     */
     @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE') || !isAuthenticated()")
     @PostMapping("/registration")
     public String registerUser(@ModelAttribute("createUserDto") @Valid CreateUserDto createUserDto,
@@ -43,6 +50,14 @@ public class LoginController {
         return "redirect:/";
     }
 
+    /**
+     * Change password for user
+     *
+     * @param id user id
+     * @param userPasswordChangeDto dto with passwords
+     * @param principal principal
+     * @return user
+     */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/change-password/{id}")
     public String changeUserPassword(@PathVariable("id") UUID id,
