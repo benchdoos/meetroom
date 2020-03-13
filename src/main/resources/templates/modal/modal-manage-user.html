@@ -149,7 +149,6 @@
     </div>
 </div>
 
-<!--todo https://www.baeldung.com/thymeleaf-list-->
 <div th:fragment="fr-edit-user-roles">
     <div class="modal" tabindex="-1" role="dialog" th:id="|edit-user-roles-modal-${user.id}|">
         <div class="modal-dialog" role="document">
@@ -168,20 +167,14 @@
                           method="post">
                         <div style="overflow-y: auto; height: 300px;">
                             <div class="form-check" style="display: grid;">
-                                <ul>
-                                    <li th:each="role : ${roles}" style="list-style: none">
-                                        <div class="ui checkbox">
-                                            <!-- FIXME: checked is not working... wtf?-->
-                                            <input type="checkbox"
-                                                   th:id="|role-checkbox-${role.id}|"
-                                                   th:field="*{roles}"
-                                                   th:value="${role.getId()}"
-                                                   th:checked="${user.roles.contains(role)}">
-                                            <label th:for="|role-checkbox-${role.id}|" th:text="${role.name}"></label>
-                                        </div>
-
-                                    </li>
-                                </ul>
+                                <div class="ui checkbox" th:each="role : ${roles}">
+                                    <input type="checkbox"
+                                           th:id="|role-checkbox-${role.id}|"
+                                           name="roles"
+                                           th:value="${role.getId()}"
+                                           th:checked="${user.roles.contains(role)}">
+                                    <label th:for="|role-checkbox-${role.id}|" th:text="${role.name}"></label>
+                                </div>
                             </div>
                         </div>
                     </form>
