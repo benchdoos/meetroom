@@ -170,13 +170,13 @@
                             <div class="form-check" style="display: grid;">
                                 <ul>
                                     <li th:each="role : ${roles}">
-                                        <div class="ui checkbox">
+                                        <div class="ui checkbox" th:for="|role-checkbox-${role.id}|">
                                             <input type="checkbox"
+                                                   th:id="|role-checkbox-${role.id}|"
                                                    th:field="*{roles}"
                                                    th:value="${role.getId()}"
-                                                   th:checked="${containsRole} ? 'checked'"
                                                    th:text="${role.name}"
-                                                   th:attr="checked=${user.roles.contains(role)}">
+                                                   th:checked="${user.roles.contains(role)}">
                                         </div>
 
                                     </li>
