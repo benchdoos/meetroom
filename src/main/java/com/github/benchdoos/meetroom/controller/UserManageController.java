@@ -4,6 +4,7 @@ import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.UserRole;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
+import com.github.benchdoos.meetroom.domain.dto.EditUserEnableDto;
 import com.github.benchdoos.meetroom.domain.dto.EditUserRolesDto;
 import com.github.benchdoos.meetroom.service.UserRoleService;
 import com.github.benchdoos.meetroom.service.UserService;
@@ -121,6 +122,7 @@ public class UserManageController {
         model.addAttribute("users", users);
         model.addAttribute("roles", allUserRoles);
         model.addAttribute("editUserRolesDto", new EditUserRolesDto());
+        model.addAttribute("editUserEnableDto", new EditUserEnableDto());
         return "manage/users";
     }
 }

@@ -249,11 +249,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserEnable(@NotNull UUID id, boolean enabled, @NotNull Principal principal) {
+    public void updateUserEnable(@NotNull UUID id, boolean enabled, Principal principal) {
         final User user = getUser(id);
 
-        if (principal.getName().equals(user.getUsername())) {
-            throw new UserCanNotUpdateThisDataByHimself();
+        if (principal != null) {
+            if (principal.getName().equals(user.getUsername())) {
+                throw new UserCanNotUpdateThisDataByHimself();
+            }
         }
 
         user.setEnabled(enabled);

@@ -239,11 +239,17 @@
                 <div class="modal-body">
                     <form th:id="|edit-user-enable-form-${user.id}|"
                           th:action="|@{/manage/users/switch-enable/}${user.id}|"
+                          th:object="${editUserEnableDto}"
                           method="post">
                         <div class="form-check" style="display: grid;">
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value=""
+                                <input type="checkbox"
+                                       th:id="|user-enable-checkbox-${user.id}|"
+                                       name="enabled"
+                                       value="true"
                                        th:checked="${user.enabled}">
+                                <input type="hidden" name="enabled" value="false"/>
+
                                 User <span th:include="modal/modal-user :: fr-user-username"></span> enable
                             </label>
                         </div>
