@@ -82,6 +82,7 @@ Admins can:
 
 - create, edit, disable meeting rooms
 - create, edit and delete **all** events
+- act all management options
 
 Users can:
 
@@ -109,3 +110,5 @@ To override VM options:
 ![Main page](https://i.postimg.cc/V6tKLXw8/image.png)
 ![Meeting room page](https://i.postimg.cc/CKTBp8cD/image.png)
 ![Meeting info page with editing](https://i.postimg.cc/hth6RzXS/image.png)
+![Management page](https://i.postimg.cc/15nZfKsr/image.png)
+![Manage users](https://i.postimg.cc/g0qpGkm9/image.png)

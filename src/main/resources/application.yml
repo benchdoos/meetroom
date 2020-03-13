@@ -15,6 +15,17 @@ management:
 meetroom:
   minimum-reservation-value: 30 #in minutes
   maximum-reservation-value: 1440 #24h in minutes
+
+manage-pages:
+  pages:
+    - name: Manage users
+      path: users
+      description: "Manage users: register, edit, disable users. Manage user roles and reset password."
+      icon: fas fa-user-cog
+#    - name: Manage roles
+#      path: roles
+#      description: "Manage roles: create and edit roles, set permissions to each role."
+#      icon: fas fa-user-tag
 ---
 
 spring:
@@ -78,3 +89,37 @@ server:
   servlet:
     context-path: /
   port: 80
+
+
+---
+
+#Profile clone of PRODUCTION, except using local database
+spring:
+  profiles: LOCAL
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/meetroom_local
+    username: meetroom
+    password: meetroom
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1;
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+  flyway:
+    enabled: true
+    encoding: UTF-8
+    locations: classpath:/db/flyway/migration/
+    validate-on-migrate: true
+    baseline-on-migrate: true
+
+server:
+  servlet:
+    context-path: /
+  port: 8030

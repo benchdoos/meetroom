@@ -55,6 +55,9 @@ public class User {
     @Column(name = "enabled")
     private boolean enabled;
 
+    @Column(name = "need_activation", nullable = false, columnDefinition = "boolean default false")
+    private boolean needActivation;
+
     @ManyToMany
     @JoinTable(
             name = "users_roles",
