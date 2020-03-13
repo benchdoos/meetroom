@@ -69,11 +69,18 @@
             <th th:text="${user.firstName}"></th>
             <th th:text="${user.lastName}"></th>
             <th style="max-width: 300px;">
-                <span th:each="role,iterStat : ${user.roles}" th:if="${iterStat.index <= 10}">
-                    <a th:href="|@{/manage/roles/}${role.role}|" class="badge badge-info" style="margin: 5px;">
-                        <span th:text="${role.name}" th:title="${role.role}" data-toggle="tooltip" data-placement="top"></span>
-                    </a>
-                </span>
+                    <span th:each="role,iterStat : ${user.roles}" th:if="${iterStat.index <= 5}">
+                        <a th:href="|@{/manage/roles/}${role.role}|" class="badge badge-info" style="margin: 5px;">
+                            <span th:text="${role.name}" th:title="${role.role}" data-toggle="tooltip"
+                                  data-placement="top"></span>
+                        </a>
+                    </span>
+                <!--todo: iterate role names like: ROLE_ADMIN ROLE_USER ...-->
+                <a th:href="@{/user(username=${user.username})}">
+                    <span th:if="${#lists.size(user.roles)>5}"
+                          class="badge badge-info" data-toggle="tooltip" data-placement="top"
+                          th:title="|Total roles: ${#lists.size(user.roles)}|">...</span>
+                </a>
             </th>
             <th>
                 <span th:if="${user.enabled}" title="Enabled" data-toggle="tooltip" data-placement="top">
