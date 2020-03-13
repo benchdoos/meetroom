@@ -74,10 +74,10 @@
                 </span>
             </th>
             <th>
-                <span th:if="${user.enabled}" title="Enabled">
+                <span th:if="${user.enabled}" title="Enabled" data-toggle="tooltip" data-placement="top">
                     <i class="fas fa-check-square" style="color:green"></i>
                 </span>
-                <span th:if="${!user.enabled}" title="Disabled">
+                <span th:if="${!user.enabled}" title="Disabled" data-toggle="tooltip" data-placement="top">
                     <i class="fas fa-times" style="color:red"></i>
                 </span>
             </th>
