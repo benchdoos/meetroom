@@ -27,8 +27,7 @@ public class MeetroomController {
     @PostMapping
     public String createMeetRoom(@Validated CreateMeetingRoomDto meetingRoomDto, Model model) {
         final MeetingRoom meetingRoom = meetingRoomService.createMeetingRoom(meetingRoomDto);
-        final UUID id = meetingRoom.getId();
-        return modelViewService.getMeetingRoomById(id, null, model);
+        return "redirect:/" + meetingRoom.getId();
     }
 
     @PreAuthorize("hasAnyAuthority('MEETING_ROOM:UPDATE')")
