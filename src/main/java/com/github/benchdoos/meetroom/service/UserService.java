@@ -5,7 +5,7 @@ import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
-import com.github.benchdoos.meetroom.domain.dto.EditUserRoles;
+import com.github.benchdoos.meetroom.domain.dto.EditUserRolesDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
@@ -82,11 +82,11 @@ public interface UserService extends UserDetailsService{
      * Edit roles of user
      *
      * @param id user id
-     * @param editUserRoles new roles
+     * @param editUserRolesDto new roles
      * @param principal principal
      * @return updated user with roles
      */
-    UserExtendedInfoDto updateUserRoles(UUID id, EditUserRoles editUserRoles, Principal principal);
+    UserExtendedInfoDto updateUserRoles(UUID id, EditUserRolesDto editUserRolesDto, Principal principal);
 
     /**
      * Call for user password reset.

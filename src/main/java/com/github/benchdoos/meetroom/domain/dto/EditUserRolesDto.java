@@ -8,13 +8,17 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class EditUserRoles {
+public class EditUserRolesDto {
 
+    /**
+     * {@link UserRole} ids
+     */
     @NotNull
-    private List<UserRole> roles;
+    private List<UUID> roles;
 }

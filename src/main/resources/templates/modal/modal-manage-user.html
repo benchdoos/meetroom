@@ -164,15 +164,23 @@
                 </div>
                 <div class="modal-body">
                     <form th:id="|edit-user-roles-form-${user.id}|" th:action="|@{/manage/users/roles/}${user.id}|"
+                          th:object="${editUserRolesDto}"
                           method="post">
                         <div style="overflow-y: auto; height: 300px;">
                             <div class="form-check" style="display: grid;">
-                                <label class="form-check-label" th:each="role, i : *{roles}">
-                                    <input type="checkbox" class="form-check-input"
-                                           th:value="${role}"
-                                           th:text="${role.name}"
-                                           th:checked="${user.roles.contains(role)}">
-                                </label>
+                                <ul>
+                                    <li th:each="role : ${roles}">
+                                        <div class="ui checkbox">
+                                            <input type="checkbox"
+                                                   th:field="*{roles}"
+                                                   th:value="${role.getId()}"
+                                                   th:checked="${containsRole} ? 'checked'"
+                                                   th:text="${role.name}"
+                                                   th:attr="checked=${user.roles.contains(role)}">
+                                        </div>
+
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </form>

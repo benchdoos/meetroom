@@ -7,7 +7,7 @@ import com.github.benchdoos.meetroom.domain.UserRole;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
-import com.github.benchdoos.meetroom.domain.dto.EditUserRoles;
+import com.github.benchdoos.meetroom.domain.dto.EditUserRolesDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
@@ -162,12 +162,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserExtendedInfoDto updateUserRoles(UUID id, EditUserRoles editUserRoles, Principal principal) {
+    public UserExtendedInfoDto updateUserRoles(UUID id, EditUserRolesDto editUserRolesDto, Principal principal) {
         final User user = getUser(id);
 
-        validateAdminRoleChange(principal, user, editUserRoles);
+        final List<UserRole> rolesByIds = rolesRepository.findAllById(editUserRolesDto.getRoles());
 
-        user.setRoles(editUserRoles.getRoles());
+        validateAdminRoleChange(principal, user, rolesByIds);
+
+        user.setRoles(rolesByIds);
 
         final User savedUser = userRepository.save(user);
 
@@ -264,10 +266,10 @@ public class UserServiceImpl implements UserService {
      *
      * @param principal of user
      * @param user user to update
-     * @param editUserRoles with new roles
+     * @param userRoles user roles
      */
-    private void validateAdminRoleChange(Principal principal, User user, EditUserRoles editUserRoles) {
-        final boolean hasAdminRoleInChange = editUserRoles.getRoles().stream()
+    private void validateAdminRoleChange(Principal principal, User user, List<UserRole> userRoles) {
+        final boolean hasAdminRoleInChange = userRoles.stream()
                 .anyMatch(role -> role.getRole().equals(SecurityConstants.ROLE_ADMIN));
         if (!hasAdminRoleInChange) {
             final boolean userAdminRole = user.getRoles().stream().anyMatch(role -> role.getRole().equals(SecurityConstants.ROLE_ADMIN));

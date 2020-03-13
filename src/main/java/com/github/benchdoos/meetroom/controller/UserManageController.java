@@ -4,7 +4,7 @@ import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.UserRole;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
-import com.github.benchdoos.meetroom.domain.dto.EditUserRoles;
+import com.github.benchdoos.meetroom.domain.dto.EditUserRolesDto;
 import com.github.benchdoos.meetroom.service.UserRoleService;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -79,10 +79,10 @@ public class UserManageController {
     @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE')")
     @PostMapping("/roles/{id}")
     public String editUserRoles(@PathVariable("id") UUID id,
-                                @ModelAttribute("editUserRoles") @Valid EditUserRoles editUserRoles,
+                                @ModelAttribute @Valid EditUserRolesDto editUserRolesDto,
                                 Principal principal) {
 
-        userService.updateUserRoles(id, editUserRoles, principal);
+        userService.updateUserRoles(id, editUserRolesDto, principal);
 
         return "redirect:/manage/users";
     }
@@ -120,6 +120,7 @@ public class UserManageController {
 
         model.addAttribute("users", users);
         model.addAttribute("roles", allUserRoles);
+        model.addAttribute("editUserRolesDto", new EditUserRolesDto());
         return "manage/users";
     }
 }
