@@ -33,13 +33,16 @@ import java.util.UUID;
 @RequestMapping("/manage/users")
 public class UserManageController {
 
+    private static final String DEFAULT_SORTING_FIELD = "lastName";
+
     private final UserService userService;
 
     private final UserRoleService userRoleService;
 
     @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE')")
     @GetMapping
-    public String getMainPage(@PageableDefault Pageable pageable, Model model) {
+    public String getMainPage(@PageableDefault(sort = DEFAULT_SORTING_FIELD, direction = Sort.Direction.ASC) Pageable pageable,
+                              Model model) {
         final Page<User> allUsers = userService.getAllUsers(pageable);
         return prepareManageUserPage(model, allUsers);
     }
@@ -47,7 +50,7 @@ public class UserManageController {
     @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE')")
     @GetMapping("/search")
     public String searchUsers(@PathParam("request") String request,
-                              @PageableDefault Pageable pageable,
+                              @PageableDefault(sort = DEFAULT_SORTING_FIELD, direction = Sort.Direction.ASC) Pageable pageable,
                               Model model) {
         final Page<User> usersBySearch = userService.searchByUsernameAndNames(request, pageable);
         return prepareManageUserPage(model, usersBySearch);
