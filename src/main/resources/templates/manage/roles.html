@@ -56,7 +56,7 @@
             <th>
                 <span class="badge badge-info" style="margin: 5px;"
                       th:each="privilege : ${role.privileges}" th:text="${privilege.name}"
-                      th:title="${privilege.name}" data-toggle="tooltip"
+                      th:title="${privilege.description}" data-toggle="tooltip"
                       data-placement="top"></span>
             </th>
             <th><i class="fas fa-edit" title="Edit role privileges"></i></th>
