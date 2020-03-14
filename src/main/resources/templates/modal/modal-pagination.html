@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:sd="http://www.w3.org/1999/xhtml">
+<body>
+<div th:fragment="fr-pagination">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col" style="margin-top: 10px">
+                Show <span sd:page-size-selector="javascript"></span> entries
+            </div>
+            <div class="col-6">
+                <div style="text-align: center">
+                    <nav class="pull-right">
+                        <ul class="pagination" sd:pagination="full"></ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
