@@ -72,7 +72,7 @@
             <th th:text="${user.lastName}"></th>
             <th style="max-width: 300px;">
                     <span th:each="role,iterStat : ${user.roles}" th:if="${iterStat.index <= 5}">
-                        <a th:href="|@{/manage/roles/}${role.role}|" class="badge badge-info" style="margin: 5px;">
+                        <a th:href="|@{/manage/roles/}${role.id}|" class="badge badge-info" style="margin: 5px;">
                             <span th:text="${role.name}" th:title="${role.role}" data-toggle="tooltip"
                                   data-placement="top"></span>
                         </a>
