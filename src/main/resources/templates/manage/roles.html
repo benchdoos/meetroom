@@ -49,12 +49,14 @@
         </thead>
         <tbody>
         <tr th:each="role : ${roles.content}">
-            <th th:text="${role.name}"></th>
+            <th>
+                <a th:href="@{/manage/roles/{roleId}(roleId=${role.role})}" th:text="${role.name}"></a>
+            </th>
             <th th:text="${role.role}"></th>
             <th>
                 <span class="badge badge-info" style="margin: 5px;"
-                        th:each="privilege : ${role.privileges}" th:text="${privilege.name}"
-                        th:title="${privilege.name}" data-toggle="tooltip"
+                      th:each="privilege : ${role.privileges}" th:text="${privilege.name}"
+                      th:title="${privilege.name}" data-toggle="tooltip"
                       data-placement="top"></span>
             </th>
             <th><i class="fas fa-edit" title="Edit role privileges"></i></th>
