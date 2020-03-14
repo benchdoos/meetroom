@@ -125,9 +125,7 @@
     </table>
 </div>
 
-<div th:with="page=${users}"
-     th:if="${users.totalPages gt 1}"
-     th:include="modal/modal-pagination :: fr-pagination"></div>
+<div th:with="page=${users}" th:include="modal/modal-pagination :: fr-pagination"></div>
 
 <!-- Modals -->
 

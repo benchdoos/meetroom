@@ -50,9 +50,7 @@
     </div>
 </div>
 
-<div th:with="page=${rooms}"
-     th:if="${rooms.totalPages gt 1}"
-     th:include="modal/modal-pagination :: fr-pagination"></div>
+<div th:with="page=${rooms}" th:include="modal/modal-pagination :: fr-pagination"></div>
 
 
 <!-- Modal -->
