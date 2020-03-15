@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Meeting rooms</title>
+    <title>Management</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.12.0/css/all.css}">
@@ -13,7 +13,7 @@
         <a class="btn btn-light h2" th:href="@{/}" data-toggle="tooltip" data-placement="bottom"
            title="Main page"><i class="fas fa-chevron-left"></i></a>
         &nbsp;
-        <span class="h2">Management page</span>
+        <span class="h2">Management</span>
     </div>
     <div class="login-block">
         <div th:include="modal/modal-login :: fr-login"></div>
@@ -30,7 +30,7 @@
             <span class="text-muted" th:text="${page.getDescription()}"></span>
         </div>
         <div class="card-footer">
-            <a th:href="|@{/manage/}${page.getPath()}|" class="card-link">Open</a>
+            <a th:href="@{/manage/{page}(page=${page.getPath()})}" class="card-link">Open</a>
         </div>
     </div>
 </div>
