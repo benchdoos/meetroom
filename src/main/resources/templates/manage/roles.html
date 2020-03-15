@@ -63,6 +63,10 @@
             <th><i class="fas fa-edit" title="Edit role privileges"></i></th>
             <th><i class="fas fa-trash-alt" title="Delete role"></i></th>
         </tr>
+
+        <tr th:if="${roles.getTotalElements()==0}">
+            <td colspan="5" style="text-align: center">No content</td>
+        </tr>
         </tbody>
     </table>
 </div>
