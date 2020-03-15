@@ -121,11 +121,17 @@
                 </a>
             </th>
         </tr>
+
+        <tr th:if="${users.getTotalElements()==0}">
+            <td colspan="9" style="text-align: center">No content</td>
+        </tr>
         </tbody>
     </table>
 </div>
 
-<div th:with="page=${users}" th:include="modal/modal-pagination :: fr-pagination"></div>
+<div th:if="${users.getTotalElements()>0}"
+     th:with="page=${users}"
+     th:include="modal/modal-pagination :: fr-pagination"></div>
 
 <!-- Modals -->
 

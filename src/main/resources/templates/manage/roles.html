@@ -67,7 +67,9 @@
     </table>
 </div>
 
-<div th:with="page=${roles}" th:include="modal/modal-pagination :: fr-pagination"></div>
+<div th:if="${roles.getTotalElements()>0}"
+     th:with="page=${roles}"
+     th:include="modal/modal-pagination :: fr-pagination"></div>
 
 
 <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
