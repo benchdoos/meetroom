@@ -60,7 +60,13 @@
                       th:title="${privilege.description}" data-toggle="tooltip"
                       data-placement="top"></span>
             </th>
-            <th><i class="fas fa-edit" title="Edit role privileges"></i></th>
+            <th>
+                <a href="#" data-toggle="modal"
+                   th:attrappend="data-target=|#edit-role-modal-${role.id}|"
+                   data-placement="top">
+                    <i class="fas fa-edit" title="Edit role privileges" style=""></i>
+                </a>
+            </th>
             <th><i class="fas fa-trash-alt" title="Delete role"></i></th>
         </tr>
 
@@ -75,6 +81,10 @@
      th:with="page=${roles}"
      th:include="modal/modal-pagination :: fr-pagination"></div>
 
+
+<!--Modals-->
+<div th:include="modal/modal-manage-roles :: fr-edit-role" th:each="role : ${roles.content}"></div>
+<!--/Modals-->
 
 <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/4.1.3/js/bootstrap.min.js}"></script>
