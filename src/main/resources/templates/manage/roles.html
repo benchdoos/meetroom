@@ -22,7 +22,7 @@
         <span class="h2"><a class="link" th:href="@{/manage/roles}">Manage user roles</a></span>
         <div sec:authorize="hasAnyAuthority('MANAGE_ROLES:CREATE')" style="display: flex; padding-left: 20px">
             <div>
-                <button type="button" class="btn btn-primary h2" data-toggle="modal" data-target="#create-user-modal"
+                <button type="button" class="btn btn-primary h2" data-toggle="modal" data-target="#create-role-modal"
                         title="Create new role">
                     <i class="fas fa-plus"></i>
                 </button>
@@ -83,6 +83,7 @@
 
 
 <!--Modals-->
+<div th:include="modal/modal-manage-roles :: fr-create-role"></div>
 <div th:include="modal/modal-manage-roles :: fr-edit-role" th:each="role : ${roles.content}"></div>
 <!--/Modals-->
 

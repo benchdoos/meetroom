@@ -1,6 +1,7 @@
 package com.github.benchdoos.meetroom.service;
 
 import com.github.benchdoos.meetroom.domain.UserRole;
+import com.github.benchdoos.meetroom.domain.dto.CreateUserRoleDto;
 import com.github.benchdoos.meetroom.domain.dto.EditUserRoleDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,4 +39,12 @@ public interface UserRoleService {
      * @return updated role
      */
     UserRole updateUserRole(UUID id, EditUserRoleDto editUserRoleDto);
+
+    /**
+     * Create {@link UserRole}
+     *
+     * @param createUserRoleDto dto to create
+     * @return created role
+     */
+    UserRole createUserRole(CreateUserRoleDto createUserRoleDto);
 }

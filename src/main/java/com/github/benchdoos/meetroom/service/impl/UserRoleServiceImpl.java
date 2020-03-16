@@ -3,8 +3,10 @@ package com.github.benchdoos.meetroom.service.impl;
 import com.github.benchdoos.meetroom.config.properties.ProtectedDataProperties;
 import com.github.benchdoos.meetroom.domain.Privilege;
 import com.github.benchdoos.meetroom.domain.UserRole;
+import com.github.benchdoos.meetroom.domain.dto.CreateUserRoleDto;
 import com.github.benchdoos.meetroom.domain.dto.EditUserRoleDto;
 import com.github.benchdoos.meetroom.exceptions.ProtectedRoleException;
+import com.github.benchdoos.meetroom.exceptions.UserRoleAlreadyExistsException;
 import com.github.benchdoos.meetroom.exceptions.UserRoleNotFoundException;
 import com.github.benchdoos.meetroom.repository.UserRoleRepository;
 import com.github.benchdoos.meetroom.service.PrivilegeService;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -52,8 +55,30 @@ public class UserRoleServiceImpl implements UserRoleService {
         return userRoleRepository.save(roleToUpdate);
     }
 
+    @Override
+    public UserRole createUserRole(CreateUserRoleDto createUserRoleDto) {
+        final Optional<UserRole> firstByRole = userRoleRepository.findFirstByRoleOrName(
+                createUserRoleDto.getRole(),
+                createUserRoleDto.getName()
+        );
+
+        if (firstByRole.isPresent()) {
+            throw new UserRoleAlreadyExistsException(createUserRoleDto.getName(), createUserRoleDto.getRole());
+        }
+
+        final List<Privilege> privileges = privilegeService.findAllByIds(createUserRoleDto.getPrivileges());
+
+        final UserRole userRole = UserRole.builder()
+                .name(createUserRoleDto.getName())
+                .role(createUserRoleDto.getRole())
+                .privileges(privileges)
+                .build();
+        return userRoleRepository.save(userRole);
+    }
+
     /**
      * Check if given role is not marked as protected
+     *
      * @param role role
      */
     private void checkIfRoleIsProtected(UserRole role) {

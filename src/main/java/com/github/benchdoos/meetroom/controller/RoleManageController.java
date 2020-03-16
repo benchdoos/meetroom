@@ -2,6 +2,7 @@ package com.github.benchdoos.meetroom.controller;
 
 import com.github.benchdoos.meetroom.domain.Privilege;
 import com.github.benchdoos.meetroom.domain.UserRole;
+import com.github.benchdoos.meetroom.domain.dto.CreateUserRoleDto;
 import com.github.benchdoos.meetroom.domain.dto.EditUserRoleDto;
 import com.github.benchdoos.meetroom.service.PrivilegeService;
 import com.github.benchdoos.meetroom.service.UserRoleService;
@@ -51,6 +52,16 @@ public class RoleManageController {
 
         return "redirect:/manage/roles";
     }
+
+    @PreAuthorize("hasAnyAuthority('MANAGE_ROLES:CREATE')")
+    @PostMapping("/create")
+    public String createUserRole(@ModelAttribute @Valid CreateUserRoleDto createUserRoleDto) {
+
+        userRoleService.createUserRole(createUserRoleDto);
+
+        return "redirect:/manage/roles";
+    }
+
 
     private String prepareMainPage(Page<UserRole> allUserRoles, List<Privilege> privileges, Model model) {
 
