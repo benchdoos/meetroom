@@ -63,7 +63,7 @@
             <div class="ui checkbox" th:each="privilege : ${privileges}">
                 <input type="checkbox"
                        th:id="|privilege-checkbox-${privilege.id}-for-role-${role.id}|"
-                       name="roles"
+                       name="privileges"
                        th:value="${privilege.getId()}"
                        th:checked="${role.privileges.contains(privilege)}">
                 <label th:for="|privilege-checkbox-${privilege.id}-for-role-${role.id}|"

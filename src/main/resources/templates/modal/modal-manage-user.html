@@ -163,7 +163,7 @@
                 </div>
                 <div class="modal-body">
                     <form th:id="|edit-user-roles-form-${user.id}|" th:action="|@{/manage/users/roles/}${user.id}|"
-                          th:object="${editUserRolesDto}"
+                          th:object="${editRolesForUserDto}"
                           method="post">
                         <div style="overflow-y: auto; height: 300px;">
                             <div class="form-check" style="display: grid;">

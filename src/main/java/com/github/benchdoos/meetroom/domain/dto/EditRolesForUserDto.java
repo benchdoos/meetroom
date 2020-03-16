@@ -10,11 +10,14 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Dto to update roles for user
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class EditUserRolesDto {
+public class EditRolesForUserDto {
 
     /**
      * {@link UserRole} ids

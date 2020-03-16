@@ -7,7 +7,7 @@ import com.github.benchdoos.meetroom.domain.UserRole;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
-import com.github.benchdoos.meetroom.domain.dto.EditUserRolesDto;
+import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
@@ -162,10 +162,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserExtendedInfoDto updateUserRoles(UUID id, EditUserRolesDto editUserRolesDto, Principal principal) {
+    public UserExtendedInfoDto updateUserRoles(UUID id, EditRolesForUserDto editRolesForUserDto, Principal principal) {
         final User user = getUser(id);
 
-        final List<UserRole> rolesByIds = rolesRepository.findAllById(editUserRolesDto.getRoles());
+        final List<UserRole> rolesByIds = rolesRepository.findAllById(editRolesForUserDto.getRoles());
 
         validateAdminRoleChange(principal, user, rolesByIds);
 
