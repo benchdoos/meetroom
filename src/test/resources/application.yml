@@ -14,6 +14,20 @@ meetroom:
   minimum-reservation-value: 30 #in minutes
   maximum-reservation-value: 1440 #24h in minutes
 
+manage-pages:
+  pages:
+    - name: Manage users
+      path: users
+      description: "Manage users: register, edit, disable users. Manage user roles and reset password."
+      icon: fas fa-user-cog
+    - name: Manage roles
+      path: roles
+      description: "Manage roles: create and edit roles, set permissions to each role."
+      icon: fas fa-user-tag
+
+protected:
+  roles:
+    - ROLE_ADMIN
 ---
 
 spring:

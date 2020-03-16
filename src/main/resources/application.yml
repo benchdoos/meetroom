@@ -26,6 +26,9 @@ manage-pages:
       path: roles
       description: "Manage roles: create and edit roles, set permissions to each role."
       icon: fas fa-user-tag
+protected:
+  roles:
+    - ROLE_ADMIN
 ---
 
 spring:
