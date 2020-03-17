@@ -31,7 +31,8 @@
             <h5 class="card-title" th:text="|${user.firstName} ${user.lastName}|"></h5>
             <div style="display: flex">
                 User roles:
-                <div th:each="roleInfo : ${user.roles}" th:switch="${roleInfo.role}">
+                <div th:each="roleInfo : ${user.roles}" th:switch="${roleInfo.internalName}">
+                    <!--todo: remove this badge shit after adding colors-->
                     <span th:case="'ROLE_ADMIN'" class="badge badge-pill badge-danger" data-toggle="tooltip"
                           data-placement="top" th:title="${roleInfo.name}" th:text="${roleInfo.name}"></span>
 
@@ -39,7 +40,7 @@
                           data-placement="top" th:title="${roleInfo.name}" th:text="${roleInfo.name}"></span>
 
                     <span th:case="*" class="badge badge-pill badge-info" data-toggle="tooltip" data-placement="top"
-                          th:text="${roleInfo.name != null ? roleInfo.name : roleInfo.role}"></span>
+                          th:text="${roleInfo.name != null ? roleInfo.name : roleInfo.internalName}"></span>
                 </div>
             </div>
             <br>
