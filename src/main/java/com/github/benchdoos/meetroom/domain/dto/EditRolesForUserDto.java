@@ -1,6 +1,6 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
-import com.github.benchdoos.meetroom.domain.UserRole;
+import com.github.benchdoos.meetroom.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +20,7 @@ import java.util.UUID;
 public class EditRolesForUserDto {
 
     /**
-     * {@link UserRole} ids
+     * {@link Role} ids
      */
     @NotEmpty
     private List<UUID> roles;

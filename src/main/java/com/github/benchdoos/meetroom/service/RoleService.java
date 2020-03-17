@@ -1,8 +1,8 @@
 package com.github.benchdoos.meetroom.service;
 
-import com.github.benchdoos.meetroom.domain.UserRole;
-import com.github.benchdoos.meetroom.domain.dto.CreateUserRoleDto;
-import com.github.benchdoos.meetroom.domain.dto.EditUserRoleDto;
+import com.github.benchdoos.meetroom.domain.Role;
+import com.github.benchdoos.meetroom.domain.dto.CreateRoleDto;
+import com.github.benchdoos.meetroom.domain.dto.EditRoleDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Service to operate with {@link UserRole}
+ * Service to operate with {@link Role}
  */
-public interface UserRoleService {
+public interface RoleService {
 
     /**
      * Find all roles, sorted
@@ -21,7 +21,7 @@ public interface UserRoleService {
      * @param sort sort by
      * @return list of sorted roles
      */
-    List<UserRole> getAllUserRoles(Sort sort);
+    List<Role> getAllRoles(Sort sort);
 
     /**
      * Find all user role by pageable
@@ -29,24 +29,24 @@ public interface UserRoleService {
      * @param pageable pageable
      * @return pageable for all roles
      */
-    Page<UserRole> findAllUserRoles(Pageable pageable);
+    Page<Role> findAllRoles(Pageable pageable);
 
     /**
-     * Update {@link UserRole} by id
+     * Update {@link Role} by id
      *
      * @param id role id
-     * @param editUserRoleDto dto with updates
+     * @param editRoleDto dto with updates
      * @return updated role
      */
-    UserRole updateUserRole(UUID id, EditUserRoleDto editUserRoleDto);
+    Role updateRole(UUID id, EditRoleDto editRoleDto);
 
     /**
-     * Create {@link UserRole}
+     * Create {@link Role}
      *
-     * @param createUserRoleDto dto to create
+     * @param createRoleDto dto to create
      * @return created role
      */
-    UserRole createUserRole(CreateUserRoleDto createUserRoleDto);
+    Role createRole(CreateRoleDto createRoleDto);
 
     /**
      * Delete role by id

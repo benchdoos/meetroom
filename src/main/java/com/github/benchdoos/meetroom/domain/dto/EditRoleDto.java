@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @Builder
-public class EditUserRoleDto {
+public class EditRoleDto {
 
     @NotBlank
     private String name;
@@ -25,7 +25,7 @@ public class EditUserRoleDto {
     @PrivilegeOrRoleName
     private String role;
 
-    @JsonDeserialize(contentAs = EditUserRoleDto.class)
+    @JsonDeserialize(contentAs = EditRoleDto.class)
     private List<UUID> privileges = Collections.emptyList();
 
     public void setPrivileges(List<UUID> privileges) {

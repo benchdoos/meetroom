@@ -2,11 +2,11 @@ package com.github.benchdoos.meetroom.controller;
 
 import com.github.benchdoos.meetroom.config.properties.ProtectedDataProperties;
 import com.github.benchdoos.meetroom.domain.Privilege;
-import com.github.benchdoos.meetroom.domain.UserRole;
-import com.github.benchdoos.meetroom.domain.dto.CreateUserRoleDto;
-import com.github.benchdoos.meetroom.domain.dto.EditUserRoleDto;
+import com.github.benchdoos.meetroom.domain.Role;
+import com.github.benchdoos.meetroom.domain.dto.CreateRoleDto;
+import com.github.benchdoos.meetroom.domain.dto.EditRoleDto;
 import com.github.benchdoos.meetroom.service.PrivilegeService;
-import com.github.benchdoos.meetroom.service.UserRoleService;
+import com.github.benchdoos.meetroom.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +32,7 @@ import java.util.UUID;
 public class RoleManageController {
     private static final String DEFAULT_SORTING_FIELD = "role";
 
-    private final UserRoleService userRoleService;
+    private final RoleService roleService;
     private final PrivilegeService privilegeService;
     private final ProtectedDataProperties protectedDataProperties;
 
@@ -40,27 +40,27 @@ public class RoleManageController {
     @GetMapping
     public String getMainPage(@PageableDefault(sort = DEFAULT_SORTING_FIELD, direction = Sort.Direction.ASC) Pageable pageable,
                               Model model) {
-        final Page<UserRole> allUserRoles = userRoleService.findAllUserRoles(pageable);
+        final Page<Role> allRoles = roleService.findAllRoles(pageable);
         final List<Privilege> privileges = privilegeService.getAllPrivileges();
 
-        return prepareMainPage(allUserRoles, privileges, model);
+        return prepareMainPage(allRoles, privileges, model);
     }
 
     @PreAuthorize("hasAnyAuthority('MANAGE_ROLES:UPDATE')")
     @PostMapping("/{id}")
-    public String updateUserRole(@PathVariable("id") UUID id,
-                                 @ModelAttribute @Valid EditUserRoleDto editUserRoleDto) {
+    public String updateRole(@PathVariable("id") UUID id,
+                             @ModelAttribute @Valid EditRoleDto editRoleDto) {
 
-        userRoleService.updateUserRole(id, editUserRoleDto);
+        roleService.updateRole(id, editRoleDto);
 
         return "redirect:/manage/roles";
     }
 
     @PreAuthorize("hasAnyAuthority('MANAGE_ROLES:CREATE')")
     @PostMapping("/create")
-    public String createUserRole(@ModelAttribute @Valid CreateUserRoleDto createUserRoleDto) {
+    public String createRole(@ModelAttribute @Valid CreateRoleDto createRoleDto) {
 
-        userRoleService.createUserRole(createUserRoleDto);
+        roleService.createRole(createRoleDto);
 
         return "redirect:/manage/roles";
     }
@@ -69,7 +69,7 @@ public class RoleManageController {
     @DeleteMapping("/{id}")
     public String deleteRole(@PathVariable("id") UUID id) {
 
-        userRoleService.deleteRole(id);
+        roleService.deleteRole(id);
 
         return "redirect:/manage/roles";
     }
@@ -82,7 +82,7 @@ public class RoleManageController {
      * @param model model
      * @return page
      */
-    private String prepareMainPage(Page<UserRole> roles, List<Privilege> privileges, Model model) {
+    private String prepareMainPage(Page<Role> roles, List<Privilege> privileges, Model model) {
 
         model.addAttribute("roles", roles);
         model.addAttribute("privileges", privileges);

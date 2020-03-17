@@ -23,7 +23,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Builder
-public class UserRole {
+public class Role {
     @Id
     @GeneratedValue
     @Column(name = "id")
