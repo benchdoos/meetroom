@@ -53,7 +53,7 @@
             <th>
                 <a th:href="@{/manage/roles/{roleId}(roleId=${role.id})}" th:text="${role.name}"></a>
             </th>
-            <th th:text="${role.role}"></th>
+            <th th:text="${role.internalName}"></th>
             <th>
                 <span class="badge badge-info noselect" style="margin: 5px;"
                       th:each="privilege : ${role.privileges}" th:text="${privilege.name}"
@@ -62,22 +62,22 @@
             </th>
             <th>
                 <a href="#" data-toggle="modal"
-                   th:if="${!protectedRoles.contains(role.role)}"
+                   th:if="${!protectedRoles.contains(role.internalName)}"
                    th:attrappend="data-target=|#edit-role-modal-${role.id}|"
                    data-placement="top">
                     <i class="fas fa-edit" title="Edit role privileges"></i>
                 </a>
-                <i th:if="${protectedRoles.contains(role.role)}"
+                <i th:if="${protectedRoles.contains(role.internalName)}"
                    class="fas fa-edit text-muted" title="Role is protected"></i>
             </th>
             <th>
                 <a href="#" data-toggle="modal"
-                   th:if="${!protectedRoles.contains(role.role)}"
+                   th:if="${!protectedRoles.contains(role.internalName)}"
                    th:attrappend="data-target=|#delete-role-modal-${role.id}|"
                    data-placement="top">
                     <i class="fas fa-trash-alt text-danger" title="Delete role"></i>
                 </a>
-                <i th:if="${protectedRoles.contains(role.role)}" class="fas fa-trash-alt text-muted"
+                <i th:if="${protectedRoles.contains(role.internalName)}" class="fas fa-trash-alt text-muted"
                    title="Role is protected"></i>
             </th>
         </tr>

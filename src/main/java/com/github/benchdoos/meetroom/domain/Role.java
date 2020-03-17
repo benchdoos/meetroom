@@ -30,8 +30,8 @@ public class Role {
     UUID id;
 
     @NotBlank
-    @Column(name = "role", unique = true)
-    String role;
+    @Column(name = "internal_name", unique = true)
+    String internalName;
 
     @NotBlank
     @Column(name = "name", unique = true)

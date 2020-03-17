@@ -57,7 +57,7 @@ public class RoleServiceImpl implements RoleService {
         final List<Privilege> privileges = privilegeService.findAllByIds(editRoleDto.getPrivileges());
 
         roleToUpdate.setName(editRoleDto.getName());
-        roleToUpdate.setRole(editRoleDto.getRole());
+        roleToUpdate.setInternalName(editRoleDto.getRole());
         roleToUpdate.setPrivileges(privileges);
 
         return roleRepository.save(roleToUpdate);
@@ -65,7 +65,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role createRole(CreateRoleDto createRoleDto) {
-        final Optional<Role> firstByRole = roleRepository.findFirstByRoleOrName(
+        final Optional<Role> firstByRole = roleRepository.findFirstByInternalNameOrName(
                 createRoleDto.getRole(),
                 createRoleDto.getName()
         );
@@ -78,7 +78,7 @@ public class RoleServiceImpl implements RoleService {
 
         final Role role = Role.builder()
                 .name(createRoleDto.getName())
-                .role(createRoleDto.getRole())
+                .internalName(createRoleDto.getRole())
                 .privileges(privileges)
                 .build();
         return roleRepository.save(role);
@@ -89,11 +89,11 @@ public class RoleServiceImpl implements RoleService {
     public void deleteRole(UUID id) {
         final Role role = roleRepository.findById(id).orElseThrow(RoleNotFoundException::new);
 
-        log.info("User requested to delete role: {}", role.getRole());
+        log.info("User requested to delete role: {}", role.getInternalName());
 
         checkIfRoleIsProtected(role);
 
-        log.info("Detaching users from role: {}", role.getRole());
+        log.info("Detaching users from role: {}", role.getInternalName());
 
         final Collection<User> users = userRepository.findAllByRolesIn(Collections.singletonList(role));
 
@@ -102,7 +102,7 @@ public class RoleServiceImpl implements RoleService {
         }
         log.info("Detached users: {}", users.size());
 
-        log.info("Deleting role {}", role.getRole());
+        log.info("Deleting role {}", role.getInternalName());
 
         roleRepository.delete(role);
     }
@@ -118,13 +118,13 @@ public class RoleServiceImpl implements RoleService {
         if (!CollectionUtils.isEmpty(protectedDataProperties.getRoles())) {
 
             final boolean isRoleProtected = protectedDataProperties.getRoles().stream()
-                    .anyMatch(roleInternalName -> roleInternalName.equals(role.getRole()));
+                    .anyMatch(roleInternalName -> roleInternalName.equals(role.getInternalName()));
 
             if (isRoleProtected) {
 
-                log.warn("Role {} is protected.", role.getRole());
+                log.warn("Role {} is protected.", role.getInternalName());
 
-                throw new ProtectedRoleException(role.getRole());
+                throw new ProtectedRoleException(role.getInternalName());
             }
         }
     }

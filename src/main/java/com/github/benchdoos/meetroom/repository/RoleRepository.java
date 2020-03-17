@@ -14,7 +14,7 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
      * @param name role name
      * @return role by given name
      */
-    Role findFirstByRole(String name);
+    Role findFirstByInternalName(String name);
 
     /**
      * Get first role that has given role and name
@@ -23,6 +23,6 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
      * @param name name
      * @return optional of role
      */
-    Optional<Role> findFirstByRoleOrName(String role, String name);
+    Optional<Role> findFirstByInternalNameOrName(String role, String name);
 
 }

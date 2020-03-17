@@ -30,7 +30,7 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/manage/roles")
 public class RoleManageController {
-    private static final String DEFAULT_SORTING_FIELD = "role";
+    private static final String DEFAULT_SORTING_FIELD = "internalName";
 
     private final RoleService roleService;
     private final PrivilegeService privilegeService;

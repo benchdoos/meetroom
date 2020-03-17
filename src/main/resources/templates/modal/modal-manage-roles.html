@@ -114,7 +114,7 @@
                     <label>Internal name</label>
                     <input type="text" class="form-control" name="role"
                            placeholder="Internal name"
-                           th:value="${role.role}">
+                           th:value="${role.internalName}">
                 </div>
             </div>
         </div>
@@ -147,7 +147,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-check" style="display: grid;">
-                        <span th:text="|Delete user role ${role.name} (${role.role})?|"></span>
+                        <span th:text="|Delete user role ${role.name} (${role.internalName})?|"></span>
                         <br>
                         <div class="text-muted">
                             <span>This action is permanent. Role will be deleted completely.</span>

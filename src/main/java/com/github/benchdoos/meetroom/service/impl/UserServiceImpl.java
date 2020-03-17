@@ -2,8 +2,8 @@ package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.config.constants.SecurityConstants;
 import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
-import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.Role;
+import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
     public UserPublicInfoDto createUser(CreateUserDto createUserDto) {
         validateNewUser(createUserDto);
 
-        final Role role = roleRepository.findFirstByRole(SecurityConstants.ROLE_USER);
+        final Role role = roleRepository.findFirstByInternalName(SecurityConstants.ROLE_USER);
 
         final User user = User.builder()
                 .firstName(createUserDto.getFirstName())
@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
 
         final String password = generateRandomPassword(RANDOM_PASSWORD_LENGTH);
 
-        final Role role = roleRepository.findFirstByRole(SecurityConstants.ROLE_USER);
+        final Role role = roleRepository.findFirstByInternalName(SecurityConstants.ROLE_USER);
 
         final User userToSave = User.builder()
                 .username(createOtherUserDto.getUsername())
@@ -272,9 +272,10 @@ public class UserServiceImpl implements UserService {
      */
     private void validateAdminRoleChange(Principal principal, User user, List<Role> roles) {
         final boolean hasAdminRoleInChange = roles.stream()
-                .anyMatch(role -> role.getRole().equals(SecurityConstants.ROLE_ADMIN));
+                .anyMatch(role -> role.getInternalName().equals(SecurityConstants.ROLE_ADMIN));
         if (!hasAdminRoleInChange) {
-            final boolean userAdminRole = user.getRoles().stream().anyMatch(role -> role.getRole().equals(SecurityConstants.ROLE_ADMIN));
+            final boolean userAdminRole = user.getRoles().stream()
+                    .anyMatch(role -> role.getInternalName().equals(SecurityConstants.ROLE_ADMIN));
 
             if (userAdminRole) {
 
@@ -362,7 +363,7 @@ public class UserServiceImpl implements UserService {
         final List<GrantedAuthority> grantList = new ArrayList<>();
         if (!CollectionUtils.isEmpty(roles)) {
             roles.forEach(role -> {
-                grantList.add(new SimpleGrantedAuthority(role.getRole()));
+                grantList.add(new SimpleGrantedAuthority(role.getInternalName()));
                 role.getPrivileges().forEach(privilege -> grantList.add(new SimpleGrantedAuthority(privilege.getName())));
             });
         }
