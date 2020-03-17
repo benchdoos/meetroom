@@ -1,5 +1,6 @@
 package com.github.benchdoos.meetroom.domain;
 
+import com.github.benchdoos.meetroom.domain.annotations.ColorHex;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,16 +29,19 @@ public class Role {
     @Id
     @GeneratedValue
     @Column(name = "id")
-    UUID id;
+    private UUID id;
 
     @NotBlank
     @Pattern(regexp = "ROLE_.*", message = "Role internal name must start with \"ROLE_\"")
     @Column(name = "internal_name", unique = true)
-    String internalName;
+    private String internalName;
 
     @NotBlank
     @Column(name = "name", unique = true)
-    String name;
+    private String name;
+
+    @ColorHex
+    private String color;
 
     @ManyToMany
     @JoinTable(
