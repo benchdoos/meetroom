@@ -2,12 +2,14 @@ package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.config.properties.ProtectedDataProperties;
 import com.github.benchdoos.meetroom.domain.Privilege;
+import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.UserRole;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserRoleDto;
 import com.github.benchdoos.meetroom.domain.dto.EditUserRoleDto;
 import com.github.benchdoos.meetroom.exceptions.ProtectedRoleException;
 import com.github.benchdoos.meetroom.exceptions.UserRoleAlreadyExistsException;
 import com.github.benchdoos.meetroom.exceptions.UserRoleNotFoundException;
+import com.github.benchdoos.meetroom.repository.UserRepository;
 import com.github.benchdoos.meetroom.repository.UserRoleRepository;
 import com.github.benchdoos.meetroom.service.PrivilegeService;
 import com.github.benchdoos.meetroom.service.UserRoleService;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,6 +36,7 @@ public class UserRoleServiceImpl implements UserRoleService {
     private final UserRoleRepository userRoleRepository;
     private final PrivilegeService privilegeService;
     private final ProtectedDataProperties protectedDataProperties;
+    private final UserRepository userRepository;
 
     @Override
     public List<UserRole> getAllUserRoles(Sort sort) {
@@ -79,14 +84,23 @@ public class UserRoleServiceImpl implements UserRoleService {
         return userRoleRepository.save(userRole);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void deleteRole(UUID id) {
         final UserRole userRole = userRoleRepository.findById(id).orElseThrow(UserRoleNotFoundException::new);
 
         log.info("User requested to delete role: {}", userRole.getRole());
 
         checkIfRoleIsProtected(userRole);
+
+        log.info("Detaching users from role: {}", userRole.getRole());
+
+        final Collection<User> users = userRepository.findAllByRolesIn(Collections.singletonList(userRole));
+
+        if (!CollectionUtils.isEmpty(users)) {
+            users.forEach(user -> user.getRoles().remove(userRole));
+        }
+        log.info("Detached users: {}", users.size());
 
         log.info("Deleting role {}", userRole.getRole());
 
