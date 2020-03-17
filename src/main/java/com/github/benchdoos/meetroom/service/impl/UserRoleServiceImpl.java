@@ -12,16 +12,19 @@ import com.github.benchdoos.meetroom.repository.UserRoleRepository;
 import com.github.benchdoos.meetroom.service.PrivilegeService;
 import com.github.benchdoos.meetroom.service.UserRoleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserRoleServiceImpl implements UserRoleService {
@@ -76,12 +79,27 @@ public class UserRoleServiceImpl implements UserRoleService {
         return userRoleRepository.save(userRole);
     }
 
+    @Transactional
+    @Override
+    public void deleteRole(UUID id) {
+        final UserRole userRole = userRoleRepository.findById(id).orElseThrow(UserRoleNotFoundException::new);
+
+        log.info("User requested to delete role: {}", userRole.getRole());
+
+        checkIfRoleIsProtected(userRole);
+
+        log.info("Deleting role {}", userRole.getRole());
+
+        userRoleRepository.delete(userRole);
+    }
+
     /**
      * Check if given role is not marked as protected
      *
      * @param role role
      */
     private void checkIfRoleIsProtected(UserRole role) {
+        log.debug("Checking if role is protected");
 
         if (!CollectionUtils.isEmpty(protectedDataProperties.getRoles())) {
 
@@ -89,6 +107,9 @@ public class UserRoleServiceImpl implements UserRoleService {
                     .anyMatch(roleInternalName -> roleInternalName.equals(role.getRole()));
 
             if (isRoleProtected) {
+
+                log.warn("Role {} is protected.", role.getRole());
+
                 throw new ProtectedRoleException(role.getRole());
             }
         }

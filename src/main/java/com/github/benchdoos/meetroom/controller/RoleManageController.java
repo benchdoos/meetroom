@@ -1,5 +1,6 @@
 package com.github.benchdoos.meetroom.controller;
 
+import com.github.benchdoos.meetroom.config.properties.ProtectedDataProperties;
 import com.github.benchdoos.meetroom.domain.Privilege;
 import com.github.benchdoos.meetroom.domain.UserRole;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserRoleDto;
@@ -14,6 +15,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +34,7 @@ public class RoleManageController {
 
     private final UserRoleService userRoleService;
     private final PrivilegeService privilegeService;
+    private final ProtectedDataProperties protectedDataProperties;
 
     @PreAuthorize("hasAnyAuthority('MANAGE_ROLES:USE','MANAGE_ROLES:CREATE','MANAGE_ROLES:UPDATE','MANAGE_ROLES:DELETE')")
     @GetMapping
@@ -62,11 +65,28 @@ public class RoleManageController {
         return "redirect:/manage/roles";
     }
 
+    @PreAuthorize("hasAnyAuthority('MANAGE_ROLES:DELETE')")
+    @DeleteMapping("/{id}")
+    public String deleteRole(@PathVariable("id") UUID id) {
 
-    private String prepareMainPage(Page<UserRole> allUserRoles, List<Privilege> privileges, Model model) {
+        userRoleService.deleteRole(id);
 
-        model.addAttribute("roles", allUserRoles);
+        return "redirect:/manage/roles";
+    }
+
+    /**
+     * Prepare main page for role management, fill all needed information
+     *
+     * @param roles roles to show
+     * @param privileges all privileges in system
+     * @param model model
+     * @return page
+     */
+    private String prepareMainPage(Page<UserRole> roles, List<Privilege> privileges, Model model) {
+
+        model.addAttribute("roles", roles);
         model.addAttribute("privileges", privileges);
+        model.addAttribute("protectedRoles", protectedDataProperties.getRoles());
         return "manage/roles";
     }
 }

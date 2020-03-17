@@ -47,4 +47,11 @@ public interface UserRoleService {
      * @return created role
      */
     UserRole createUserRole(CreateUserRoleDto createUserRoleDto);
+
+    /**
+     * Delete role by id
+     *
+     * @param id role id
+     */
+    void deleteRole(UUID id);
 }

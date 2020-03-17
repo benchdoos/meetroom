@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Collections;
 import java.util.List;
 
 /***
@@ -18,6 +19,6 @@ import java.util.List;
 @ConfigurationProperties("protected")
 public class ProtectedDataProperties {
 
-    private List<String> roles;
+    private List<String> roles = Collections.emptyList();
 
 }

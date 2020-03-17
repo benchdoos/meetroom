@@ -135,5 +135,49 @@
     </div>
 </div>
 
+<div th:fragment="fr-delete-role">
+    <div class="modal" tabindex="-1" role="dialog" th:id="|delete-role-modal-${role.id}|">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete role</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-check" style="display: grid;">
+                        <span th:text="|Delete user role ${role.name} (${role.role})?|"></span>
+                        <br>
+                        <div class="text-muted">
+                            <span>This action is permanent. Role will be deleted completely.</span>
+                            <br>
+                            <span>All users with this role will lose this role.</span>
+                        </div>
+                    </div>
+                    <input type="hidden" name="_method" value="delete">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" th:with="url = '/meetroom/manage/roles/' + ${role.id}"
+                       th:onclick="sendDelete([[${url}]])">Delete</button>
+                </div>
+            </div>
+            <script th:inline="javascript">
+                function sendDelete(url) {
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.open("DELETE", url, true);
+                    xhttp.onload = function () {
+                        let responseURL = xhttp.responseURL;
+                        console.log("Redirecting to:", responseURL);
+                        // window.location.replace(responseURL);
+                    };
+                    xhttp.send();
+                }
+            </script>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
-      xmlns:sd="http://www.w3.org/1999/xhtml">
+>
 <head>
     <title>Manage user roles</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -62,12 +62,24 @@
             </th>
             <th>
                 <a href="#" data-toggle="modal"
+                   th:if="${!protectedRoles.contains(role.role)}"
                    th:attrappend="data-target=|#edit-role-modal-${role.id}|"
                    data-placement="top">
-                    <i class="fas fa-edit" title="Edit role privileges" style=""></i>
+                    <i class="fas fa-edit" title="Edit role privileges"></i>
                 </a>
+                <i th:if="${protectedRoles.contains(role.role)}"
+                   class="fas fa-edit text-muted" title="Role is protected"></i>
             </th>
-            <th><i class="fas fa-trash-alt" title="Delete role"></i></th>
+            <th>
+                <a href="#" data-toggle="modal"
+                   th:if="${!protectedRoles.contains(role.role)}"
+                   th:attrappend="data-target=|#delete-role-modal-${role.id}|"
+                   data-placement="top">
+                    <i class="fas fa-trash-alt text-danger" title="Delete role"></i>
+                </a>
+                <i th:if="${protectedRoles.contains(role.role)}" class="fas fa-trash-alt text-muted"
+                   title="Role is protected"></i>
+            </th>
         </tr>
 
         <tr th:if="${roles.getTotalElements()==0}">
@@ -85,6 +97,7 @@
 <!--Modals-->
 <div th:include="modal/modal-manage-roles :: fr-create-role"></div>
 <div th:include="modal/modal-manage-roles :: fr-edit-role" th:each="role : ${roles.content}"></div>
+<div th:include="modal/modal-manage-roles :: fr-delete-role" th:each="role : ${roles.content}"></div>
 <!--/Modals-->
 
 <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
