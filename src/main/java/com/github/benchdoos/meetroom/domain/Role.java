@@ -14,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ public class Role {
     UUID id;
 
     @NotBlank
+    @Pattern(regexp = "ROLE_.*", message = "Role internal name must start with \"ROLE_\"")
     @Column(name = "internal_name", unique = true)
     String internalName;
 

@@ -57,7 +57,7 @@ public class RoleServiceImpl implements RoleService {
         final List<Privilege> privileges = privilegeService.findAllByIds(editRoleDto.getPrivileges());
 
         roleToUpdate.setName(editRoleDto.getName());
-        roleToUpdate.setInternalName(editRoleDto.getRole());
+        roleToUpdate.setInternalName(editRoleDto.getInternalName());
         roleToUpdate.setPrivileges(privileges);
 
         return roleRepository.save(roleToUpdate);
@@ -66,19 +66,19 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role createRole(CreateRoleDto createRoleDto) {
         final Optional<Role> firstByRole = roleRepository.findFirstByInternalNameOrName(
-                createRoleDto.getRole(),
+                createRoleDto.getInternalName(),
                 createRoleDto.getName()
         );
 
         if (firstByRole.isPresent()) {
-            throw new RoleAlreadyExistsException(createRoleDto.getName(), createRoleDto.getRole());
+            throw new RoleAlreadyExistsException(createRoleDto.getName(), createRoleDto.getInternalName());
         }
 
         final List<Privilege> privileges = privilegeService.findAllByIds(createRoleDto.getPrivileges());
 
         final Role role = Role.builder()
                 .name(createRoleDto.getName())
-                .internalName(createRoleDto.getRole())
+                .internalName(createRoleDto.getInternalName())
                 .privileges(privileges)
                 .build();
         return roleRepository.save(role);

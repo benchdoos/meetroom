@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +24,8 @@ public class EditRoleDto {
 
     @NotBlank
     @PrivilegeOrRoleName
-    private String role;
+    @Pattern(regexp = "ROLE_.*", message = "Role internal name must start with \"ROLE_\"")
+    private String internalName;
 
     @JsonDeserialize(contentAs = EditRoleDto.class)
     private List<UUID> privileges = Collections.emptyList();
