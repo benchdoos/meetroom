@@ -1,6 +1,7 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.github.benchdoos.meetroom.domain.annotations.ColorHex;
 import com.github.benchdoos.meetroom.domain.annotations.PrivilegeOrRoleName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,9 @@ public class EditRoleDto {
     @PrivilegeOrRoleName
     @Pattern(regexp = "ROLE_.*", message = "Role internal name must start with \"ROLE_\"")
     private String internalName;
+
+    @ColorHex
+    private String color;
 
     @JsonDeserialize(contentAs = EditRoleDto.class)
     private List<UUID> privileges = Collections.emptyList();

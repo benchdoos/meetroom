@@ -1,6 +1,7 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.github.benchdoos.meetroom.domain.annotations.ColorHex;
 import com.github.benchdoos.meetroom.domain.annotations.PrivilegeOrRoleName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +30,9 @@ public class CreateRoleDto {
 
     @JsonDeserialize(contentAs = CreateRoleDto.class)
     private List<UUID> privileges = Collections.emptyList();
+
+    @ColorHex
+    private String color;
 
     public void setPrivileges(List<UUID> privileges) {
         if (privileges != null) {
