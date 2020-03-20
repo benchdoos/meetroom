@@ -113,11 +113,21 @@
 
 <script th:src="@{/js/bootstrap-colorpicker/bootstrap-colorpicker.js}"></script>
 <script>
-    $(function () {
-        $('#role-color-picker').colorpicker();
+    $(document).on('click', '.dc-color-input-switcher', function() {
+        var dcInputColor = $(this).parent().parent().prev();
+        if (dcInputColor.attr('type') == 'text') {
+            dcInputColor.attr('type', 'color');
+        } else {
+            dcInputColor.attr('type', 'text');
+        }
     });
-    $(function () {
-        $('#cp2, #cp3a, #cp3b').colorpicker();
+
+    $(document).on('click', '.dc-color-input-clearer', function() {
+        var dcInputColor2 = $(this).parent().parent().next();
+        if (dcInputColor2.attr('type') == 'color') {
+            dcInputColor2.attr('type', 'text');
+        }
+        dcInputColor2.val('');
     });
 </script>
 </body>

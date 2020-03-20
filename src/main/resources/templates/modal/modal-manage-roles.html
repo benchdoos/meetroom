@@ -24,7 +24,7 @@
                 <div class="modal-body">
                     <form id="create-form-role" th:action="@{/manage/roles/create}" method="post">
                         <div style="display: inline-flex; width: 100%">
-                            <div>
+                            <div style="width: 300px;">
                                 <div class="form-group">
                                     <div class="mb-2">
                                         <label>Public name</label>
@@ -44,36 +44,29 @@
 
                                 <div class="form-group">
                                     <div class="mb-2">
-                                        <label>Badge color</label>
-
-                                        <div class="input-group mb-2">
-                                            <div class="input-group-prepend">
-                                                <div class="input-group-text">
-                                                    <i class="fas fa-sync-alt text-info"></i>
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <div class="btn-group">
+                                                    <span title="Empty" class="btn btn-danger dc-color-input-clearer"
+                                                          data-original-title="Empty Field"><i class="fa fa-times"></i></span>
                                                 </div>
                                             </div>
-
-                                            <input type="text" class="form-control" name="color"
-                                                   placeholder="Badge color">
-
-                                            <div class="input-group-append">
-                                                <div class="input-group-text">
-                                                    <i class="fas fa-eye-dropper text-danger colorpicker-input-addon"
-                                                       id="role-color-picker"></i>
+                                            <input name="color" value=""
+                                                   placeholder="Badge color" class="form-control pre-input-color"
+                                                   type="text"
+                                                    style="width: 100px;">
+                                            <div class="input-group-btn">
+                                                <div class="btn-group">
+                                                    <span title="Toggle color picker"
+                                                          class="btn btn-primary dc-color-input-switcher"
+                                                          data-original-title="Switch color picker"><i
+                                                            class="fa fa-paint-brush"></i></span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div id="cp2" class="input-group" title="Using input value">
-                                        <input type="text" class="form-control input-lg" name="color"/>
-                                        <span class="input-group-append">
-                    <span class="input-group-text colorpicker-input-addon"><i></i></span>
-                  </span>
-                                    </div>
-                                </div>
 
                             </div>
                             <div class="verticalHr" style="margin: 10px;"></div>
@@ -194,7 +187,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-danger" th:with="url = '/meetroom/manage/roles/' + ${role.id}"
-                       th:onclick="sendDelete([[${url}]])">Delete</button>
+                            th:onclick="sendDelete([[${url}]])">Delete
+                    </button>
                 </div>
             </div>
             <script th:inline="javascript">

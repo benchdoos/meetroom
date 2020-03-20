@@ -1,6 +1,7 @@
 package com.github.benchdoos.meetroom.domain.annotations.validators;
 
 import com.github.benchdoos.meetroom.domain.annotations.ColorHex;
+import org.springframework.util.StringUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -16,7 +17,7 @@ public class ColorHexValidator implements ConstraintValidator<ColorHex, String> 
     }
 
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value != null) {
+        if (StringUtils.hasText(value)) {
             final Matcher matcher = pattern.matcher(value);
 
             return matcher.matches();
