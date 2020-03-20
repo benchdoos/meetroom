@@ -1,0 +1,1 @@
+alter table if exists roles add column color varchar(255);

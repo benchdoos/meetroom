@@ -63,5 +63,5 @@ public class User {
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"))
-    private Collection<UserRole> roles;
+    private Collection<Role> roles;
 }

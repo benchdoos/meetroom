@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
-      xmlns:sd="http://www.w3.org/1999/xhtml">
+>
 <head>
     <title>Meeting users</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -8,6 +8,7 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.12.0/css/all.css}">
     <link href="/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet">
+    <link href="/css/common.css" th:href="@{/css/common.css}" rel="stylesheet">
     <link href="/css/pagination.css" th:href="@{/css/pagination.css}" rel="stylesheet">
 
     <!-- todo use webjars-->
@@ -34,14 +35,14 @@
         </div>
     </div>
     <div class="search">
-        <div th:include="modal/modal-search :: fr-search-user"></div>
+        <div th:include="modal/modal-search :: fr-search(@{/manage/users/search}, 'Search user')"></div>
     </div>
     <div class="login-block" style="margin-left: 10px;">
         <div th:include="modal/modal-login :: fr-login"></div>
     </div>
 </div>
 
-<div class="content" sec:authorize="hasAnyAuthority('MANAGE_USERS:USE')" style="overflow-y: auto; height: 600px;">
+<div class="content" sec:authorize="hasAnyAuthority('MANAGE_USERS:USE')" style="overflow-y: auto;">
     <table class="table table-striped" id="users-table">
         <thead>
         <tr>
@@ -72,10 +73,7 @@
             <th th:text="${user.lastName}"></th>
             <th style="max-width: 300px;">
                     <span th:each="role,iterStat : ${user.roles}" th:if="${iterStat.index <= 5}">
-                        <a th:href="|@{/manage/roles/}${role.role}|" class="badge badge-info" style="margin: 5px;">
-                            <span th:text="${role.name}" th:title="${role.role}" data-toggle="tooltip"
-                                  data-placement="top"></span>
-                        </a>
+                        <div th:include="modal/modal-role :: fr-role-label"></div>
                     </span>
                 <!--todo: iterate role names like: ROLE_ADMIN ROLE_USER ...-->
                 <a th:href="@{/user(username=${user.username})}">
@@ -110,22 +108,28 @@
                 <a href="#" data-toggle="modal"
                    th:attrappend="data-target=|#reset-user-password-modal-${user.id}|"
                    data-placement="top">
-                    <i class="fas fa-user-shield" title="Reset user password" style="color: darkred"></i>
+                    <i class="fas fa-user-shield text-danger" title="Reset user password"></i>
                 </a>
             </th>
             <th>
                 <a href="#" data-toggle="modal"
                    th:attrappend="data-target=|#edit-user-enable-modal-${user.id}|"
                    data-placement="top">
-                    <i class="fas fa-user-cog" title="Manage user enable ability" style="color: darkred"></i>
+                    <i class="fas fa-user-cog text-danger" title="Manage user enable ability"></i>
                 </a>
             </th>
+        </tr>
+
+        <tr th:if="${users.getTotalElements()==0}">
+            <td colspan="9" style="text-align: center">No content</td>
         </tr>
         </tbody>
     </table>
 </div>
 
-<div th:with="page=${users}" th:include="modal/modal-pagination :: fr-pagination"></div>
+<div th:if="${users.getTotalElements()>0}"
+     th:with="page=${users}"
+     th:include="modal/modal-pagination :: fr-pagination"></div>
 
 <!-- Modals -->
 
@@ -141,13 +145,12 @@
 
 <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/4.1.3/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+
 <script th:src="@{/js/pagination-fix.js}"></script>
 <script>
     $('#myModal').on('shown.bs.modal', function () {
         $('#myInput').trigger('focus')
-    });
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
     });
 </script>
 </body>

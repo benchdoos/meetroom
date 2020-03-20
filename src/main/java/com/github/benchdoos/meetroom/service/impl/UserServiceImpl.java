@@ -2,12 +2,12 @@ package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.config.constants.SecurityConstants;
 import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
+import com.github.benchdoos.meetroom.domain.Role;
 import com.github.benchdoos.meetroom.domain.User;
-import com.github.benchdoos.meetroom.domain.UserRole;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
-import com.github.benchdoos.meetroom.domain.dto.EditUserRolesDto;
+import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
@@ -25,7 +25,7 @@ import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.UserWithSuchUsernameAlreadyExists;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.repository.PasswordResetRequestRepository;
-import com.github.benchdoos.meetroom.repository.RolesRepository;
+import com.github.benchdoos.meetroom.repository.RoleRepository;
 import com.github.benchdoos.meetroom.repository.UserRepository;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
     private static final int RANDOM_PASSWORD_LENGTH = 10;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final RolesRepository rolesRepository;
+    private final RoleRepository roleRepository;
     private final PasswordResetRequestRepository passwordResetRequestRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -97,14 +97,14 @@ public class UserServiceImpl implements UserService {
     public UserPublicInfoDto createUser(CreateUserDto createUserDto) {
         validateNewUser(createUserDto);
 
-        final UserRole userRole = rolesRepository.findFirstByRole(SecurityConstants.ROLE_USER);
+        final Role role = roleRepository.findFirstByInternalName(SecurityConstants.ROLE_USER);
 
         final User user = User.builder()
                 .firstName(createUserDto.getFirstName())
                 .lastName(createUserDto.getLastName())
                 .username(createUserDto.getUsername())
                 .password(passwordEncoder.encode(createUserDto.getPassword()))
-                .roles(Collections.singleton(userRole))
+                .roles(Collections.singleton(role))
                 .needActivation(false) //todo add email-activation, change to true
                 .enabled(true)
                 .build();
@@ -128,14 +128,14 @@ public class UserServiceImpl implements UserService {
 
         final String password = generateRandomPassword(RANDOM_PASSWORD_LENGTH);
 
-        final UserRole userRole = rolesRepository.findFirstByRole(SecurityConstants.ROLE_USER);
+        final Role role = roleRepository.findFirstByInternalName(SecurityConstants.ROLE_USER);
 
         final User userToSave = User.builder()
                 .username(createOtherUserDto.getUsername())
                 .firstName(createOtherUserDto.getFirstName())
                 .lastName(createOtherUserDto.getLastName())
                 .password(passwordEncoder.encode(password))
-                .roles(Collections.singletonList(userRole))
+                .roles(Collections.singletonList(role))
                 .needActivation(true)
                 .enabled(true)
                 .build();
@@ -162,10 +162,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserExtendedInfoDto updateUserRoles(UUID id, EditUserRolesDto editUserRolesDto, Principal principal) {
+    public UserExtendedInfoDto updateUserRoles(UUID id, EditRolesForUserDto editRolesForUserDto, Principal principal) {
         final User user = getUser(id);
 
-        final List<UserRole> rolesByIds = rolesRepository.findAllById(editUserRolesDto.getRoles());
+        final List<Role> rolesByIds = roleRepository.findAllById(editRolesForUserDto.getRoles());
 
         validateAdminRoleChange(principal, user, rolesByIds);
 
@@ -268,13 +268,14 @@ public class UserServiceImpl implements UserService {
      *
      * @param principal of user
      * @param user user to update
-     * @param userRoles user roles
+     * @param roles user roles
      */
-    private void validateAdminRoleChange(Principal principal, User user, List<UserRole> userRoles) {
-        final boolean hasAdminRoleInChange = userRoles.stream()
-                .anyMatch(role -> role.getRole().equals(SecurityConstants.ROLE_ADMIN));
+    private void validateAdminRoleChange(Principal principal, User user, List<Role> roles) {
+        final boolean hasAdminRoleInChange = roles.stream()
+                .anyMatch(role -> role.getInternalName().equals(SecurityConstants.ROLE_ADMIN));
         if (!hasAdminRoleInChange) {
-            final boolean userAdminRole = user.getRoles().stream().anyMatch(role -> role.getRole().equals(SecurityConstants.ROLE_ADMIN));
+            final boolean userAdminRole = user.getRoles().stream()
+                    .anyMatch(role -> role.getInternalName().equals(SecurityConstants.ROLE_ADMIN));
 
             if (userAdminRole) {
 
@@ -353,16 +354,16 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Transforms list of {@link UserRole} to {@link GrantedAuthority} final List<>  = new ();
+     * Transforms list of {@link Role} to {@link GrantedAuthority} final List<>  = new ();
      *
      * @param roles list of user's roles
      * @return list of granted authorities
      */
-    private List<GrantedAuthority> getGrantedAuthoritiesFromUserRoles(Collection<UserRole> roles) {
+    private List<GrantedAuthority> getGrantedAuthoritiesFromUserRoles(Collection<Role> roles) {
         final List<GrantedAuthority> grantList = new ArrayList<>();
         if (!CollectionUtils.isEmpty(roles)) {
             roles.forEach(role -> {
-                grantList.add(new SimpleGrantedAuthority(role.getRole()));
+                grantList.add(new SimpleGrantedAuthority(role.getInternalName()));
                 role.getPrivileges().forEach(privilege -> grantList.add(new SimpleGrantedAuthority(privilege.getName())));
             });
         }

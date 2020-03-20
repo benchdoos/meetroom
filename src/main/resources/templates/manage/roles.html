@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Manage user roles</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.12.0/css/all.css}">
+    <link href="/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet">
+    <link href="/css/common.css" th:href="@{/css/common.css}" rel="stylesheet">
+    <link href="/css/pagination.css" th:href="@{/css/pagination.css}" rel="stylesheet">
+</head>
+<body>
+<div class="header" style="display: flex">
+    <div style="width: 100%; display: flex;" class="h2">
+        <a class="btn btn-light h2" th:href="@{/manage/}" data-toggle="tooltip" data-placement="bottom"
+           title="Management page">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        &nbsp;
+        <span class="h2"><a class="link" th:href="@{/manage/roles}">Manage user roles</a></span>
+        <div sec:authorize="hasAnyAuthority('MANAGE_ROLES:CREATE')" style="display: flex; padding-left: 20px">
+            <div>
+                <button type="button" class="btn btn-primary h2" data-toggle="modal" data-target="#create-role-modal"
+                        title="Create new role">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="search">
+        <div th:include="modal/modal-search :: fr-search(@{/manage/roles/search}, 'Search role')"></div>
+    </div>
+    <div class="login-block" style="margin-left: 10px;">
+        <div th:include="modal/modal-login :: fr-login"></div>
+    </div>
+</div>
+
+<div class="content" sec:authorize="hasAnyAuthority('MANAGE_ROLES:USE')" style="overflow-y: auto;">
+    <table class="table table-striped" id="users-table">
+        <thead>
+        <tr>
+            <th>Role name</th>
+            <th>Role internal name</th>
+            <th>Role privileges</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="role : ${roles.content}">
+            <th>
+                <div th:include="modal/modal-role :: fr-role-label"></div>
+            </th>
+            <th th:text="${role.internalName}"></th>
+            <th>
+                <span class="badge badge-info noselect" style="margin: 5px;"
+                      th:each="privilege : ${role.privileges}" th:text="${privilege.name}"
+                      th:title="${privilege.description}" data-toggle="tooltip"
+                      data-placement="top"></span>
+            </th>
+            <th>
+                <a href="#" data-toggle="modal"
+                   th:if="${!protectedRoles.contains(role.internalName)}"
+                   th:attrappend="data-target=|#edit-role-modal-${role.id}|"
+                   data-placement="top">
+                    <i class="fas fa-edit" title="Edit role privileges"></i>
+                </a>
+                <i th:if="${protectedRoles.contains(role.internalName)}"
+                   class="fas fa-edit text-muted" title="Role is protected"></i>
+            </th>
+            <th>
+                <a href="#" data-toggle="modal"
+                   th:if="${!protectedRoles.contains(role.internalName)}"
+                   th:attrappend="data-target=|#delete-role-modal-${role.id}|"
+                   data-placement="top">
+                    <i class="fas fa-trash-alt text-danger" title="Delete role"></i>
+                </a>
+                <i th:if="${protectedRoles.contains(role.internalName)}" class="fas fa-trash-alt text-muted"
+                   title="Role is protected"></i>
+            </th>
+        </tr>
+
+        <tr th:if="${roles.getTotalElements()==0}">
+            <td colspan="5" style="text-align: center">No content</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:if="${roles.getTotalElements()>0}"
+     th:with="page=${roles}"
+     th:include="modal/modal-pagination :: fr-pagination"></div>
+
+
+<!--Modals-->
+<div th:include="modal/modal-manage-roles :: fr-create-role"></div>
+<div th:include="modal/modal-manage-roles :: fr-edit-role" th:each="role : ${roles.content}"></div>
+<div th:include="modal/modal-manage-roles :: fr-delete-role" th:each="role : ${roles.content}"></div>
+<!--/Modals-->
+
+<script th:src="@{/webjars/bootstrap/4.1.3/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/pagination-fix.js}"></script>
+
+<!-- todo use webjars-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+        integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+        crossorigin="anonymous"></script>
+
+<script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.1.3/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+
+<script>
+    $(document).on('click', '.dc-color-input-switcher', function() {
+        var dcInputColor = $(this).parent().parent().prev();
+        if (dcInputColor.attr('type') === 'text') {
+            dcInputColor.attr('type', 'color');
+        } else {
+            dcInputColor.attr('type', 'text');
+        }
+    });
+
+    $(document).on('click', '.dc-color-input-clearer', function() {
+        var dcInputColor2 = $(this).parent().parent().next();
+        if (dcInputColor2.attr('type') === 'color') {
+            dcInputColor2.attr('type', 'text');
+        }
+        dcInputColor2.val('');
+    });
+</script>
+</body>
+</html>
