@@ -50,6 +50,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public Role getRole(UUID id) {
+        return roleRepository.findById(id).orElseThrow(RoleNotFoundException::new);
+    }
+
+    @Override
     public Role updateRole(UUID id, EditRoleDto editRoleDto) {
         final Role roleToUpdate = roleRepository.findById(id).orElseThrow(RoleNotFoundException::new);
 
@@ -112,6 +117,11 @@ public class RoleServiceImpl implements RoleService {
         log.info("Deleting role {}", role.getInternalName());
 
         roleRepository.delete(role);
+    }
+
+    @Override
+    public Collection<User> getTotalActiveUsers(Role role) {
+        return userRepository.findAllByRolesInAndEnabledIsTrue(Collections.singletonList(role));
     }
 
     /**

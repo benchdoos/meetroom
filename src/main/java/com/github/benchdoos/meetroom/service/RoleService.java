@@ -1,12 +1,14 @@
 package com.github.benchdoos.meetroom.service;
 
 import com.github.benchdoos.meetroom.domain.Role;
+import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.dto.CreateRoleDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRoleDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,6 +34,14 @@ public interface RoleService {
     Page<Role> findAllRoles(Pageable pageable);
 
     /**
+     * Get role by id
+     *
+     * @param id role id
+     * @return role if found
+     */
+    Role getRole(UUID id);
+
+    /**
      * Update {@link Role} by id
      *
      * @param id role id
@@ -54,4 +64,12 @@ public interface RoleService {
      * @param id role id
      */
     void deleteRole(UUID id);
+
+    /**
+     * Returns all active users for role
+     *
+     * @param role role
+     * @return list of users
+     */
+    Collection<User> getTotalActiveUsers(Role role);
 }

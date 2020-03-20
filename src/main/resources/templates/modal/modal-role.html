@@ -10,18 +10,22 @@
 
 <div th:fragment="fr-role-label">
     <a th:href="@{/manage/roles/{roleId}(roleId=${role.id})}">
-        <!--if color is not null-->
-        <span class="badge badge-info" th:if="${role.color != null}"
-              th:style="|background-color:${role.color};|"
-              th:text="${role.name}"
-              data-toggle="tooltip" data-placement="top"
-              th:title="${role.internalName}"></span>
-        <!--if color is null-->
-        <span class="badge badge-info"
-              th:if="${role.color == null}" th:text="${role.name}"
-              data-toggle="tooltip" data-placement="top"
-              th:title="${role.internalName}"></span>
+        <span th:include="modal/modal-role :: fr-role-badge"></span>
     </a>
+</div>
+
+<div th:fragment="fr-role-badge">
+    <!--if color is not null-->
+    <span class="badge badge-info" th:if="${role.color != null}"
+          th:style="|background-color:${role.color};|"
+          th:text="${role.name}"
+          data-toggle="tooltip" data-placement="top"
+          th:title="${role.internalName}"></span>
+    <!--if color is null-->
+    <span class="badge badge-info"
+          th:if="${role.color == null}" th:text="${role.name}"
+          data-toggle="tooltip" data-placement="top"
+          th:title="${role.internalName}"></span>
 </div>
 
 </body>

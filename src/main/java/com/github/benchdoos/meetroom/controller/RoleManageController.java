@@ -46,6 +46,17 @@ public class RoleManageController {
         return prepareMainPage(allRoles, privileges, model);
     }
 
+    @PreAuthorize("hasAnyAuthority('MANAGE_ROLES:USE')")
+    @GetMapping("/{id}")
+    public String getRolePage(@PathVariable("id") UUID id,
+                              Model model) {
+        final Role role = roleService.getRole(id);
+        model.addAttribute("role", role);
+        model.addAttribute("totalActiveUsersSize", roleService.getTotalActiveUsers(role).size());
+
+        return "manage/role";
+    }
+
     @PreAuthorize("hasAnyAuthority('MANAGE_ROLES:UPDATE')")
     @PostMapping("/{id}")
     public String updateRole(@PathVariable("id") UUID id,

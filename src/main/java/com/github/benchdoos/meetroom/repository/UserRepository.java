@@ -1,7 +1,7 @@
 package com.github.benchdoos.meetroom.repository;
 
-import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.Role;
+import com.github.benchdoos.meetroom.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,4 +20,6 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
     Page<User> findAll(@Nullable Specification<User> specification, @Nullable Pageable pageable);
 
     Collection<User> findAllByRolesIn(List<Role> roles);
+
+    Collection<User> findAllByRolesInAndEnabledIsTrue(List<Role> roles);
 }
