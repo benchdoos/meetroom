@@ -1,12 +1,12 @@
 package com.github.benchdoos.meetroom.controller;
 
 import com.github.benchdoos.meetroom.domain.User;
-import com.github.benchdoos.meetroom.domain.UserRole;
+import com.github.benchdoos.meetroom.domain.Role;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
+import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditUserEnableDto;
-import com.github.benchdoos.meetroom.domain.dto.EditUserRolesDto;
-import com.github.benchdoos.meetroom.service.UserRoleService;
+import com.github.benchdoos.meetroom.service.RoleService;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,7 +38,7 @@ public class UserManageController {
 
     private final UserService userService;
 
-    private final UserRoleService userRoleService;
+    private final RoleService roleService;
 
     @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE')")
     @GetMapping
@@ -80,10 +80,10 @@ public class UserManageController {
     @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE')")
     @PostMapping("/roles/{id}")
     public String editUserRoles(@PathVariable("id") UUID id,
-                                @ModelAttribute @Valid EditUserRolesDto editUserRolesDto,
+                                @ModelAttribute @Valid EditRolesForUserDto editRolesForUserDto,
                                 Principal principal) {
 
-        userService.updateUserRoles(id, editUserRolesDto, principal);
+        userService.updateUserRoles(id, editRolesForUserDto, principal);
 
         return "redirect:/manage/users";
     }
@@ -117,11 +117,11 @@ public class UserManageController {
      * @return manage users page
      */
     private String prepareManageUserPage(Model model, Page<User> users) {
-        final List<UserRole> allUserRoles = userRoleService.getAllUserRoles(Sort.by(Sort.Order.asc("name")));
+        final List<Role> allRoles = roleService.getAllRoles(Sort.by(Sort.Order.asc("name")));
 
         model.addAttribute("users", users);
-        model.addAttribute("roles", allUserRoles);
-        model.addAttribute("editUserRolesDto", new EditUserRolesDto());
+        model.addAttribute("roles", allRoles);
+        model.addAttribute("editRolesForUserDto", new EditRolesForUserDto());
         model.addAttribute("editUserEnableDto", new EditUserEnableDto());
         return "manage/users";
     }

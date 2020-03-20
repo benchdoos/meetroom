@@ -7,12 +7,12 @@
     <title></title>
 </head>
 <body>
-<div th:fragment="fr-search-user">
+<div th:fragment="fr-search(path, placeHolder)">
     <form class="form-inline" id="search-user" sec:authorize="isAuthenticated()"
-          th:action="|@{/manage/users/search(request=${request})}|" method="get"
+          th:action="|${path}|" method="get"
           style="display: -webkit-inline-box;">
         <div class="input-group mb-3">
-            <input type="text" class="form-control" id="userCredentials" placeholder="Search user" name="request">
+            <input type="text" class="form-control" id="userCredentials" th:placeholder="${placeHolder}" name="request">
             <div class="input-group-append">
                 <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
             </div>
