@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,6 +45,17 @@ public class RoleManageController {
         final List<Privilege> privileges = privilegeService.getAllPrivileges();
 
         return prepareMainPage(allRoles, privileges, model);
+    }
+
+    @PreAuthorize("hasAnyAuthority('MANAGE_ROLES:USE')")
+    @GetMapping("/search")
+    public String searchUsers(@PathParam("request") String request,
+                              @PageableDefault(sort = DEFAULT_SORTING_FIELD, direction = Sort.Direction.ASC) Pageable pageable,
+                              Model model) {
+        final Page<Role> rolesBySearch = roleService.searchRolesByNames(request, pageable);
+        final List<Privilege> privileges = privilegeService.getAllPrivileges();
+
+        return prepareMainPage(rolesBySearch, privileges, model);
     }
 
     @PreAuthorize("hasAnyAuthority('MANAGE_ROLES:USE')")

@@ -72,4 +72,13 @@ public interface RoleService {
      * @return list of users
      */
     Collection<User> getTotalActiveUsers(Role role);
+
+    /**
+     * Search roles by name and internal name
+     *
+     * @param request request
+     * @param pageable pageable
+     * @return result page
+     */
+    Page<Role> searchRolesByNames(String request, Pageable pageable);
 }

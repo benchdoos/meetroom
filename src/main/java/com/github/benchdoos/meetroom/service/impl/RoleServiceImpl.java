@@ -18,10 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.Collections;
@@ -124,6 +126,11 @@ public class RoleServiceImpl implements RoleService {
         return userRepository.findAllByRolesInAndEnabledIsTrue(Collections.singletonList(role));
     }
 
+    @Override
+    public Page<Role> searchRolesByNames(String request, Pageable pageable) {
+        return roleRepository.findAll(prepareSpecificationToSearchRolesByNameAndInternalName(request), pageable);
+    }
+
     /**
      * Check if given role is not marked as protected
      *
@@ -155,5 +162,21 @@ public class RoleServiceImpl implements RoleService {
      */
     private String getValidColor(String color) {
         return StringUtils.hasText(color) ? color : null;
+    }
+
+    /**
+     * Prepare specification to search roles by name and internal name
+     *
+     * @param request request
+     * @return specification
+     */
+    private Specification<Role> prepareSpecificationToSearchRolesByNameAndInternalName(String request) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            final String requestPattern = "%" + request.toUpperCase() + "%";
+            final Predicate name = criteriaBuilder.like(criteriaBuilder.upper(root.get("name")), requestPattern);
+            final Predicate internalName = criteriaBuilder.like(criteriaBuilder.upper(root.get("internalName")), requestPattern);
+
+            return criteriaBuilder.or(name, internalName);
+        };
     }
 }
