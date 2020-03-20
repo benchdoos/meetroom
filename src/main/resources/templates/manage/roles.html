@@ -52,7 +52,12 @@
         <tbody>
         <tr th:each="role : ${roles.content}">
             <th>
-                <a th:href="@{/manage/roles/{roleId}(roleId=${role.id})}" th:text="${role.name}"></a>
+                <a th:href="@{/manage/roles/{roleId}(roleId=${role.id})}">
+                    <span class="badge badge-info" th:if="${role.color != null}"
+                          th:style="|background-color:${role.color};|"
+                          th:text="${role.name}"></span>
+                    <span class="badge badge-info" th:if="${role.color == null}" th:text="${role.name}"></span>
+                </a>
             </th>
             <th th:text="${role.internalName}"></th>
             <th>
