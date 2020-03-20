@@ -26,6 +26,10 @@ manage-pages:
       path: roles
       description: "Manage roles: create and edit roles, set permissions to each role."
       icon: fas fa-user-tag
+    - name: See privileges
+      path: privileges
+      description: "See all available privileges in system and its descriptions"
+      icon: fas fa-parking
 protected:
   roles:
     - ROLE_ADMIN
