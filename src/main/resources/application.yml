@@ -33,6 +33,7 @@ manage-pages:
 protected:
   roles:
     - ROLE_ADMIN
+    - ROLE_USER
 ---
 
 spring:
