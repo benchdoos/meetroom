@@ -54,7 +54,7 @@
                                             <input name="color" value=""
                                                    placeholder="Badge color" class="form-control pre-input-color"
                                                    type="text"
-                                                    style="width: 100px;">
+                                                   style="width: 100px;">
                                             <div class="input-group-btn">
                                                 <div class="btn-group">
                                                     <span title="Toggle color picker"
@@ -66,7 +66,6 @@
                                         </div>
                                     </div>
                                 </div>
-
 
                             </div>
                             <div class="verticalHr" style="margin: 10px;"></div>
@@ -125,7 +124,7 @@
 
 <div th:fragment="fr-role-form-content">
     <div style="display: inline-flex; width: 100%">
-        <div>
+        <div style="width: 300px;">
             <div class="form-group">
                 <div class="mb-2">
                     <label>Public name</label>
@@ -142,6 +141,31 @@
                     <input type="text" class="form-control" name="internalName"
                            placeholder="Internal name"
                            th:value="${role.internalName}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="mb-2">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <div class="btn-group">
+                                <span title="Empty" class="btn btn-danger dc-color-input-clearer"
+                                      data-original-title="Empty Field"><i class="fa fa-times"></i></span>
+                            </div>
+                        </div>
+                        <input name="color" th:value="${role.color}"
+                               placeholder="Badge color" class="form-control pre-input-color"
+                               type="text"
+                               style="width: 100px;">
+                        <div class="input-group-btn">
+                            <div class="btn-group">
+                                <span title="Toggle color picker"
+                                      class="btn btn-primary dc-color-input-switcher"
+                                      data-original-title="Switch color picker">
+                                    <i class="fa fa-paint-brush"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
