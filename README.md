@@ -110,5 +110,7 @@ To override VM options:
 ![Main page](https://i.postimg.cc/V6tKLXw8/image.png)
 ![Meeting room page](https://i.postimg.cc/CKTBp8cD/image.png)
 ![Meeting info page with editing](https://i.postimg.cc/hth6RzXS/image.png)
-![Management page](https://i.postimg.cc/15nZfKsr/image.png)
+![Management page](https://i.postimg.cc/0Nn764tB/image.png)
 ![Manage users](https://i.postimg.cc/g0qpGkm9/image.png)
+![Manage roles](https://i.postimg.cc/cCF1qVcf/image.png)
+![See privileges](https://i.postimg.cc/66bNXLXV/image.png)
