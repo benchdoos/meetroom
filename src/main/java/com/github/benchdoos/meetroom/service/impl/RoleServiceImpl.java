@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
@@ -54,11 +55,14 @@ public class RoleServiceImpl implements RoleService {
 
         checkIfRoleIsProtected(roleToUpdate);
 
+        final String color = getValidColor(editRoleDto.getColor());
+
         final List<Privilege> privileges = privilegeService.findAllByIds(editRoleDto.getPrivileges());
 
         roleToUpdate.setName(editRoleDto.getName());
         roleToUpdate.setInternalName(editRoleDto.getInternalName());
         roleToUpdate.setPrivileges(privileges);
+        roleToUpdate.setColor(color);
 
         return roleRepository.save(roleToUpdate);
     }
@@ -74,12 +78,15 @@ public class RoleServiceImpl implements RoleService {
             throw new RoleAlreadyExistsException(createRoleDto.getName(), createRoleDto.getInternalName());
         }
 
+        final String color = getValidColor(createRoleDto.getColor());
+
         final List<Privilege> privileges = privilegeService.findAllByIds(createRoleDto.getPrivileges());
 
         final Role role = Role.builder()
                 .name(createRoleDto.getName())
                 .internalName(createRoleDto.getInternalName())
                 .privileges(privileges)
+                .color(color)
                 .build();
         return roleRepository.save(role);
     }
@@ -127,5 +134,16 @@ public class RoleServiceImpl implements RoleService {
                 throw new ProtectedRoleException(role.getInternalName());
             }
         }
+    }
+
+    /**
+     * Gets valid color for color value
+     * todo: move to Jackson deserialization if possible
+     *
+     * @param color in hex or empty string
+     * @return color in hex, or null if empty string
+     */
+    private String getValidColor(String color) {
+        return StringUtils.hasText(color) ? color : null;
     }
 }
