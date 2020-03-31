@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title th:text="|User page - ${user.username}|"></title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
+    <link href="/css/common.css" th:href="@{/css/common.css}" rel="stylesheet">
     <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
@@ -31,16 +32,10 @@
             <h5 class="card-title" th:text="|${user.firstName} ${user.lastName}|"></h5>
             <div style="display: flex">
                 User roles:
-                <div th:each="roleInfo : ${user.roles}" th:switch="${roleInfo.internalName}">
-                    <!--todo: remove this badge shit after adding colors-->
-                    <span th:case="'ROLE_ADMIN'" class="badge badge-pill badge-danger" data-toggle="tooltip"
-                          data-placement="top" th:title="${roleInfo.name}" th:text="${roleInfo.name}"></span>
-
-                    <span th:case="'ROLE_USER'" class="badge badge-pill badge-success" data-toggle="tooltip"
-                          data-placement="top" th:title="${roleInfo.name}" th:text="${roleInfo.name}"></span>
-
-                    <span th:case="*" class="badge badge-pill badge-info" data-toggle="tooltip" data-placement="top"
-                          th:text="${roleInfo.name != null ? roleInfo.name : roleInfo.internalName}"></span>
+                <div th:each="role : ${user.roles}" th:switch="${roleInfo.internalName}">
+                    <div th:include="modal/modal-role :: fr-role-badge"
+                         style="margin-left: 5px; margin-right: 5px;"
+                         class="noselect"></div>
                 </div>
             </div>
             <br>
