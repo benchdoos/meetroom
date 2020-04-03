@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(ApiConstants.API_V1_PATH_PREFIX + "user")
+@RequestMapping(ApiConstants.API_V1_PATH_PREFIX + "/user")
 public class ApiV1UserController {
     private final UserService userService;
 
