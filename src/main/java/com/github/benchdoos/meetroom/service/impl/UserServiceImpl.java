@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
         return userPublicInfoDto;
     }
 
-    public UserExtendedInfoDto getExtendedUserInfoDtoByUsername(String username) {
+    public UserExtendedInfoDto getUserExtendedInfoDtoByUsername(String username) {
         final User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         final UserExtendedInfoDto userExtendedInfoDto = new UserExtendedInfoDto();
 
@@ -91,6 +91,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getById(UUID id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
+    public UserExtendedInfoDto getUserExtendedInfoById(UUID id) {
+        final User user = getUser(id);
+        final UserExtendedInfoDto userExtendedInfoDto = new UserExtendedInfoDto();
+
+        userMapper.convert(user, userExtendedInfoDto);
+
+        return userExtendedInfoDto;
     }
 
     @Override

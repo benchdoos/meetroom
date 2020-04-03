@@ -36,7 +36,7 @@ public interface UserService extends UserDetailsService{
      * @param username username
      * @return user
      */
-    UserExtendedInfoDto getExtendedUserInfoDtoByUsername(String username);
+    UserExtendedInfoDto getUserExtendedInfoDtoByUsername(String username);
 
     /**
      * Get user by id
@@ -45,6 +45,14 @@ public interface UserService extends UserDetailsService{
      * @return user with given id
      */
     User getById(UUID id);
+
+    /**
+     * Get user extended info by user id
+     *
+     * @param id of user
+     * @return extended user info
+     */
+    UserExtendedInfoDto getUserExtendedInfoById(UUID id);
 
     /**
      * Create user with role {@link SecurityConstants#ROLE_USER}
