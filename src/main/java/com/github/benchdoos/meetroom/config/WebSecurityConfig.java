@@ -37,7 +37,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/webjars/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .csrf().disable()
                 .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
