@@ -11,6 +11,7 @@ management:
           - info
           - prometheus
           - configprops
+          - mappings
 #meetroom reservation properties
 meetroom:
   minimum-reservation-value: 30 #in minutes
