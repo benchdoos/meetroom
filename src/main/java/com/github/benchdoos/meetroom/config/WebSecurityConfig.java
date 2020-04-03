@@ -31,11 +31,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/login",
                 "/registration",
                 "/user/reset-password/**",
+                "/auth/token",
                 "/css/**",
                 "/images/**",
                 "/js/**",
                 "/webjars/**",
-                "/actuator/**").permitAll()
+                "/actuator/**",
+                "/csrf").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

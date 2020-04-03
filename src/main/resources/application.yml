@@ -35,6 +35,12 @@ protected:
   roles:
     - ROLE_ADMIN
     - ROLE_USER
+
+api-security:
+  secret: common-secret
+  token-validity: 7200
+  refresh-token-validity: 14400
+
 ---
 
 spring:
@@ -62,6 +68,9 @@ spring:
     validate-on-migrate: true
     baseline-on-migrate: true
 
+api-security:
+  token-validity: 86400
+  refresh-token-validity: 86400
 server:
   servlet:
     context-path: /meetroom
@@ -93,6 +102,9 @@ spring:
     locations: classpath:/db/flyway/migration/
     validate-on-migrate: true
     baseline-on-migrate: true
+
+api-security:
+  secret: 8c6be0fb-f96e-46c4-9a7d-2f34d734c28a
 
 server:
   servlet:
@@ -127,6 +139,9 @@ spring:
     locations: classpath:/db/flyway/migration/
     validate-on-migrate: true
     baseline-on-migrate: true
+
+api-security:
+  secret: 4176429e-a07b-4a2f-9e02-a80081ab2ac7
 
 server:
   servlet:
