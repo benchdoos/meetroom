@@ -26,18 +26,36 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers(
-                "/",
-                "/login",
-                "/registration",
-                "/user/reset-password/**",
-                "/auth/token",
-                "/css/**",
-                "/images/**",
-                "/js/**",
-                "/webjars/**",
-                "/actuator/**",
-                "/csrf").permitAll()
+
+        //public pages
+        http.authorizeRequests()
+                .antMatchers(
+                        "/",
+                        "/login",
+                        "/registration",
+                        "/user/reset-password/**").permitAll();
+
+        //public additional sources
+        http.authorizeRequests()
+                .antMatchers(
+                        "/css/**",
+                        "/images/**",
+                        "/js/**",
+                        "/webjars/**").permitAll();
+
+        //public internal pages
+        http.authorizeRequests()
+                .antMatchers(
+                        "/actuator/**",
+                        "/csrf").permitAll();
+
+        //public rest pages //fixme: not working
+        http.authorizeRequests()
+                .antMatchers(
+                        "/auth/token").permitAll();
+
+        //Login form
+        http.authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
