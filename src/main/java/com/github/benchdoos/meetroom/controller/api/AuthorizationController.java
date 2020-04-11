@@ -2,7 +2,6 @@ package com.github.benchdoos.meetroom.controller.api;
 
 import com.github.benchdoos.meetroom.domain.dto.security.LoginDto;
 import com.github.benchdoos.meetroom.domain.dto.security.TokenDto;
-import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
 import com.github.benchdoos.meetroom.service.TokenService;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,21 +23,18 @@ public class AuthorizationController {
     private final TokenService tokenService;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
 
     @PostMapping("/token")
     public TokenDto getToken(@RequestBody @Valid LoginDto loginDto) {
 
-        final UserDetails userDetails = userService.loadUserByUsername(loginDto.getUsername());
-        if (userDetails.getPassword().equals(passwordEncoder.encode(loginDto.getPassword()))) {
-            final TokenDto token = tokenService.createToken(userDetails);
+        final UserDetails userByLoginDto = userService.getUserByLoginDto(loginDto);
 
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
+        final TokenDto token = tokenService.createToken(userByLoginDto);
 
-            return token;
-        }
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
 
-        throw new IllegalUserCredentialsException();
+        return token;
     }
 }

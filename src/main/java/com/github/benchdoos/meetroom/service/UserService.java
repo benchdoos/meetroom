@@ -9,9 +9,12 @@ import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.security.LoginDto;
+import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.security.Principal;
@@ -20,7 +23,7 @@ import java.util.UUID;
 /**
  * Service that gives ability to operate with {@link User}
  */
-public interface UserService extends UserDetailsService{
+public interface UserService extends UserDetailsService {
 
     /**
      * Get user by username or throws {@link UserNotFoundException}
@@ -138,4 +141,13 @@ public interface UserService extends UserDetailsService{
      * @return users
      */
     Page<User> searchByUsernameAndNames(String request, Pageable pageable);
+
+    /**
+     * Get user by login dto. Returns user if username and password pair match registered user.
+     *
+     * @param loginDto login dto
+     * @return user
+     * @throws IllegalUserCredentialsException if user credentials do not match
+     */
+    UserDetails getUserByLoginDto(LoginDto loginDto);
 }

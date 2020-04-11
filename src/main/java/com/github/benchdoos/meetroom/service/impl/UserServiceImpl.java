@@ -12,8 +12,10 @@ import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.security.LoginDto;
 import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
 import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimself;
+import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
 import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePassword;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpired;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestIsNotActiveAnyMore;
@@ -361,6 +363,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> searchByUsernameAndNames(String request, Pageable pageable) {
         return userRepository.findAll(prepareUserSearchByUsernameOrLastAndFirstNameSpecification(request), pageable);
+    }
+
+    @Override
+    public UserDetails getUserByLoginDto(LoginDto loginDto) {
+        final UserDetails user =loadUserByUsername(loginDto.getUsername());
+
+        final String encodedPassword = passwordEncoder.encode(loginDto.getPassword());
+
+        log.debug("e: [{}] [{}]", encodedPassword, user.getPassword());
+
+        if (passwordEncoder.matches(loginDto.getPassword(),user.getPassword())) {
+            return user;
+        }
+
+        throw new IllegalUserCredentialsException();
     }
 
     /**

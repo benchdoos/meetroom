@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/actuator/**",
                         "/csrf").permitAll();
 
-        //public rest pages //fixme: not working
+        //public rest pages
         http.authorizeRequests()
                 .antMatchers(
                         "/auth/token").permitAll();
@@ -66,6 +66,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .and()
-                .httpBasic();
+                .httpBasic()
+                .and()
+                .csrf().disable();
     }
 }
