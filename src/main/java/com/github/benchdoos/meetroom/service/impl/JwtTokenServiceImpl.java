@@ -18,11 +18,11 @@ import java.util.function.Function;
 
 /**
  * Default {@link TokenService} implementation
- *  while creating the token -
- *  1. Define  claims of the token, like Issuer, Expiration, Subject, and the ID
- *  2. Sign the JWT using the HS512 algorithm and secret key.
- *  3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
- *     compaction of the JWT to a URL-safe string
+ * while creating the token -
+ * 1. Define  claims of the token, like Issuer, Expiration, Subject, and the ID
+ * 2. Sign the JWT using the HS512 algorithm and secret key.
+ * 3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
+ * compaction of the JWT to a URL-safe string
  */
 @RequiredArgsConstructor
 @Service
@@ -40,12 +40,7 @@ public class JwtTokenServiceImpl implements TokenService {
         return userService.loadUserByUsername(getUsernameFromToken(token));
     }
 
-    /**
-     * Get username from given token
-     *
-     * @param token jwt token
-     * @return username
-     */
+    @Override
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
@@ -77,14 +72,8 @@ public class JwtTokenServiceImpl implements TokenService {
         return Jwts.parser().setSigningKey(apiSecurityProperties.getSecret()).parseClaimsJws(token).getBody();
     }
 
-    /**
-     * Validate token with given user details
-     *
-     * @param token token
-     * @param userDetails user details
-     * @return true if match and token is not expired
-     */
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    @Override
+    public boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
@@ -95,7 +84,7 @@ public class JwtTokenServiceImpl implements TokenService {
      * @param token token to validate
      * @return true if not expired
      */
-    private Boolean isTokenExpired(String token) {
+    private boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }

@@ -23,4 +23,21 @@ public interface TokenService {
      * @return user
      */
     UserDetails getUserByToken(String token);
+
+    /**
+     * Get username from given token
+     *
+     * @param token jwt token
+     * @return username
+     */
+    String getUsernameFromToken(String token);
+
+    /**
+     * Validate token with given user details
+     *
+     * @param token token
+     * @param userDetails user details
+     * @return true if match and token is not expired
+     */
+    boolean validateToken(String token, UserDetails userDetails);
 }
