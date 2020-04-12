@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 
+/**
+ * {@link AuthenticationEntryPoint} for JWT tokens
+ */
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
     private static final long serialVersionUID = -7858869558953243875L;
