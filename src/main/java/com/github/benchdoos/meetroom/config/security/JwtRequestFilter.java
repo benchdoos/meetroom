@@ -22,6 +22,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Filter for requests. Gets if request is token-based (or JSESSIONID-based) and provides authorization.
+ * If token-based - resets headers.
+ * If JSESSIONID-based - do nothing
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Component
