@@ -35,9 +35,9 @@ public class UserController {
         final UserExtendedInfoDto userDto;
 
         if (StringUtils.hasText(username)) {
-            userDto = userService.getExtendedUserInfoDtoByUsername(username);
+            userDto = userService.getUserExtendedInfoDtoByUsername(username);
         } else {
-            userDto = userService.getExtendedUserInfoDtoByUsername(principal.getName());
+            userDto = userService.getUserExtendedInfoDtoByUsername(principal.getName());
         }
         model.addAttribute("user", userDto);
         return "user";
