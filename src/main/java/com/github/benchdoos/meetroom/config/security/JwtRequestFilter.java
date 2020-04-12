@@ -73,6 +73,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     // that the current user is authenticated. So it passes the
                     // Spring Security Configurations successfully.
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    // FIXME: 12.04.2020 This is not the best solution I guess. Better solution needed
+                    //  issue#57
+                    //  https://github.com/benchdoos/meetroom/issues/57
+                    httpServletResponse.reset();
                 }
             }
         }
