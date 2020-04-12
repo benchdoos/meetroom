@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * Controller that provides authorization endpoints
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
@@ -26,6 +29,12 @@ public class AuthorizationController {
     private final AuthenticationManager authenticationManager;
 
 
+    /**
+     * Get token by user credentials
+     *
+     * @param loginDto dto with user credentials
+     * @return token dto with token credentials
+     */
     @PostMapping("/token")
     public TokenDto getToken(@RequestBody @Valid LoginDto loginDto) {
 
