@@ -71,7 +71,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                // FIXME: 12.04.2020 this is probably needed, but breaks login page redirect on accessing the
+                //  secured page without authorization
+//                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 // FIXME: 12.04.2020
                 //  issue#57
                 //  maybe STATELESS is able for controller?
