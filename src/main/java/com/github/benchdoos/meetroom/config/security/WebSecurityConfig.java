@@ -23,10 +23,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
 
         //public pages
-        http.authorizeRequests()
+        httpSecurity.authorizeRequests()
                 .antMatchers(
                         "/",
                         "/login",
@@ -34,7 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/user/reset-password/**").permitAll();
 
         //public additional sources
-        http.authorizeRequests()
+        httpSecurity.authorizeRequests()
                 .antMatchers(
                         "/css/**",
                         "/images/**",
@@ -42,20 +42,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/webjars/**").permitAll();
 
         //public internal pages
-        http.authorizeRequests()
+        httpSecurity.authorizeRequests()
                 .antMatchers(
                         "/actuator/**",
                         "/csrf").permitAll();
 
         //public rest pages
-        http.authorizeRequests()
+        httpSecurity.authorizeRequests()
                 .antMatchers(
                         "/auth/token").permitAll();
 
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         //Login form
-        http.authorizeRequests()
+        httpSecurity.authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
