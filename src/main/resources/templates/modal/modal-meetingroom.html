@@ -12,11 +12,11 @@
     <div class="w-100" style="text-align: center; padding: 10px;">
         <div style="display: inline-flex;">
             <a class="btn btn-secondary h4"
-               th:href="@{'/' + ${room.id}(day=${#temporals.format(prevWeek.fromDate,'dd.MM.yyyy')})}">
+               th:href="@{/meetroom/{roomId}(roomId = ${room.id}, day=${#temporals.format(prevWeek.fromDate,'dd.MM.yyyy')})}">
                 previous week
             </a>
 
-            <a class="btn btn-link" th:href="@{'/' + ${room.id}}"
+            <a class="btn btn-link" th:href="@{/meetroom/{roomId}(roomId = ${room.id})}"
                style="color: black; padding-left: 20px; padding-right: 20px;"
                data-toggle="tooltip" data-placement="top" title="Go to current week">
                 <span id="beginDay" class="h4"
@@ -26,7 +26,7 @@
             </a>
 
             <a class="btn btn-secondary h4"
-               th:href="@{'/' + ${room.id}(day=${#temporals.format(nextWeek.toDate,'dd.MM.yyyy')})}">
+               th:href="@{/meetroom/{roomId}(roomId = ${room.id}, day=${#temporals.format(nextWeek.toDate,'dd.MM.yyyy')})}">
                 next week
             </a>
         </div>
