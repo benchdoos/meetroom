@@ -13,7 +13,7 @@
     <div style="width: 100%">
         <div>
             <a class="btn btn-info h1" th:href="@{/}"><i class="fas fa-chevron-left"></i></a>
-            <a th:href="@{'/' + ${room.id}}" class="h3" style="color: white;" th:text="${room.name}"></a>
+            <a th:href="@{/meetroom/{roomId}(roomId = ${room.id})}" class="h3" style="color: white;" th:text="${room.name}"></a>
             <span class="h3">
                 <span th:if="${room.enabled == false}"
                       class="badge badge-danger noselect">disabled</span>
