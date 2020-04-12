@@ -30,13 +30,12 @@ import com.github.benchdoos.meetroom.repository.PasswordResetRequestRepository;
 import com.github.benchdoos.meetroom.repository.RoleRepository;
 import com.github.benchdoos.meetroom.repository.UserRepository;
 import com.github.benchdoos.meetroom.service.UserService;
+import com.github.benchdoos.meetroom.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,7 +48,6 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -330,7 +328,7 @@ public class UserServiceImpl implements UserService {
 
         final UserDetailsDto userDetailsDto = new UserDetailsDto(user);
 
-        userDetailsDto.setAuthorities(getGrantedAuthoritiesFromUserRoles(user.getRoles()));
+        userDetailsDto.setAuthorities(UserUtils.getUserRolesFromGrantedAuthorities(user.getRoles()));
 
         return userDetailsDto;
     }
@@ -378,23 +376,6 @@ public class UserServiceImpl implements UserService {
         }
 
         throw new IllegalUserCredentialsException();
-    }
-
-    /**
-     * Transforms list of {@link Role} to {@link GrantedAuthority} final List<>  = new ();
-     *
-     * @param roles list of user's roles
-     * @return list of granted authorities
-     */
-    private List<GrantedAuthority> getGrantedAuthoritiesFromUserRoles(Collection<Role> roles) {
-        final List<GrantedAuthority> grantList = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(roles)) {
-            roles.forEach(role -> {
-                grantList.add(new SimpleGrantedAuthority(role.getInternalName()));
-                role.getPrivileges().forEach(privilege -> grantList.add(new SimpleGrantedAuthority(privilege.getName())));
-            });
-        }
-        return grantList;
     }
 
     /**
