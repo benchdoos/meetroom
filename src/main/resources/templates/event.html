@@ -20,7 +20,7 @@
     <div style="color: white; display: flex;">
         <div class="w-100">
             <a class="btn btn-info h1"
-               th:href="@{'/' + ${event.meetingRoom.id}(day=${#temporals.format(event.fromDate,'dd.MM.yyyy')})}">
+               th:href="@{/meetroom/{roomId}(roomId = ${event.meetingRoom.id}, day=${#temporals.format(event.fromDate,'dd.MM.yyyy')})}">
                 <i class="fas fa-chevron-left"></i></a>
             <span class="h3">Event info</span>
         </div>
