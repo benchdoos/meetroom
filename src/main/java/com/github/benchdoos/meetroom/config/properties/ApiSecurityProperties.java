@@ -20,12 +20,21 @@ import javax.validation.constraints.NotBlank;
 @ConfigurationProperties("api-security")
 public class ApiSecurityProperties {
 
+    /**
+     * Secret key to sign jwt-token
+     */
     @NotBlank
     private String secret;
 
+    /**
+     * Token validity time in seconds
+     */
     @Min(60)
     private long tokenValidity;
 
+    /**
+     * Refresh token validity time in seconds
+     */
     @Min(60)
     private long refreshTokenValidity;
 }
