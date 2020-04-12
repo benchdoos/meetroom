@@ -9,6 +9,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -27,6 +28,11 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 @Service
 public class JwtTokenServiceImpl implements TokenService {
+    /**
+     * Default token type value
+     */
+    private static final String DEFAULT_TOKEN_TYPE = OAuth2AccessToken.BEARER_TYPE;
+
     private final ApiSecurityProperties apiSecurityProperties;
     private final UserService userService;
 
@@ -108,6 +114,6 @@ public class JwtTokenServiceImpl implements TokenService {
                 .setExpiration(tokenExpires)
                 .signWith(SignatureAlgorithm.HS512, apiSecurityProperties.getSecret()).compact();
 
-        return new TokenDto.TokenInfoDto(token, tokenCreated, tokenExpires);
+        return new TokenDto.TokenInfoDto(token, DEFAULT_TOKEN_TYPE, tokenCreated, tokenExpires);
     }
 }
