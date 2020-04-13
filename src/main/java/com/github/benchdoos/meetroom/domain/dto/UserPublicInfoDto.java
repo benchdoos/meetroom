@@ -33,4 +33,5 @@ public class UserPublicInfoDto {
     @NotNull
     private Boolean enabled;
 
+    private String avatar;
 }

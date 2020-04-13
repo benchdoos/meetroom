@@ -31,8 +31,14 @@ public class UserExtendedInfoDto extends UserPublicInfoDto {
      * @param roles roles of user
      */
     @Builder(builderMethodName = "realBuilder")
-    public UserExtendedInfoDto(UUID id, String username, String firstName, String lastName, Boolean enabled, Collection<Role> roles) {
-        super(id, username, firstName, lastName, enabled);
+    public UserExtendedInfoDto(UUID id,
+                               String username,
+                               String firstName,
+                               String lastName,
+                               Boolean enabled,
+                               Collection<Role> roles,
+                               String avatar) {
+        super(id, username, firstName, lastName, enabled, avatar);
         this.roles = roles;
     }
 

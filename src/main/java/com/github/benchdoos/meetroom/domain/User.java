@@ -48,6 +48,12 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
+    /**
+     * User avatar in base64
+     */
+    @Column(name = "avatar", length = 32768)
+    private String avatar;
+
 //    @Column(name = "email")
 //    private String email;
 

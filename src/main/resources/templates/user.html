@@ -28,6 +28,9 @@
 
     <div class="card" style="width: 20rem;">
         <!--        <img class="card-img-top" src=".../100px180/" alt="Card image cap">-->
+
+        <img th:if="${user.getAvatar() != null}" th:src="${user.getAvatar()}" width="128px" height="128px"/>
+
         <div class="card-body">
             <h5 class="card-title" th:text="|${user.firstName} ${user.lastName}|"></h5>
             <div style="display: flex">

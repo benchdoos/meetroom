@@ -1,7 +1,7 @@
 package com.github.benchdoos.meetroom.controller;
 
-import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.Role;
+import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
@@ -97,7 +97,7 @@ public class UserManageController {
         return "redirect:/manage/users";
     }
 
-    @PreAuthorize(("hasAnyAuthority('MANAGE_USERS:USE')"))
+    @PreAuthorize("hasAnyAuthority('MANAGE_USERS:USE')")
     @PostMapping("/switch-enable/{id}")
     public String updateUserEnabled(@PathVariable("id") UUID id,
                                     @RequestParam boolean enabled,

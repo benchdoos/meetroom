@@ -1,5 +1,6 @@
 package com.github.benchdoos.meetroom.controller;
 
+import com.github.benchdoos.meetroom.config.constants.UsersConstants;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.service.PasswordResetRequestService;
@@ -40,6 +41,9 @@ public class UserController {
             userDto = userService.getUserExtendedInfoDtoByUsername(principal.getName());
         }
         model.addAttribute("user", userDto);
+        if (userDto.getAvatar() == null) {
+            userDto.setAvatar(UsersConstants.DEFAULT_AVATAR);
+        }
         return "user";
     }
 
