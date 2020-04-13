@@ -16,14 +16,63 @@
 <div th:fragment="fr-user-edit-menu">
     <div class="btn-group">
         <button type="button" class="btn btn-secondary">Edit</button>
-        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
             <span class="sr-only">Toggle Dropdown</span>
         </button>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">Change password</a>
-            <a class="dropdown-item" href="#">Change username</a>
+            <button class="dropdown-item" >Change password</button>
+            <button class="dropdown-item" data-toggle="modal" data-target="#editUsernameModal">Change username</button>
         </div>
     </div>
+</div>
+
+<div th:fragment="fr-user-update-username">
+    <div class="modal fade" id="editUsernameModal" tabindex="-1" role="dialog" aria-labelledby="editUsernameModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUsernameModalLabel">Change username</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="update-user-username-form">
+                        <label for="update-user-username-username">@</label>
+                        <input id="update-user-username-username" type="text" th:value="${user.username}">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" form="update-user-username-form">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $('#update-user-username-form').submit(function (e) {
+                let newUsername = $('#update-user-username-username').val();
+                let oldUsername = [[${user.username}]];
+                function UpdateUserUsernameDto(oldUsername, newUsername) {
+                    console.log("OLD: ", oldUsername);
+                    console.log("NEW: ", newUsername);
+
+                    return {
+                        oldUsername: oldUsername,
+                        newUsername: newUsername
+                    };
+                }
+                let updateUserUsernameDto = new UpdateUserUsernameDto(oldUsername, newUsername);
+
+                console.log("dto:", updateUserUsernameDto);
+                updateUserUsername(updateUserUsernameDto);
+            })
+        })
+    </script>
+
 </div>
 
 </body>
