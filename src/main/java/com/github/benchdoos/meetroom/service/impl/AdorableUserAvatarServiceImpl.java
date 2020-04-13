@@ -1,6 +1,6 @@
 package com.github.benchdoos.meetroom.service.impl;
 
-import com.github.benchdoos.meetroom.client.AvatarClient;
+import com.github.benchdoos.meetroom.client.AvatarGeneratorClient;
 import com.github.benchdoos.meetroom.service.UserAvatarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class AdorableUserAvatarServiceImpl implements UserAvatarService {
 
     private static final String BASE_IMAGE_PREFIX = "data:image/png;base64,";
 
-    private final AvatarClient avatarClient;
+    private final AvatarGeneratorClient avatarGeneratorClient;
 
     @Override
     public String generateRandomAvatar(@Size(min = 40, max = 256) int size) {
@@ -26,7 +26,7 @@ public class AdorableUserAvatarServiceImpl implements UserAvatarService {
 
     @Override
     public String generateAvatarForString(@NotNull String key, @Size(min = 40, max = 256) int size) {
-        final byte[] avatarByKey = avatarClient.getAvatarByKey(key, size);
+        final byte[] avatarByKey = avatarGeneratorClient.getAvatarByKey(key, size);
         final byte[] encode = Base64.getEncoder().encode(avatarByKey);
         return BASE_IMAGE_PREFIX + new String(encode);
     }

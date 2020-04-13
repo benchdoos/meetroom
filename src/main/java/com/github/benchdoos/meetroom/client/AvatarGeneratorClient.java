@@ -5,7 +5,7 @@ import javax.validation.constraints.Size;
 /**
  * External avatar - generator client
  */
-public interface AvatarClient {
+public interface AvatarGeneratorClient {
 
     /**
      * Get avatar image by key

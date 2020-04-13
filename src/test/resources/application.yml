@@ -41,7 +41,7 @@ api-security:
 
 internal-configuration:
   users:
-    avatar-size: 128
+    avatar-size: 256
 
 ---
 

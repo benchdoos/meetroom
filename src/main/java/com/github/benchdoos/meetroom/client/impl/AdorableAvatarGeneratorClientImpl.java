@@ -1,6 +1,6 @@
 package com.github.benchdoos.meetroom.client.impl;
 
-import com.github.benchdoos.meetroom.client.AvatarClient;
+import com.github.benchdoos.meetroom.client.AvatarGeneratorClient;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpEntity;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Service
-public class AdorableAvatarClientImpl implements AvatarClient {
+public class AdorableAvatarGeneratorClientImpl implements AvatarGeneratorClient {
     private static final String API_URL = "https://api.adorable.io/avatars/{size}/{key}.png";
 
     private final RestTemplate restTemplate;

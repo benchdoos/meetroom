@@ -11,12 +11,12 @@
 <div style="padding: 20px">
     <div class="header" style="display: flex">
         <div style="width: 100%"><h2>Account information</h2></div>
+
         <div th:switch="${user.enabled}">
-        <span th:case="${false}" class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="top"
-              title="Account disabled">Disabled</span>
-            <span th:case="${true}" class="badge badge-pill badge-primary" data-toggle="tooltip" data-placement="top"
-                  title="Account enabled">Enabled</span>
+            <span th:case="${false}" class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="top"
+                  title="Account disabled">Disabled</span>
         </div>
+
         <div sec:authorize="isAuthenticated()" style="padding-left: 20px">
             <form name="logoutForm" th:action="@{/logout}" method="post"
                   th:if="${user.username} == ${#authentication.getPrincipal().getUsername()}">
@@ -26,10 +26,40 @@
     </div>
 
 
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container" style="display: flex">
+            <img class="rounded-left" th:if="${user.getAvatar() != null}" th:src="${user.getAvatar()}"
+                 width="256px"
+                 height="256px"/>
+            <div style="padding-left: 30px">
+                <h1 class="display-4" th:text="|${user.firstName} ${user.lastName}|"></h1>
+                <p class="lead" th:text="|@${user.username}|"></p>
+            </div>
+        </div>
+        <div class="container" style="display: flex; padding-top: 10px">
+            <span>Privileges: </span>
+            <div th:each="role : ${user.roles}" th:switch="${roleInfo.internalName}">
+                <div th:switch="${#authorization.expression('hasAnyAuthority(''MANAGE_ROLES:USE'')')}">
+                    <div th:case="true">
+                        <div th:include="modal/modal-role :: fr-role-label"
+                             style="margin-left: 5px; margin-right: 5px;"
+                             class="noselect"></div>
+                    </div>
+                    <div th:case="false">
+                        <div th:include="modal/modal-role :: fr-role-badge"
+                             style="margin-left: 5px; margin-right: 5px;"
+                             class="noselect"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card" style="width: 20rem;">
         <!--        <img class="card-img-top" src=".../100px180/" alt="Card image cap">-->
 
-        <img th:if="${user.getAvatar() != null}" th:src="${user.getAvatar()}" width="128px" height="128px"/>
+        <img class="rounded-left" th:if="${user.getAvatar() != null}" th:src="${user.getAvatar()}" width="128px"
+             height="128px"/>
 
         <div class="card-body">
             <h5 class="card-title" th:text="|${user.firstName} ${user.lastName}|"></h5>
