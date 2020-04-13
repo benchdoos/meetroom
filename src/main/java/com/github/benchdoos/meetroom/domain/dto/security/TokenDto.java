@@ -13,7 +13,7 @@ import java.util.Date;
 @Getter
 @ToString
 public class TokenDto {
-    private final TokenInfoDto token;
+    private final TokenInfoDto accessToken;
     private final TokenInfoDto refreshToken;
 
     /**
@@ -43,5 +43,14 @@ public class TokenDto {
          * Token expire date
          */
         private final Date expires;
+
+        /**
+         * Get full token with token type
+         *
+         * @return full token
+         */
+        public String getFullToken() {
+            return tokenType + " " + token;
+        }
     }
 }
