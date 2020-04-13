@@ -8,6 +8,7 @@ import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
+import com.github.benchdoos.meetroom.domain.dto.EditUserUsernameDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
@@ -41,6 +42,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
@@ -371,11 +373,33 @@ public class UserServiceImpl implements UserService {
 
         log.debug("e: [{}] [{}]", encodedPassword, user.getPassword());
 
-        if (passwordEncoder.matches(loginDto.getPassword(),user.getPassword())) {
+        if (passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             return user;
         }
 
         throw new IllegalUserCredentialsException();
+    }
+
+    @Override
+    public UserPublicInfoDto updateUserUsername(EditUserUsernameDto editUserUsernameDto) {
+
+        if (ObjectUtils.nullSafeEquals(editUserUsernameDto.getOldUsername(), editUserUsernameDto.getNewUsername())) {
+            return getUserPublicInfoDtoByUsername(editUserUsernameDto.getOldUsername());
+        }
+
+        validateNewUser(editUserUsernameDto::getNewUsername);
+
+        final User byUsername = userRepository.findByUsername(editUserUsernameDto.getOldUsername())
+                .orElseThrow(UserNotFoundException::new);
+
+        byUsername.setUsername(editUserUsernameDto.getNewUsername());
+
+        final User savedUser = userRepository.save(byUsername);
+        final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
+
+        userMapper.convert(savedUser, userPublicInfoDto);
+
+        return userPublicInfoDto;
     }
 
     /**

@@ -1,11 +1,16 @@
 package com.github.benchdoos.meetroom.utils;
 
 import com.github.benchdoos.meetroom.domain.Role;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.CollectionUtils;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,5 +56,24 @@ public class UserUtils {
         }
 
         return roleList;
+    }
+
+    /**
+     * Check if given principal has any of given authorities
+     *
+     * @param principal user principal
+     * @param authorities authorities
+     * @return true if has, otherwise false
+     */
+    public static boolean hasAnyAuthority(@NotNull Principal principal, @NotEmpty String... authorities) {
+        if (principal instanceof UsernamePasswordAuthenticationToken) {
+            final List<String> userStringAuthorities = ((UsernamePasswordAuthenticationToken) principal).getAuthorities()
+                    .stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+
+            return CollectionUtils.containsAny(userStringAuthorities, Arrays.asList(authorities));
+        }
+        return false;
     }
 }

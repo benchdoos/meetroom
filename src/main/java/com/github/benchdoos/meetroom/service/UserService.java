@@ -6,6 +6,7 @@ import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
+import com.github.benchdoos.meetroom.domain.dto.EditUserUsernameDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
@@ -150,4 +151,12 @@ public interface UserService extends UserDetailsService {
      * @throws IllegalUserCredentialsException if user credentials do not match
      */
     UserDetails getUserByLoginDto(LoginDto loginDto);
+
+    /**
+     * Update user username
+     *
+     * @param editUserUsernameDto dto with usernames
+     * @return public user info
+     */
+    UserPublicInfoDto updateUserUsername(EditUserUsernameDto editUserUsernameDto);
 }
