@@ -38,6 +38,11 @@ api-security:
   secret: common-test-secret
   token-validity: 7200
   refresh-token-validity: 14400
+
+internal-configuration:
+  users:
+    avatar-size: 128
+
 ---
 
 spring:
