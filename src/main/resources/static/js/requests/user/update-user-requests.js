@@ -37,9 +37,9 @@ function updateUserUsername(changeUsernameDto) {
         contentType: "application/json",
         data: JSON.stringify(changeUsernameDto),
         success: function (output, status, xhr) {
-            console.log("Response is:", output);
-            console.log("Status is:", status);
-            console.log("xhr is:", xhr);
+            console.log("Response: ",status, output);
+            console.log("XHR is:", xhr);
+            location.reload(); //todo fix session problem (see: meetroom-75)
         },
         failure: function (error) {
             console.log("error: ", error);
