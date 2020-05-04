@@ -1,6 +1,8 @@
 package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.config.constants.SecurityConstants;
+import com.github.benchdoos.meetroom.config.properties.InternalConfiguration;
+import com.github.benchdoos.meetroom.domain.Avatar;
 import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
 import com.github.benchdoos.meetroom.domain.Role;
 import com.github.benchdoos.meetroom.domain.User;
@@ -14,6 +16,7 @@ import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.security.LoginDto;
+import com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType;
 import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
 import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimself;
 import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
@@ -30,6 +33,7 @@ import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.repository.PasswordResetRequestRepository;
 import com.github.benchdoos.meetroom.repository.RoleRepository;
 import com.github.benchdoos.meetroom.repository.UserRepository;
+import com.github.benchdoos.meetroom.service.AvatarGeneratorService;
 import com.github.benchdoos.meetroom.service.UserService;
 import com.github.benchdoos.meetroom.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +74,8 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordResetRequestRepository passwordResetRequestRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AvatarGeneratorService avatarGeneratorService;
+    private final InternalConfiguration internalConfiguration;
 
     @Override
     public UserPublicInfoDto getUserPublicInfoDtoByUsername(String username) {
@@ -111,12 +117,15 @@ public class UserServiceImpl implements UserService {
 
         final Role role = roleRepository.findFirstByInternalName(SecurityConstants.ROLE_USER);
 
+        final Avatar avatar = prepareUserAvatar(createUserDto.getUsername());
+
         final User user = User.builder()
                 .firstName(createUserDto.getFirstName())
                 .lastName(createUserDto.getLastName())
                 .username(createUserDto.getUsername())
                 .password(passwordEncoder.encode(createUserDto.getPassword()))
                 .roles(Collections.singleton(role))
+                .avatar(avatar)
                 .needActivation(false) //todo add email-activation, change to true
                 .enabled(true)
                 .build();
@@ -142,12 +151,15 @@ public class UserServiceImpl implements UserService {
 
         final Role role = roleRepository.findFirstByInternalName(SecurityConstants.ROLE_USER);
 
+        final Avatar avatar = prepareUserAvatar(createOtherUserDto.getUsername());
+
         final User userToSave = User.builder()
                 .username(createOtherUserDto.getUsername())
                 .firstName(createOtherUserDto.getFirstName())
                 .lastName(createOtherUserDto.getLastName())
                 .password(passwordEncoder.encode(password))
                 .roles(Collections.singletonList(role))
+                .avatar(avatar)
                 .needActivation(true)
                 .enabled(true)
                 .build();
@@ -367,7 +379,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails getUserByLoginDto(LoginDto loginDto) {
-        final UserDetails user =loadUserByUsername(loginDto.getUsername());
+        final UserDetails user = loadUserByUsername(loginDto.getUsername());
 
         final String encodedPassword = passwordEncoder.encode(loginDto.getPassword());
 
@@ -463,4 +475,18 @@ public class UserServiceImpl implements UserService {
             return criteriaBuilder.or(username, firstNameAndLastNamePredicate, lastNameAndFirstNamePredicate);
         };
     }
+
+    /**
+     * Creates {@link Avatar} instance (in memory, not in database) by given username
+     *
+     * @param username as a keyword
+     * @return avatar
+     */
+    private Avatar prepareUserAvatar(String username) {
+        final String generatedAvatarString = avatarGeneratorService.generateAvatarForString(
+                username,
+                internalConfiguration.getUserSettings().getAvatarSize());
+        return new Avatar(null, AvatarDataType.BASE64, generatedAvatarString);
+    }
+
 }
