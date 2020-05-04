@@ -120,6 +120,51 @@
 
     </div>
 
+    <div th:fragment="fr-user-update-avatar">
+        <div class="modal fade" id="editAvatarModal" tabindex="-1" role="dialog"
+             aria-labelledby="editAvatarModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editAvatarModalLabel">Update avatar</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="update-user-avatar-form">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="list-group" id="list-tab" role="tablist">
+                                        <a class="list-group-item list-group-item-action active" id="list-home-list"
+                                           data-toggle="list" href="#list-generated-avatar" role="tab" aria-controls="home">Generated</a>
+                                        <a class="list-group-item list-group-item-action" id="list-profile-list"
+                                           data-toggle="list" href="#list-gravatar-avatar" role="tab" aria-controls="profile">Gravatar</a>
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <div class="tab-content" id="nav-tabContent">
+                                        <div class="tab-pane fade show active" id="list-generated-avatar" role="tabpanel"
+                                             aria-labelledby="list-home-list">
+                                        </div>
+                                        <div class="tab-pane fade" id="list-gravatar-avatar" role="tabpanel"
+                                             aria-labelledby="list-profile-list">...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" form="update-user-username-form">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 </body>
 </html>
