@@ -43,6 +43,26 @@ function getApiV1Context(context) {
 }
 
 /**
+ * Send GET ajax request for api, by given url. Replaces `src` attribute for given `targetObjectId`.
+ *
+ * @param url to send request
+ * @param targetObjectId to update in case of success
+ */
+function updateImage(url, targetObjectId) {
+    $.ajax({
+        type: 'GET',
+        url: url,
+        contentType: "application/json",
+        success: function (output, status, xhr) {
+            $('#' + targetObjectId).attr('src', output).show();
+        },
+        failure: function (error) {
+            console.log("error: ", error);
+        }
+    });
+}
+
+/**
  * Get current user avatar by user id
  *
  * @param context context path of application
@@ -71,12 +91,40 @@ function generateNewAvatar(context, targetObjectId) {
 }
 
 /**
+ * Get current user avatar by given key
+ *
+ * @param context context path of application
+ * @param key to generate custom avatar
+ * @param targetObjectId id of object to update
+ */
+function generateAvatarByGivenName(context, key, targetObjectId) {
+    let url = getApiV1Context(context) + "/user-avatar/by-key/" + key;
+
+    console.log("URL:", context, url);
+    updateImage(url, targetObjectId);
+}
+
+/**
+ * Update user avatar preview image
+ *
+ * @param context context path of application
+ * @param userId user id of user to update image
+ * @param targetObjectId id of object to update
+ */
+function updateUserAvatar(context, userId, targetObjectId) {
+    let url = getApiV1Context(context) + "/user-avatar/by-user/" + userId;
+
+    updateUserAvatarImage(url, targetObjectId);
+}
+
+/**
  * Send GET ajax request for api, by given url. Replaces `src` attribute for given `targetObjectId`.
+ * In case of failure it will make set the default icon to `targetObjectId`
  *
  * @param url to send request
  * @param targetObjectId target object id to change src attribute value
  */
-function updateImage(url, targetObjectId) {
+function updateUserAvatarImage(url, targetObjectId) {
     $.ajax({
         type: 'GET',
         url: url,
