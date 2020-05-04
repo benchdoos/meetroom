@@ -3,6 +3,8 @@ package com.github.benchdoos.meetroom.controller.api.v1;
 import com.github.benchdoos.meetroom.config.constants.ApiConstants;
 import com.github.benchdoos.meetroom.config.properties.InternalConfiguration;
 import com.github.benchdoos.meetroom.service.AvatarGeneratorService;
+import com.github.benchdoos.meetroom.service.AvatarGravatarService;
+import com.timgroup.jgravatar.GravatarDefaultImage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,17 +21,40 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiV1UserAvatarController {
     private final InternalConfiguration configuration;
     private final AvatarGeneratorService avatarGeneratorService;
+    private final AvatarGravatarService avatarGravatarService;
 
+    /**
+     * Get randomly generated user avatar
+     *
+     * @return base64 string with generated image
+     */
     @PreAuthorize("hasAnyAuthority('USER:USE')")
     @GetMapping("/random")
     public String getRandomAvatar() {
         return avatarGeneratorService.generateRandomAvatar(configuration.getUserSettings().getAvatarSize());
     }
 
+    /**
+     * Get avatar by given string
+     *
+     * @param key for avatar generation
+     * @return base64 string with generated image
+     */
     @PreAuthorize("hasAnyAuthority('USER:USE')")
     @GetMapping("/by-key/{key}")
     public String getRandomAvatar(@PathVariable("key") String key) {
         return avatarGeneratorService.generateAvatarForString(key, configuration.getUserSettings().getAvatarSize());
     }
 
+    /**
+     * Get gravatar image url
+     *
+     * @param email of gravatar user
+     * @return gravatar link to image of given email address or randomly generated as {@link GravatarDefaultImage#IDENTICON}
+     */
+    @PreAuthorize("hasAnyAuthority('USER:USE')")
+    @GetMapping("/gravatar/{email}")
+    public String getGravatarAvatarByEmail(@PathVariable("email") String email) {
+        return avatarGravatarService.getAvatarByEmail(email).getData();
+    }
 }
