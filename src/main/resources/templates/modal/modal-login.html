@@ -45,7 +45,7 @@
             $(document).ready(function () {
                 let userInfo = [[${#authentication.getPrincipal()}]];
 
-                updateUserAvatar(context, userInfo.id, "user-avatar-image");
+                getUserAvatarAndSetToTargetObject(context, userInfo.id, "user-avatar-image");
             });
     </script>
 </div>

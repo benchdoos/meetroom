@@ -138,18 +138,73 @@
                                 <div class="col-4">
                                     <div class="list-group" id="list-tab" role="tablist">
                                         <a class="list-group-item list-group-item-action active" id="list-home-list"
-                                           data-toggle="list" href="#list-generated-avatar" role="tab" aria-controls="home">Generated</a>
+                                           data-toggle="list" href="#list-generated-avatar" role="tab"
+                                           aria-controls="home">Generated</a>
                                         <a class="list-group-item list-group-item-action" id="list-profile-list"
-                                           data-toggle="list" href="#list-gravatar-avatar" role="tab" aria-controls="profile">Gravatar</a>
+                                           data-toggle="list" href="#list-gravatar-avatar" role="tab"
+                                           aria-controls="profile">Gravatar</a>
                                     </div>
                                 </div>
                                 <div class="col-8">
                                     <div class="tab-content" id="nav-tabContent">
-                                        <div class="tab-pane fade show active" id="list-generated-avatar" role="tabpanel"
+                                        <div id="list-generated-avatar"
+                                             class="tab-pane fade show active"
+                                             role="tabpanel"
                                              aria-labelledby="list-home-list">
+
+                                            <div style="text-align: center">
+                                                <div style="height: 256px">
+                                                    <img id="avatar-generated-preview" th:src="${user.getAvatar()}"/>
+                                                </div>
+                                                <span class="text-muted noselect">Powered by:
+                                                        <a href="http://avatars.adorable.io/">Adorable Avatars</a>
+                                                </span>
+                                            </div>
+
+                                            <div style="padding: 10px; display: flex">
+                                                <div class="w-100">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-toggle="tooltip"
+                                                            data-placement="top" title="Personal avatar">
+                                                        <i class="fas fa-undo-alt"></i>
+                                                    </button>
+                                                </div>
+
+                                                <button type="button" class="btn btn-success"
+                                                        th:onclick="'generateNewAvatar(\''+@{/}+'\',\''+'avatar-generated-preview'+'\')'"
+                                                        data-toggle="tooltip"
+                                                        data-placement="top" title="Generate next">
+                                                    <i class="fas fa-arrow-circle-right"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                         <div class="tab-pane fade" id="list-gravatar-avatar" role="tabpanel"
-                                             aria-labelledby="list-profile-list">...
+                                             aria-labelledby="list-profile-list">
+
+                                            <div style="text-align: center">
+                                                <div style="height: 256px">
+                                                    <img id="avatar-gravatar-preview"/>
+                                                </div>
+                                                <span class="text-muted noselect">Powered by:
+                                                        <a href="https://gravatar.com/">Gravatar</a>
+                                                </span>
+                                            </div>
+
+                                            <div class="row" style="padding-top: 10px">
+                                                <div class="col-auto my-1">
+                                                    <label for="gravatar-user-email-input" hidden></label>
+                                                    <input id="gravatar-user-email-input"
+                                                           class="form-control" type="email"
+                                                           placeholder="Gravatar user email"/>
+                                                </div>
+                                                <div class="col-auto my-1">
+                                                    <button type="button" class="btn btn-success"
+                                                            data-toggle="tooltip"
+                                                            data-placement="top" title="Update">
+                                                        <i class="fas fa-arrow-circle-right"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

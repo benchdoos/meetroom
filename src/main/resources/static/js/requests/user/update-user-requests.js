@@ -1,12 +1,3 @@
-/**
- * Provides api prefix to any ajax request
- */
-$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-    let context = "/meetroom"; //fixme change to context
-    const API_PREFIX = "/api/v1";
-    options.url = context + API_PREFIX + options.url
-});
-
 
 function getUserInfo(userId) {
     let url = "/user/" + userId;
@@ -51,11 +42,41 @@ function getApiV1Context(context) {
     return context + "api/v1";
 }
 
-function updateUserAvatar(context, userId, targetObjectId) {
+/**
+ * Get current user avatar by user id
+ *
+ * @param context context path of application
+ * @param userId user id of user to update image
+ * @param targetObjectId id of object to update
+ */
+function getUserAvatarAndSetToTargetObject(context, userId, targetObjectId) {
     let url = getApiV1Context(context) + "/user-avatar/by-user/" + userId;
 
     console.log("Requesting user avatar by url:", url);
 
+    updateImage(url, targetObjectId);
+}
+
+/**
+ * Generate random avatar and change target object
+ *
+ * @param context context path of application
+ * @param targetObjectId id of object to update
+ */
+function generateNewAvatar(context, targetObjectId) {
+    let url = getApiV1Context(context) + "/user-avatar/random";
+
+    console.log("URL:", context, url);
+    updateImage(url, targetObjectId);
+}
+
+/**
+ * Send GET ajax request for api, by given url. Replaces `src` attribute for given `targetObjectId`.
+ *
+ * @param url to send request
+ * @param targetObjectId target object id to change src attribute value
+ */
+function updateImage(url, targetObjectId) {
     $.ajax({
         type: 'GET',
         url: url,
@@ -67,7 +88,7 @@ function updateUserAvatar(context, userId, targetObjectId) {
             console.log("error: ", error);
             $('#' + targetObjectId)
                 .attr('class', 'fas fa-user')
-                .attr('style',"color: black").show();
+                .attr('style', "color: black").show();
         }
     });
 }
