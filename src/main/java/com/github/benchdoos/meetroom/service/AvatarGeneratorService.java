@@ -3,7 +3,7 @@ package com.github.benchdoos.meetroom.service;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public interface UserAvatarService {
+public interface AvatarGeneratorService {
 
     /**
      * Generates random avatar

@@ -1,8 +1,11 @@
 package com.github.benchdoos.meetroom.controller;
 
 import com.github.benchdoos.meetroom.config.constants.UsersConstants;
+import com.github.benchdoos.meetroom.domain.Avatar;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
+import com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType;
+import com.github.benchdoos.meetroom.service.AvatarService;
 import com.github.benchdoos.meetroom.service.PasswordResetRequestService;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Base64;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -25,6 +29,7 @@ import java.util.UUID;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+    private final AvatarService avatarService;
     private final PasswordResetRequestService passwordResetRequestService;
 
     @PreAuthorize("hasAnyAuthority('USER:USE')")
@@ -42,7 +47,7 @@ public class UserController {
         }
         model.addAttribute("user", userDto);
         if (userDto.getAvatar() == null) {
-            userDto.setAvatar(UsersConstants.DEFAULT_AVATAR);
+            appendDefaultUserAvatar(userDto);
         }
         return "user";
     }
@@ -67,4 +72,22 @@ public class UserController {
         return "redirect:/login";
     }
 
+
+    /**
+     * Appends default user avatar to userDto
+     *
+     * @param userDto dto of user
+     */
+    private void appendDefaultUserAvatar(UserExtendedInfoDto userDto) {
+        final Avatar defaultAvatar = avatarService.getDefaultUserAvatar();
+
+        if (defaultAvatar != null) {
+            if (defaultAvatar.getType().equals(AvatarDataType.BASE64)) {
+                userDto.setAvatar(defaultAvatar.getData());
+            } else {
+                final byte[] encode = Base64.getEncoder().encode(defaultAvatar.getData().getBytes());
+                userDto.setAvatar(UsersConstants.BASE_IMAGE_PREFIX + new String(encode));
+            }
+        }
+    }
 }

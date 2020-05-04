@@ -42,8 +42,9 @@ api-security:
   refresh-token-validity: 14400
 
 internal-configuration:
-  users:
+  user-settings:
     avatar-size: 256
+    default-avatar-id: 1729ebbd-341e-40a5-a71e-a4dcb9b9f1b5
 
 ---
 
