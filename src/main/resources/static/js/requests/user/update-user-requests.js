@@ -37,12 +37,37 @@ function updateUserUsername(changeUsernameDto) {
         contentType: "application/json",
         data: JSON.stringify(changeUsernameDto),
         success: function (output, status, xhr) {
-            console.log("Response: ",status, output);
+            console.log("Response: ", status, output);
             console.log("XHR is:", xhr);
             location.reload(); //todo fix session problem (see: meetroom-75)
         },
         failure: function (error) {
             console.log("error: ", error);
+        }
+    });
+}
+
+function getApiV1Context(context) {
+    return context + "api/v1";
+}
+
+function updateUserAvatar(context, userId, targetObjectId) {
+    let url = getApiV1Context(context) + "/user-avatar/by-user/" + userId;
+
+    console.log("Requesting user avatar by url:", url);
+
+    $.ajax({
+        type: 'GET',
+        url: url,
+        contentType: "application/json",
+        success: function (output, status, xhr) {
+            $('#' + targetObjectId).attr('src', output).show();
+        },
+        failure: function (error) {
+            console.log("error: ", error);
+            $('#' + targetObjectId)
+                .attr('class', 'fas fa-user')
+                .attr('style',"color: black").show();
         }
     });
 }

@@ -4,6 +4,7 @@ import com.github.benchdoos.meetroom.config.constants.ApiConstants;
 import com.github.benchdoos.meetroom.config.properties.InternalConfiguration;
 import com.github.benchdoos.meetroom.service.AvatarGeneratorService;
 import com.github.benchdoos.meetroom.service.AvatarGravatarService;
+import com.github.benchdoos.meetroom.service.UserService;
 import com.timgroup.jgravatar.GravatarDefaultImage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 /**
  * Rest implementation of user avatar controller. Gives ability to operate with generating avatars,.. etc.
@@ -22,6 +25,7 @@ public class ApiV1UserAvatarController {
     private final InternalConfiguration configuration;
     private final AvatarGeneratorService avatarGeneratorService;
     private final AvatarGravatarService avatarGravatarService;
+    private final UserService userService;
 
     /**
      * Get randomly generated user avatar
@@ -56,5 +60,11 @@ public class ApiV1UserAvatarController {
     @GetMapping("/gravatar/{email}")
     public String getGravatarAvatarByEmail(@PathVariable("email") String email) {
         return avatarGravatarService.getAvatarByEmail(email).getData();
+    }
+
+    @PreAuthorize("hasAnyAuthority('USER:USE')")
+    @GetMapping("/by-user/{id}")
+    public String getUserAvatar(@PathVariable("id") UUID id){
+        return userService.getAvatarForUserId(id);
     }
 }

@@ -414,6 +414,14 @@ public class UserServiceImpl implements UserService {
         return userPublicInfoDto;
     }
 
+    @Override
+    public String getAvatarForUserId(UUID id) {
+        final User byId = getById(id);
+        final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
+        userMapper.convert(byId, userPublicInfoDto);
+        return userPublicInfoDto.getAvatar();
+    }
+
     /**
      * Random password generator
      *

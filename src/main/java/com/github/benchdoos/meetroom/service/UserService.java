@@ -159,4 +159,12 @@ public interface UserService extends UserDetailsService {
      * @return public user info
      */
     UserPublicInfoDto updateUserUsername(EditUserUsernameDto editUserUsernameDto);
+
+    /**
+     * Get show-able at frontend avatar
+     *
+     * @param id user id
+     * @return src of avatar
+     */
+    String getAvatarForUserId(UUID id);
 }
