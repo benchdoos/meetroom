@@ -10,7 +10,7 @@
 <div th:fragment="fr-login">
     <div class="login-block">
         <div sec:authorize="isAuthenticated()">
-            <a th:href="@{/user}" class="h2">
+            <a th:href="@{/user}">
                 <div th:switch="${#authentication.getPrincipal().getId()}">
                     <span th:case="null">
                         <i class="fas fa-user" style="color: black"></i>
