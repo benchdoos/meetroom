@@ -5,6 +5,7 @@ import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
@@ -18,12 +19,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
         componentModel = "spring")
 public interface UserMapper {
 
+    @Mapping(source = "avatar.data", target = "avatar")
     void convert(User user, @MappingTarget UserPublicInfoDto userPublicInfoDto);
 
+    @Mapping(source = "avatar", target = "avatar.data")
     void convert(UserPublicInfoDto userPublicInfoDto, @MappingTarget User user);
 
+    @Mapping(source = "avatar.data", target = "avatar")
     void convert(User user, @MappingTarget UserExtendedInfoDto userExtendedInfoDto);
 
+    @Mapping(source = "avatar", target = "avatar.data")
     void convert(UserExtendedInfoDto userExtendedInfoDto, @MappingTarget User user);
 
     default void convert(UsernamePasswordAuthenticationToken token, @MappingTarget UserExtendedInfoDto userExtendedInfoDto) {

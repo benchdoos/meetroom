@@ -17,6 +17,7 @@ import org.mapstruct.ReportingPolicy;
 public interface EventMapper {
 
     @Mapping(source = "user", target = "creator") //for example
+    @Mapping(target = "creator.avatar", ignore = true)
     void convert(Event event, @MappingTarget EventDto eventDto);
 
 }
