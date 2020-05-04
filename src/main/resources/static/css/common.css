@@ -14,6 +14,19 @@
     width:          1px;
 }
 
+.rounded-top-left {
+    border-top-left-radius: 3px;
+}
+.rounded-top-right {
+    border-top-right-radius: 3px;
+}
+.rounded-bottom-left {
+    border-bottom-left-radius: 3px;
+}
+.rounded-bottom-right {
+    border-bottom-right-radius: 3px;
+}
+
 .notify-badge {
     position: absolute;
     right: -20px;
