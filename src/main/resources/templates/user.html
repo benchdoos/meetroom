@@ -28,7 +28,7 @@
             <div th:include="modal/modal-user :: fr-user-edit-menu"></div>
         </div>
 
-        <div sec:authorize="isAuthenticated()" style="padding-left: 20px">
+        <div sec:authorize="isAuthenticated()" style="padding-left: 10px">
             <form name="logoutForm" th:action="@{/logout}" method="post"
                   th:if="${user.username} == ${#authentication.getPrincipal().getUsername()}">
                 <button class="btn btn-danger" type="submit" value="Sign Out">Sign Out</button>

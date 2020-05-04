@@ -13,13 +13,13 @@
 <div class="header" style="display: flex">
     <div style="width: 100%; display: flex;">
         <h2>Available meeting rooms list</h2>
-        <div style="display: flex; padding-left: 20px">
+        <div style="display: flex; padding-left: 10px">
             <div sec:authorize="hasAnyAuthority('MEETING_ROOM:CREATE')">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">+
                 </button>
             </div>
             <div sec:authorize="hasAnyAuthority('LIST_ROOMS:USE','MANAGE:USE')" class="dropdown"
-                 style="padding-left: 20px;">
+                 style="padding-left: 10px;">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Actions

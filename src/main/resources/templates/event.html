@@ -17,9 +17,9 @@
     Meeting room is unavailable
 </div>
 <div class="header" style="background-color: cornflowerblue">
-    <div style="color: white; display: flex;">
+    <div class="h2" style="color: white; display: flex;">
         <div class="w-100">
-            <a class="btn btn-info h1"
+            <a class="btn btn-info"
                th:href="@{/meetroom/{roomId}(roomId = ${event.meetingRoom.id}, day=${#temporals.format(event.fromDate,'dd.MM.yyyy')})}">
                 <i class="fas fa-chevron-left"></i></a>
             <span class="h3">Event info</span>
@@ -35,6 +35,9 @@
             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteEventModal">
                 Delete
             </button>
+            <div class="login-block" style="padding-left: 10px">
+                <div th:include="modal/modal-login :: fr-login"></div>
+            </div>
         </div>
     </div>
 </div>
