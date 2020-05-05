@@ -7,6 +7,7 @@ import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType;
 import com.github.benchdoos.meetroom.service.AvatarGravatarService;
+import com.github.benchdoos.meetroom.service.AvatarService;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,6 +16,9 @@ public abstract class UserMapperDecorator implements UserMapper {
 
     @Autowired
     private AvatarGravatarService gravatarService;
+
+    @Autowired
+    private AvatarService avatarService;
 
     @Autowired
     @Qualifier("delegate")
@@ -35,12 +39,20 @@ public abstract class UserMapperDecorator implements UserMapper {
 
     @Override
     public void convertAvatar(Avatar avatar, @MappingTarget UserAvatarDto userAvatarDto) {
-        userAvatarDto.setType(avatar.getType());
+        if (avatar != null) {
+            userAvatarDto.setType(avatar.getType());
 
-        if (avatar.getType().equals(AvatarDataType.GRAVATAR)) {
-            userAvatarDto.setSrc(gravatarService.getAvatarByEmail(avatar.getData()).getSrc());
+            if (avatar.getType().equals(AvatarDataType.GRAVATAR)) {
+                userAvatarDto.setSrc(gravatarService.getAvatarByEmail(avatar.getData()).getSrc());
+            } else {
+                userAvatarDto.setSrc(avatar.getData());
+            }
         } else {
-            userAvatarDto.setSrc(avatar.getData());
+            //returns default avatar instead
+            final Avatar defaultAvatar = avatarService.getDefaultUserAvatar();
+            if (defaultAvatar != null) {
+                convertAvatar(defaultAvatar, userAvatarDto);
+            }
         }
     }
 
