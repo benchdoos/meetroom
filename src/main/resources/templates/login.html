@@ -41,13 +41,13 @@
 </div>
 
 
-<div sec:authorize="isAuthenticated()" class="alert alert-primary" role="alert">
-    <span>You are logged in. Go to <a th:href="@{/}">Main page</a></span>
-    <br>
-    <br>
-    <form name="logoutForm" th:action="@{/logout}" method="post" style="text-align: center">
-        <input type="submit" class="btn btn-danger" value="Sign Out"/>
-    </form>
+<div sec:authorize="isAuthenticated()" class="alert alert-primary" role="alert" style="text-align: center">
+    <span>You are logged in.</span>
+    <div style="padding-top: 10px">
+        <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none"></form>
+        <a th:href="@{/}" class="btn btn-primary">Main page</a>
+        <input type="submit" class="btn btn-danger" value="Sign Out" form="logoutForm"/>
+    </div>
 </div>
 </body>
 </html>
