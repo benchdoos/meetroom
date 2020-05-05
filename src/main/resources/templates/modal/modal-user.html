@@ -250,14 +250,14 @@
             let type = user.avatar.type;
             if (type === "GRAVATAR") {
                 console.log("gravatar_!");
-                $('#list-tab a[href="#list-gravatar-avatar-element"]').tab('show') // Select tab by name
+                $('#avatar-switcher-list-tab a[href="#list-gravatar-avatar-element"]').tab('show') // Select tab by name
             } else {
                 console.log("generated!");
-                $('#list-tab a[href="#list-generated-avatar-element"]').tab('show') // Select tab by name
+                $('#avatar-switcher-list-tab a[href="#list-generated-avatar-element"]').tab('show') // Select tab by name
             }
         } else {
             console.log("undefined?");
-            $('#list-tab a[href="#list-generated-avatar-element"]').tab('show') // Select tab by name
+            $('#avatar-switcher-list-tab a[href="#list-generated-avatar-element"]').tab('show') // Select tab by name
         }
 
         $(document).ready(function () {
