@@ -46,7 +46,7 @@
                         <span class="edit-avatar-button rounded-top-left">Update</span>
                     </a>
                 </div>
-                <img class="rounded-left user-avatar" th:if="${user.getAvatar() != null}" th:src="${user.getAvatar()}"
+                <img class="rounded-left user-avatar" th:if="${user.getAvatar() != null}" th:src="${user.getAvatar().getSrc()}"
                      width="256px"
                      height="256px"/>
 
@@ -102,12 +102,12 @@
 <!--/Modals-->
 
 <script th:inline="javascript">
-    var userAvatar = [[${user.avatar}]];
-    $(document).ready(function () {
-        $("#update-avatar-link").click(function () {
-            $("#avatar-generated-preview").attr("src", userAvatar);
-        })
-    })
+    // var userAvatar = [[${user.avatar}]];
+    // $(document).ready(function () {
+    //     $("#update-avatar-link").click(function () {
+    //         $("#avatar-generated-preview").attr("src", userAvatar.src);
+    //     })
+    // })
 </script>
 </body>
 </html>

@@ -45,7 +45,7 @@ public abstract class UserMapperDecorator implements UserMapper {
     }
 
     /**
-     * Converts user avatar to string that can be used at frontend. Base64 still not modified.
+     * Converts user avatar to {@link UserAvatarDto} that can be used at frontend. Base64 still not modified.
      * Gravatar avatars will be changed from email into link to gravatar image.
      *
      * @param user to convert from
@@ -53,10 +53,10 @@ public abstract class UserMapperDecorator implements UserMapper {
      */
     private void convertUserAvatar(User user, @MappingTarget UserPublicInfoDto userPublicInfoDto) {
         final Avatar avatar = user.getAvatar();
-        if (avatar.getType().equals(AvatarDataType.GRAVATAR)) {
-            userPublicInfoDto.setAvatar(gravatarService.getAvatarByEmail(avatar.getData()).getData());
-        } else {
-            userPublicInfoDto.setAvatar(avatar.getData());
-        }
+        final UserAvatarDto userAvatarDto = new UserAvatarDto();
+
+        convertAvatar(avatar, userAvatarDto);
+
+        userPublicInfoDto.setAvatar(userAvatarDto);
     }
 }

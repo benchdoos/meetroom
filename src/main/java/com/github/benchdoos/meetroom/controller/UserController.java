@@ -1,10 +1,10 @@
 package com.github.benchdoos.meetroom.controller;
 
-import com.github.benchdoos.meetroom.config.constants.UsersConstants;
 import com.github.benchdoos.meetroom.domain.Avatar;
+import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
-import com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType;
+import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.service.AvatarService;
 import com.github.benchdoos.meetroom.service.PasswordResetRequestService;
 import com.github.benchdoos.meetroom.service.UserService;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.Base64;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -29,6 +28,7 @@ import java.util.UUID;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+    private final UserMapper userMapper;
     private final AvatarService avatarService;
     private final PasswordResetRequestService passwordResetRequestService;
 
@@ -82,12 +82,9 @@ public class UserController {
         final Avatar defaultAvatar = avatarService.getDefaultUserAvatar();
 
         if (defaultAvatar != null) {
-            if (defaultAvatar.getType().equals(AvatarDataType.BASE64)) {
-                userDto.setAvatar(defaultAvatar.getData());
-            } else {
-                final byte[] encode = Base64.getEncoder().encode(defaultAvatar.getData().getBytes());
-                userDto.setAvatar(UsersConstants.BASE_IMAGE_PREFIX + new String(encode));
-            }
+            final UserAvatarDto userAvatarDto = new UserAvatarDto();
+            userMapper.convertAvatar(defaultAvatar, userAvatarDto);
+            userDto.setAvatar(userAvatarDto);
         }
     }
 }

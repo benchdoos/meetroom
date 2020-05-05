@@ -168,7 +168,7 @@ public interface UserService extends UserDetailsService {
      * @param id user id
      * @return src of avatar
      */
-    String getAvatarForUserId(UUID id);
+    UserAvatarDto getAvatarForUserId(UUID id);
 
     /**
      * Update user avatar

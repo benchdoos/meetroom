@@ -417,7 +417,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String getAvatarForUserId(UUID id) {
+    public UserAvatarDto getAvatarForUserId(UUID id) {
         final User byId = getById(id);
         final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
         userMapper.convert(byId, userPublicInfoDto);

@@ -137,24 +137,30 @@
                         <div class="row">
                             <div class="col-4">
                                 <div class="list-group" id="list-tab" role="tablist">
-                                    <a class="list-group-item list-group-item-action active" id="list-home-list"
-                                       data-toggle="list" href="#list-generated-avatar" role="tab"
+
+                                    <a class="list-group-item list-group-item-action"
+                                       id="list-generated-avatar-head"
+                                       data-toggle="list" href="#list-generated-avatar-element" role="tab"
                                        aria-controls="home">Generated</a>
-                                    <a class="list-group-item list-group-item-action" id="list-profile-list"
-                                       data-toggle="list" href="#list-gravatar-avatar" role="tab"
+
+                                    <a class="list-group-item list-group-item-action"
+                                       id="list-gravatar-avatar-head"
+                                       data-toggle="list" href="#list-gravatar-avatar-element" role="tab"
                                        aria-controls="profile">Gravatar</a>
+
                                 </div>
                             </div>
                             <div class="col-8">
                                 <div class="tab-content" id="nav-tabContent">
-                                    <div id="list-generated-avatar"
+                                    <!--Generated avatar:-->
+                                    <div id="list-generated-avatar-element"
                                          class="tab-pane fade show active"
                                          role="tabpanel"
-                                         aria-labelledby="list-home-list">
+                                         aria-labelledby="list-generated-avatar-head">
 
                                         <div style="text-align: center">
                                             <div style="height: 256px">
-                                                <img id="avatar-generated-preview" th:src="${user.getAvatar()}"/>
+                                                <img id="avatar-generated-preview"/>
                                             </div>
                                             <span class="text-muted noselect">Powered by:
                                                         <a href="http://avatars.adorable.io/">Adorable Avatars</a>
@@ -179,8 +185,10 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="list-gravatar-avatar" role="tabpanel"
-                                         aria-labelledby="list-profile-list">
+
+                                    <!--Gravatar avatar-->
+                                    <div class="tab-pane fade" id="list-gravatar-avatar-element" role="tabpanel"
+                                         aria-labelledby="list-gravatar-avatar-head">
 
                                         <div style="text-align: center">
                                             <div style="height: 256px">
@@ -222,12 +230,28 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         var contextRoot = [[@{/}]];
-        var userId = [[${user.getUsername()}]];
+        var user = [[${user}]];
         /*]]>*/
 
         $("#regenerate-personal-avatar-button").bind("click", function () {
-            generateAvatarByGivenName(contextRoot, userId, 'avatar-generated-preview');
+            generateAvatarByGivenName(contextRoot, user.username, 'avatar-generated-preview');
         });
+
+        if (user.avatar) {
+            let type = user.avatar.type;
+            if (type === "GRAVATAR") {
+                $('#list-tab a[href="#list-gravatar-avatar-element"]').tab('show') // Select tab by name
+            } else {
+                $('#list-tab a[href="#list-generated-avatar-element"]').tab('show') // Select tab by name
+            }
+        }
+
+        $(document).ready(function () {
+            $("#update-avatar-link").click(function () {
+                generateNewAvatar(contextRoot, 'avatar-generated-preview');
+            })
+        })
+
     </script>
 </div>
 
