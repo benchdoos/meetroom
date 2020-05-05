@@ -1,6 +1,6 @@
 package com.github.benchdoos.meetroom.service;
 
-import com.github.benchdoos.meetroom.domain.Avatar;
+import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 
 /**
  * Service to operate with Gravatar
@@ -13,5 +13,5 @@ public interface AvatarGravatarService {
      * @param email of user
      * @return new avatar instance
      */
-    Avatar getAvatarByEmail(String email);
+    UserAvatarDto getAvatarByEmail(String email);
 }

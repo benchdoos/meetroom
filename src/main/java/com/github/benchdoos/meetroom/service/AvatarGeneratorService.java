@@ -1,7 +1,8 @@
 package com.github.benchdoos.meetroom.service;
 
+import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
+
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 public interface AvatarGeneratorService {
 
@@ -11,7 +12,7 @@ public interface AvatarGeneratorService {
      * @param size size of picture
      * @return base64 avatar image
      */
-    String generateRandomAvatar(@Size(min = 40, max = 256) int size);
+    UserAvatarDto generateRandomAvatar(int size);
 
     /**
      * Generates avatar by given key-string
@@ -20,5 +21,5 @@ public interface AvatarGeneratorService {
      * @param size size of picture
      * @return base64 avatar image
      */
-    String generateAvatarForString(@NotNull String key, @Size(min = 40, max = 256) int size);
+    UserAvatarDto generateAvatarForString(@NotNull String key, int size);
 }

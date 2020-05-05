@@ -1,7 +1,7 @@
 package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.config.properties.InternalConfiguration;
-import com.github.benchdoos.meetroom.domain.Avatar;
+import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType;
 import com.github.benchdoos.meetroom.service.AvatarGravatarService;
 import com.timgroup.jgravatar.Gravatar;
@@ -16,7 +16,7 @@ public class AvatarGravatarServiceImpl implements AvatarGravatarService {
     private final InternalConfiguration internalConfiguration;
 
     @Override
-    public Avatar getAvatarByEmail(String email) {
+    public UserAvatarDto getAvatarByEmail(String email) {
         final Gravatar gravatar = new Gravatar()
         .setSize(internalConfiguration.getUserSettings().getAvatarSize())
         .setRating(GravatarRating.GENERAL_AUDIENCES)
@@ -24,6 +24,6 @@ public class AvatarGravatarServiceImpl implements AvatarGravatarService {
 
         final String url = gravatar.getUrl(email);
 
-        return new Avatar(null, AvatarDataType.GRAVATAR, url);
+        return new UserAvatarDto(AvatarDataType.GRAVATAR, url);
     }
 }

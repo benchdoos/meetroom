@@ -38,7 +38,7 @@ public abstract class UserMapperDecorator implements UserMapper {
         userAvatarDto.setType(avatar.getType());
 
         if (avatar.getType().equals(AvatarDataType.GRAVATAR)) {
-            userAvatarDto.setSrc(gravatarService.getAvatarByEmail(avatar.getData()).getData());
+            userAvatarDto.setSrc(gravatarService.getAvatarByEmail(avatar.getData()).getSrc());
         } else {
             userAvatarDto.setSrc(avatar.getData());
         }

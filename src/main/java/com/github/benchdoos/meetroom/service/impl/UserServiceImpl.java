@@ -18,7 +18,6 @@ import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.security.LoginDto;
-import com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType;
 import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
 import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimself;
 import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
@@ -528,10 +527,10 @@ public class UserServiceImpl implements UserService {
      * @return avatar
      */
     private Avatar prepareUserAvatar(String username) {
-        final String generatedAvatarString = avatarGeneratorService.generateAvatarForString(
+        final UserAvatarDto userAvatarDto = avatarGeneratorService.generateAvatarForString(
                 username,
                 internalConfiguration.getUserSettings().getAvatarSize());
-        return new Avatar(null, AvatarDataType.BASE64, generatedAvatarString);
+        return new Avatar(null, userAvatarDto.getType(), userAvatarDto.getSrc());
     }
 
 }

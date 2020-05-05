@@ -59,7 +59,7 @@ function updateImage(url, targetObjectId) {
         url: url,
         contentType: "application/json",
         success: function (output, status, xhr) {
-            $('#' + targetObjectId).attr('src', output).show();
+            $('#' + targetObjectId).attr('src', output.src).show();
         },
         failure: function (error) {
             console.log("error: ", error);
