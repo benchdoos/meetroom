@@ -136,7 +136,7 @@
                     <form id="update-user-avatar-form">
                         <div class="row">
                             <div class="col-4">
-                                <div class="list-group" id="list-tab" role="tablist">
+                                <div class="list-group" id="avatar-switcher-list-tab" role="tablist">
 
                                     <a class="list-group-item list-group-item-action"
                                        id="list-generated-avatar-head"
@@ -228,7 +228,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" form="update-user-username-form">Update</button>
+                    <button type="button" id="avatar-submit-button"
+                            class="btn btn-primary"
+                            form="update-user-username-form">Update
+                    </button>
                 </div>
             </div>
         </div>
@@ -246,10 +249,15 @@
         if (user.avatar) {
             let type = user.avatar.type;
             if (type === "GRAVATAR") {
+                console.log("gravatar_!");
                 $('#list-tab a[href="#list-gravatar-avatar-element"]').tab('show') // Select tab by name
             } else {
+                console.log("generated!");
                 $('#list-tab a[href="#list-generated-avatar-element"]').tab('show') // Select tab by name
             }
+        } else {
+            console.log("undefined?");
+            $('#list-tab a[href="#list-generated-avatar-element"]').tab('show') // Select tab by name
         }
 
         $(document).ready(function () {
@@ -266,6 +274,23 @@
                     $("#avatar-gravatar-preview").attr('src', null);
                     $("#gravatar-user-email-empty-alert").show();
                 }
+            });
+
+            $("#avatar-submit-button").click(function () {
+                function UpdateUserAvatarDto(type, data) {
+                    console.log("new UpdateUserAvatarDto:", type, data);
+                    return {
+                        type: type,
+                        data: data
+                    };
+                }
+
+                //todo add here check what tab is selected
+                let selected = $("#avatar-switcher-list-tab a.active").html();
+                console.log("Selected:", selected);
+
+                var newAvatarDto = new UpdateUserAvatarDto('BASE64', $('#avatar-generated-preview').attr('src'));
+                console.log("value to send: ", newAvatarDto);
             });
         })
     </script>
