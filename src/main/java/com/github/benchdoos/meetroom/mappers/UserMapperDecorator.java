@@ -2,6 +2,7 @@ package com.github.benchdoos.meetroom.mappers;
 
 import com.github.benchdoos.meetroom.domain.Avatar;
 import com.github.benchdoos.meetroom.domain.User;
+import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType;
@@ -31,6 +32,18 @@ public abstract class UserMapperDecorator implements UserMapper {
         convertUserAvatar(user, userExtendedInfoDto);
     }
 
+
+    @Override
+    public void convertAvatar(Avatar avatar, @MappingTarget UserAvatarDto userAvatarDto) {
+        userAvatarDto.setType(avatar.getType());
+
+        if (avatar.getType().equals(AvatarDataType.GRAVATAR)) {
+            userAvatarDto.setSrc(gravatarService.getAvatarByEmail(avatar.getData()).getData());
+        } else {
+            userAvatarDto.setSrc(avatar.getData());
+        }
+    }
+
     /**
      * Converts user avatar to string that can be used at frontend. Base64 still not modified.
      * Gravatar avatars will be changed from email into link to gravatar image.
@@ -40,7 +53,6 @@ public abstract class UserMapperDecorator implements UserMapper {
      */
     private void convertUserAvatar(User user, @MappingTarget UserPublicInfoDto userPublicInfoDto) {
         final Avatar avatar = user.getAvatar();
-        System.out.println("Avatar: " + avatar);
         if (avatar.getType().equals(AvatarDataType.GRAVATAR)) {
             userPublicInfoDto.setAvatar(gravatarService.getAvatarByEmail(avatar.getData()).getData());
         } else {

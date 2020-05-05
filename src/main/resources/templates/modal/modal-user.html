@@ -161,17 +161,13 @@
                                                 </span>
                                         </div>
 
-                                        <!--th:onclick="'generateAvatarByGivenName(\''+@{/}+'\',\''+${user.getUsername()}+'\',\''+'avatar-generated-preview'+'\')'"-->
-                                        <!--th:onclick="|generateAvatarByGivenName('[[@{/}]]', '${user.getUsername()}', '\'avatar-generated-preview\'');|"-->
-                                        <!--th:onclick="|generateAvatarByGivenName('@{/}','${user.username}');|"-->
-
                                         <div style="padding: 10px; display: flex">
                                             <div class="w-100">
                                                 <button id="regenerate-personal-avatar-button"
                                                         type="button" class="btn btn-secondary"
                                                         data-toggle="tooltip"
                                                         data-placement="top" title="Personal avatar">
-                                                    <i class="fas fa-undo-alt"></i>
+                                                    <i class="fas fa-user"></i>
                                                 </button>
                                             </div>
 

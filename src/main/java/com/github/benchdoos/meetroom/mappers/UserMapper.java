@@ -1,6 +1,8 @@
 package com.github.benchdoos.meetroom.mappers;
 
+import com.github.benchdoos.meetroom.domain.Avatar;
 import com.github.benchdoos.meetroom.domain.User;
+import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
@@ -32,6 +34,8 @@ public interface UserMapper {
 
     @Mapping(source = "avatar", target = "avatar.data")
     void convert(UserExtendedInfoDto userExtendedInfoDto, @MappingTarget User user);
+
+    void convertAvatar(Avatar avatar, @MappingTarget UserAvatarDto userAvatarDto);
 
     default void convert(UsernamePasswordAuthenticationToken token, @MappingTarget UserExtendedInfoDto userExtendedInfoDto) {
         final Object principal = token.getPrincipal();

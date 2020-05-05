@@ -2,6 +2,8 @@ package com.github.benchdoos.meetroom.controller.api.v1;
 
 import com.github.benchdoos.meetroom.config.constants.ApiConstants;
 import com.github.benchdoos.meetroom.config.properties.InternalConfiguration;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
+import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.service.AvatarGeneratorService;
 import com.github.benchdoos.meetroom.service.AvatarGravatarService;
 import com.github.benchdoos.meetroom.service.UserService;
@@ -10,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -64,7 +68,21 @@ public class ApiV1UserAvatarController {
 
     @PreAuthorize("hasAnyAuthority('USER:USE')")
     @GetMapping("/by-user/{id}")
-    public String getUserAvatar(@PathVariable("id") UUID id){
+    public String getUserAvatar(@PathVariable("id") UUID id) {
         return userService.getAvatarForUserId(id);
+    }
+
+    /**
+     * Update user's avatar
+     *
+     * @param userId user id
+     * @param updateUserAvatarDto dto with avatar info
+     * @return updated avatar info
+     */
+    @PreAuthorize("hasAnyAuthority('USER:USE')")
+    @PostMapping("/update/{userId}")
+    public UserAvatarDto updateUserAvatar(@PathVariable("userId") UUID userId,
+                                          @RequestBody UpdateUserAvatarDto updateUserAvatarDto) {
+        return userService.updateUserAvatar(userId, updateUserAvatarDto);
     }
 }

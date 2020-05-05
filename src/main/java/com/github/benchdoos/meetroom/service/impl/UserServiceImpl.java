@@ -11,6 +11,8 @@ import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditUserUsernameDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
+import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
@@ -420,6 +422,41 @@ public class UserServiceImpl implements UserService {
         final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
         userMapper.convert(byId, userPublicInfoDto);
         return userPublicInfoDto.getAvatar();
+    }
+
+    @Override
+    public UserAvatarDto updateUserAvatar(UUID userId, UpdateUserAvatarDto updateUserAvatarDto) {
+        final User user = getById(userId);
+
+        validateAvatar(updateUserAvatarDto);
+
+        if (user.getAvatar() != null) {
+            user.getAvatar().setType(updateUserAvatarDto.getType());
+            user.getAvatar().setData(updateUserAvatarDto.getData());
+        }
+
+        userRepository.save(user);
+
+        final UserAvatarDto userAvatarDto = new UserAvatarDto();
+        userMapper.convertAvatar(user.getAvatar(), userAvatarDto);
+
+        return userAvatarDto;
+    }
+
+    /**
+     * Validate avatar data by given avatar type
+     *
+     * @param updateUserAvatar dto to validate
+     */
+    private void validateAvatar(UpdateUserAvatarDto updateUserAvatar) {
+        switch (updateUserAvatar.getType()) {
+            case GRAVATAR:
+                //validate email
+                break;
+            case BASE64:
+                //validate base64
+                break;
+        }
     }
 
     /**
