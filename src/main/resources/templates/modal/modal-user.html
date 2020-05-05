@@ -210,6 +210,7 @@
                                                 <input id="gravatar-user-email-input"
                                                        class="form-control" type="email"
                                                        placeholder="Gravatar user email"/>
+                                                <input id="gravatar-user-email-input-hidden-val" hidden="hidden">
                                             </div>
                                             <div class="col-auto my-1">
                                                 <button id="update-gravatar-avatar-preview"
@@ -269,6 +270,7 @@
                 let email = $("#gravatar-user-email-input").val();
                 if (email) {
                     $("#gravatar-user-email-empty-alert").hide();
+                    $("#gravatar-user-email-input-hidden-val").val(email);
                     updateImageSrcByGravatarEmail(contextRoot, email, 'avatar-gravatar-preview');
                 } else {
                     $("#avatar-gravatar-preview").attr('src', null);
@@ -285,11 +287,17 @@
                     };
                 }
 
-                //todo add here check what tab is selected
-                let selected = $("#avatar-switcher-list-tab a.active").html();
+                let selected = $("#avatar-switcher-list-tab a.active").attr('id');
                 console.log("Selected:", selected);
 
-                var newAvatarDto = new UpdateUserAvatarDto('BASE64', $('#avatar-generated-preview').attr('src'));
+                var newAvatarDto;
+
+                if (selected === 'list-generated-avatar-head') {
+                    newAvatarDto = new UpdateUserAvatarDto('BASE64', $('#avatar-generated-preview').attr('src'));
+                } else if (selected === 'list-gravatar-avatar-head') {
+                    newAvatarDto = new UpdateUserAvatarDto('GRAVATAR', $('#gravatar-user-email-input-hidden-val').val());//todo: add check that value is not [""]
+                }
+
                 console.log("value to send: ", newAvatarDto);
             });
         })
