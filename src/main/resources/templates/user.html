@@ -41,7 +41,8 @@
         <div class="container" style="display: flex">
             <div class="editable-avatar">
                 <div id="edit-avatar-block">
-                    <a data-toggle="modal" data-target="#editAvatarModal" style="cursor: pointer">
+                    <a id="update-avatar-link" data-toggle="modal" data-target="#editAvatarModal"
+                       style="cursor: pointer">
                         <span class="edit-avatar-button rounded-top-left">Update</span>
                     </a>
                 </div>
@@ -100,5 +101,13 @@
 <div th:include="modal/modal-user :: fr-user-update-avatar"></div>
 <!--/Modals-->
 
+<script th:inline="javascript">
+    var userAvatar = [[${user.avatar}]];
+    $(document).ready(function () {
+        $("#update-avatar-link").click(function () {
+            $("#avatar-generated-preview").attr("src", userAvatar);
+        })
+    })
+</script>
 </body>
 </html>
