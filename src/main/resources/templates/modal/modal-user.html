@@ -101,16 +101,6 @@
                 let newUsername = $('#update-user-username-username').val();
                 let oldUsername = [[${user.username}]];
 
-                function UpdateUserUsernameDto(oldUsername, newUsername) {
-                    console.log("Current username: ", oldUsername);
-                    console.log("New username: ", newUsername);
-
-                    return {
-                        oldUsername: oldUsername,
-                        newUsername: newUsername
-                    };
-                }
-
                 let updateUserUsernameDto = new UpdateUserUsernameDto(oldUsername, newUsername);
 
                 console.log("dto:", updateUserUsernameDto);
@@ -281,14 +271,6 @@
             });
 
             $("#avatar-submit-button").click(function () {
-                function UpdateUserAvatarDto(type, data) {
-                    console.log("new UpdateUserAvatarDto:", type, data);
-                    return {
-                        type: type,
-                        data: data
-                    };
-                }
-
                 let selected = $("#avatar-switcher-list-tab a.active").attr('id');
                 console.log("Selected:", selected);
 
