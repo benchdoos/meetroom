@@ -22,7 +22,8 @@ import com.github.benchdoos.meetroom.domain.dto.security.LoginDto;
 import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
 import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimself;
 import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
-import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePassword;
+import com.github.benchdoos.meetroom.exceptions.InvalidCurrentPasswordException;
+import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePasswordException;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpired;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestIsNotActiveAnyMore;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestNotFoundException;
@@ -268,7 +269,13 @@ public class UserServiceImpl implements UserService {
         final boolean owner = UserUtils.checkPrincipalToGivenId(principal, id);
 
         if (!owner) {
-            throw new OnlyAccountOwnerCanChangePassword(user.getUsername(), principal.getName());
+            throw new OnlyAccountOwnerCanChangePasswordException(user.getUsername(), principal.getName());
+        }
+
+        final boolean matches = passwordEncoder.matches(updateUserPasswordDto.getCurrentPassword(), user.getPassword());
+
+        if (!matches) {
+            throw new InvalidCurrentPasswordException();
         }
 
         user.setPassword(passwordEncoder.encode(updateUserPasswordDto.getPassword()));

@@ -90,12 +90,20 @@ public class ApiV1UserController {
         throw new PermissionDeniedForAction(MANAGE_AUTHORITY);
     }
 
+    /***
+     * Update user password. Requesting user must be the same as the given one.
+     *
+     * @param userId id of user
+     * @param updateUserPasswordDto dto with password info
+     * @param principal principal
+     * @return public user info
+     */
     @PreAuthorize("hasAnyAuthority('USER:USE')")
     @PostMapping("/update-password/{userId}")
     public UserPublicInfoDto updateUserPassword(@PathVariable("userId") UUID userId,
                                                 @RequestBody @Valid UpdateUserPasswordDto updateUserPasswordDto,
                                                 @NotNull Principal principal) {
-        //todo maybe check user password???
+
         userService.updateUserPassword(userId, updateUserPasswordDto, principal);
 
         return userService.getUserPublicInfoDtoById(userId);

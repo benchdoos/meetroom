@@ -20,6 +20,9 @@ import javax.validation.constraints.NotBlank;
 public class UpdateUserPasswordDto implements PasswordConfirmation {
 
     @NotBlank
+    private String currentPassword;
+
+    @NotBlank
     private String password;
 
     @NotBlank
