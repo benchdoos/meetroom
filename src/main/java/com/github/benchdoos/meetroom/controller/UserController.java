@@ -1,9 +1,9 @@
 package com.github.benchdoos.meetroom.controller;
 
 import com.github.benchdoos.meetroom.domain.Avatar;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
-import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.service.AvatarService;
 import com.github.benchdoos.meetroom.service.PasswordResetRequestService;
@@ -57,7 +57,7 @@ public class UserController {
     public String getResetPasswordByResetRequestPage(@PathVariable("id") UUID id, Model model) {
 
         model.addAttribute("request", passwordResetRequestService.getById(id));
-        model.addAttribute("passwordDto", new UserPasswordChangeDto());
+        model.addAttribute("passwordDto", new UpdateUserPasswordDto());
 
         return "reset-password";
     }
@@ -65,9 +65,9 @@ public class UserController {
     @PreAuthorize("isAnonymous()")
     @PostMapping("/reset-password/{id}")
     public String resetPasswordByResetRequest(@PathVariable("id") UUID id,
-                                              @Valid UserPasswordChangeDto userPasswordChangeDto) {
+                                              @Valid UpdateUserPasswordDto updateUserPasswordDto) {
 
-        userService.resetUserPasswordByResetRequest(id, userPasswordChangeDto);
+        userService.resetUserPasswordByResetRequest(id, updateUserPasswordDto);
 
         return "redirect:/login";
     }

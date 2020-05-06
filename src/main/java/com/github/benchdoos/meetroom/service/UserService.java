@@ -8,10 +8,10 @@ import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
 import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
-import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.security.LoginDto;
 import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
@@ -51,7 +51,7 @@ public interface UserService extends UserDetailsService {
      * @param id of user
      * @return user with given id
      */
-    User getById(UUID id);
+    User getUserById(UUID id);
 
     /**
      * Get user extended info by user id
@@ -60,6 +60,13 @@ public interface UserService extends UserDetailsService {
      * @return extended user info
      */
     UserExtendedInfoDto getUserExtendedInfoById(UUID id);
+
+    /**
+     * Get user public info by user id
+     * @param userId id of user
+     * @return public user info
+     */
+    UserPublicInfoDto getUserPublicInfoDtoById(UUID userId);
 
     /**
      * Create user with role {@link SecurityConstants#ROLE_USER}
@@ -113,20 +120,21 @@ public interface UserService extends UserDetailsService {
 
 
     /**
-     * Change user password
+     * Update user password with principal check
      *
      * @param id user id
-     * @param userPasswordChangeDto dto with new password
+     * @param updateUserPasswordDto dto with new password
+     * @param principal principal
      */
-    void changeUserPassword(UUID id, UserPasswordChangeDto userPasswordChangeDto, Principal principal);
+    void updateUserPassword(UUID id, UpdateUserPasswordDto updateUserPasswordDto, Principal principal);
 
     /**
      * Change user password by reset request
      *
      * @param id request id
-     * @param userPasswordChangeDto dto with new password
+     * @param updateUserPasswordDto dto with new password
      */
-    void resetUserPasswordByResetRequest(UUID id, UserPasswordChangeDto userPasswordChangeDto);
+    void resetUserPasswordByResetRequest(UUID id, UpdateUserPasswordDto updateUserPasswordDto);
 
     /**
      * Update user enable. User can not update himself.

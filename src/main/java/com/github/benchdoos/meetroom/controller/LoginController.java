@@ -1,7 +1,7 @@
 package com.github.benchdoos.meetroom.controller;
 
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
-import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -54,17 +54,17 @@ public class LoginController {
      * Change password for user
      *
      * @param id user id
-     * @param userPasswordChangeDto dto with passwords
+     * @param updateUserPasswordDto dto with passwords
      * @param principal principal
      * @return user
      */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/change-password/{id}")
     public String changeUserPassword(@PathVariable("id") UUID id,
-                                     @Valid UserPasswordChangeDto userPasswordChangeDto,
+                                     @Valid UpdateUserPasswordDto updateUserPasswordDto,
                                      Principal principal) {
 
-        userService.changeUserPassword(id, userPasswordChangeDto, principal);
+        userService.updateUserPassword(id, updateUserPasswordDto, principal);
 
         return "redirect:/login";
     }

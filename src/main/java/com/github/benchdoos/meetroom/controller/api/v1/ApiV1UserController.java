@@ -91,6 +91,17 @@ public class ApiV1UserController {
     }
 
     @PreAuthorize("hasAnyAuthority('USER:USE')")
+    @PostMapping("/update-password/{userId}")
+    public UserPublicInfoDto updateUserPassword(@PathVariable("userId") UUID userId,
+                                                @RequestBody @Valid UpdateUserPasswordDto updateUserPasswordDto,
+                                                @NotNull Principal principal) {
+        //todo maybe check user password???
+        userService.updateUserPassword(userId, updateUserPasswordDto, principal);
+
+        return userService.getUserPublicInfoDtoById(userId);
+    }
+
+    @PreAuthorize("hasAnyAuthority('USER:USE')")
     @PostMapping("/update/{userId}")
     public UserPublicInfoDto updateUserInfo(@PathVariable("userId") UUID userId,
                                             @RequestBody @Valid UpdateUserInfoDto updateUserInfoDto,

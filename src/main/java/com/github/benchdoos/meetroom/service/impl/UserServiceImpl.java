@@ -12,11 +12,11 @@ import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
 import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
-import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.security.LoginDto;
 import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
@@ -118,18 +118,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getById(UUID id) {
+    public User getUserById(UUID id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
     public UserExtendedInfoDto getUserExtendedInfoById(UUID id) {
-        final User user = getUser(id);
+        final User user = getUserById(id);
         final UserExtendedInfoDto userExtendedInfoDto = new UserExtendedInfoDto();
 
         userMapper.convert(user, userExtendedInfoDto);
 
         return userExtendedInfoDto;
+    }
+
+    @Override
+    public UserPublicInfoDto getUserPublicInfoDtoById(UUID userId) {
+        final User user = getUserById(userId);
+
+        final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
+        userMapper.convert(user, userPublicInfoDto);
+        return userPublicInfoDto;
     }
 
     @Override
@@ -190,7 +199,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserExtendedInfoDto editOtherUser(UUID id, EditOtherUserDto editOtherUserDto) {
-        final User user = getUser(id);
+        final User user = getUserById(id);
 
         validateUsernameChange(editOtherUserDto, user);
 
@@ -208,7 +217,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserExtendedInfoDto updateUserRoles(UUID id, EditRolesForUserDto editRolesForUserDto, Principal principal) {
-        final User user = getUser(id);
+        final User user = getUserById(id);
 
         final List<Role> rolesByIds = roleRepository.findAllById(editRolesForUserDto.getRoles());
 
@@ -229,7 +238,7 @@ public class UserServiceImpl implements UserService {
     public void callForUserPasswordReset(@NotNull UUID id, @NotNull Principal principal) {
         final ZonedDateTime requestTime = ZonedDateTime.now();
 
-        final User user = getUser(id);
+        final User user = getUserById(id);
 
         final Collection<PasswordResetRequest> allActivePasswordResetRequests =
                 passwordResetRequestRepository.findByRequestedForAndExpiresIsAfterAndActiveIsTrue(user, requestTime);
@@ -253,23 +262,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeUserPassword(UUID id, UserPasswordChangeDto userPasswordChangeDto, Principal principal) {
-        final User user = getUser(id);
+    public void updateUserPassword(UUID id, UpdateUserPasswordDto updateUserPasswordDto, Principal principal) {
+        final User user = getUserById(id);
 
-        final User changer = userRepository.findByUsername(principal.getName()).orElseThrow(UserNotFoundException::new);
+        final boolean owner = UserUtils.checkPrincipalToGivenId(principal, id);
 
-        if (!user.getId().equals(changer.getId())) {
-            throw new OnlyAccountOwnerCanChangePassword(user.getUsername(), changer.getUsername());
+        if (!owner) {
+            throw new OnlyAccountOwnerCanChangePassword(user.getUsername(), principal.getName());
         }
 
-        user.setPassword(passwordEncoder.encode(userPasswordChangeDto.getPassword()));
-
+        user.setPassword(passwordEncoder.encode(updateUserPasswordDto.getPassword()));
         userRepository.save(user);
     }
 
     @Transactional
     @Override
-    public void resetUserPasswordByResetRequest(UUID id, UserPasswordChangeDto userPasswordChangeDto) {
+    public void resetUserPasswordByResetRequest(UUID id, UpdateUserPasswordDto updateUserPasswordDto) {
         final PasswordResetRequest passwordResetRequest = passwordResetRequestRepository.findById(id)
                 .orElseThrow(PasswordResetRequestNotFoundException::new);
 
@@ -284,7 +292,7 @@ public class UserServiceImpl implements UserService {
         final User user = passwordResetRequest.getRequestedFor();
         user.setNeedActivation(false);
 
-        user.setPassword(passwordEncoder.encode(userPasswordChangeDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(updateUserPasswordDto.getPassword()));
 
         passwordResetRequest.setActive(false);
 
@@ -295,7 +303,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserEnable(@NotNull UUID id, boolean enabled, Principal principal) {
-        final User user = getUser(id);
+        final User user = getUserById(id);
 
         if (principal != null) {
             if (principal.getName().equals(user.getUsername())) {
@@ -437,7 +445,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserAvatarDto getAvatarForUserId(UUID id) {
-        final User byId = getById(id);
+        final User byId = getUserById(id);
         final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
         userMapper.convert(byId, userPublicInfoDto);
         return userPublicInfoDto.getAvatar();
@@ -445,7 +453,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserAvatarDto updateUserAvatar(UUID userId, UpdateUserAvatarDto updateUserAvatarDto) {
-        final User user = getById(userId);
+        final User user = getUserById(userId);
 
         validateAvatar(updateUserAvatarDto);
 
@@ -467,7 +475,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserPublicInfoDto updateUserInfo(UUID userId, UpdateUserInfoDto updateUserInfoDto) {
-        final User user = getById(userId);
+        final User user = getUserById(userId);
 
         user.setFirstName(updateUserInfoDto.getFirstName());
         user.setLastName(updateUserInfoDto.getLastName());
@@ -495,16 +503,6 @@ public class UserServiceImpl implements UserService {
                 //validate base64
                 break;
         }
-    }
-
-    /**
-     * Get user or throw exception
-     *
-     * @param id user id
-     * @return user
-     */
-    private User getUser(@NotNull UUID id) {
-        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
     /**
