@@ -1,4 +1,3 @@
-
 function getUserInfo(userId) {
     let url = "/user/" + userId;
 
@@ -75,6 +74,24 @@ function updateUserAvatarImage(url, targetObjectId) {
             $('#' + targetObjectId)
                 .attr('class', 'fas fa-user')
                 .attr('style', "color: black").show();
+        }
+    });
+}
+
+function updateUserInfo(context, userId, targetErrorObjectId, userUpdateInfoDto) {
+    let url = getApiV1Context(context) + "/user/update/" + userId;
+    console.log(url, userId, userUpdateInfoDto);
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(userUpdateInfoDto),
+        contentType: "application/json",
+        success: function (output, status, xhr) {
+            location.reload();
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $('#' + targetErrorObjectId).html(XMLHttpRequest.responseJSON.message).show();
         }
     });
 }

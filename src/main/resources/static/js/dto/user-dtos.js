@@ -25,3 +25,17 @@ function UpdateUserAvatarDto(type, data) {
         data: data
     };
 }
+
+/**
+ * Update user information dto
+ *
+ * @param firstName of user
+ * @param lastName of user
+ * @constructor
+ */
+function UpdateUserInfoDto(firstName, lastName) {
+    return {
+        firstName: firstName,
+        lastName: lastName
+    }
+}

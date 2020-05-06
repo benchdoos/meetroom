@@ -8,6 +8,7 @@ import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditUserUsernameDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
@@ -178,4 +179,13 @@ public interface UserService extends UserDetailsService {
      * @return updated avatar dto
      */
     UserAvatarDto updateUserAvatar(UUID userId, UpdateUserAvatarDto updateUserAvatar);
+
+    /**
+     * Update user information
+     *
+     * @param userId id of user
+     * @param updateUserInfoDto dto with new information
+     * @return updated user info
+     */
+    UserPublicInfoDto updateUserInfo(UUID userId, UpdateUserInfoDto updateUserInfoDto);
 }

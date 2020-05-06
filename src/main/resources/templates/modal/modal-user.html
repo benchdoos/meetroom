@@ -42,31 +42,47 @@
                 </div>
                 <div class="modal-body">
                     <form id="update-user-form">
-                        <div style="display: inline-flex; width: 100%">
-                            <div style="width: 300px;">
-                                <div class="form-group">
-                                    <label for="update-user-firstName">First name:</label>
-                                    <input id="update-user-firstName" type="text" th:value="${user.firstName}"
-                                           placeholder="First name"
-                                           class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label for="update-user-lastName">Last name:</label>
-                                    <input id="update-user-lastName" type="text" th:value="${user.lastName}"
-                                           placeholder="Last name"
-                                           class="form-control">
-                                </div>
-                            </div>
+                        <div id="editUserInfoModalAlert" class="alert alert-danger" role="alert" style="display: none"></div>
+                        <div class="form-group">
+                            <label for="update-user-firstName">First name:</label>
+                            <input id="update-user-firstName" type="text" th:value="${user.firstName}"
+                                   name="firstName"
+                                   placeholder="First name"
+                                   class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="update-user-lastName">Last name:</label>
+                            <input id="update-user-lastName" type="text" th:value="${user.lastName}"
+                                   name="lastName"
+                                   placeholder="Last name"
+                                   class="form-control">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" form="update-user-form">Save changes</button>
+                    <button id="edit-user-submit-button" type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var contextRoot = [[@{/}]];
+        var user = [[${user}]];
+        /*]]>*/
+
+        $(document).ready(function () {
+            $('#edit-user-submit-button').click(function () {
+                let firstName = $('#update-user-form input[name = "firstName"]').val();
+                let lastName = $('#update-user-form input[name = "lastName"]').val();
+
+                let updateUserDto = new UpdateUserInfoDto(firstName, lastName);
+
+                updateUserInfo(contextRoot, user.id, 'editUserInfoModalAlert', updateUserDto);
+            });
+        })
+    </script>
 </div>
 
 <div th:fragment="fr-user-update-username">
@@ -234,10 +250,6 @@
         var user = [[${user}]];
         /*]]>*/
 
-        $("#regenerate-personal-avatar-button").click(function () {
-            generateAvatarByGivenName(contextRoot, user.username, 'avatar-generated-preview');
-        });
-
         if (user.avatar) {
             let type = user.avatar.type;
             if (type === "GRAVATAR") {
@@ -253,6 +265,11 @@
         }
 
         $(document).ready(function () {
+
+            $("#regenerate-personal-avatar-button").click(function () {
+                generateAvatarByGivenName(contextRoot, user.username, 'avatar-generated-preview');
+            });
+
             $("#update-avatar-link").click(function () {
                 generateNewAvatar(contextRoot, 'avatar-generated-preview');
             });

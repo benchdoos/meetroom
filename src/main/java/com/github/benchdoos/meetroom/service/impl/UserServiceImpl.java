@@ -12,6 +12,7 @@ import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditUserUsernameDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
@@ -77,6 +78,25 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final AvatarGeneratorService avatarGeneratorService;
     private final InternalConfiguration internalConfiguration;
+
+    /**
+     * Random password generator
+     *
+     * @param length password length
+     * @return password
+     */
+    private static String generateRandomPassword(int length) {
+        final String symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_-";
+        final Random random = new Random();
+
+        final StringBuilder stringBuilder = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            stringBuilder.append(symbols.charAt(random.nextInt(symbols.length())));
+        }
+
+        return stringBuilder.toString();
+    }
 
     @Override
     public UserPublicInfoDto getUserPublicInfoDtoByUsername(String username) {
@@ -445,6 +465,22 @@ public class UserServiceImpl implements UserService {
         return userAvatarDto;
     }
 
+    @Override
+    public UserPublicInfoDto updateUserInfo(UUID userId, UpdateUserInfoDto updateUserInfoDto) {
+        final User user = getById(userId);
+
+        user.setFirstName(updateUserInfoDto.getFirstName());
+        user.setLastName(updateUserInfoDto.getLastName());
+
+        final User saved = userRepository.save(user);
+
+        final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
+
+        userMapper.convert(user, userPublicInfoDto);
+
+        return userPublicInfoDto;
+    }
+
     /**
      * Validate avatar data by given avatar type
      *
@@ -459,25 +495,6 @@ public class UserServiceImpl implements UserService {
                 //validate base64
                 break;
         }
-    }
-
-    /**
-     * Random password generator
-     *
-     * @param length password length
-     * @return password
-     */
-    private static String generateRandomPassword(int length) {
-        final String symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_-";
-        final Random random = new Random();
-
-        final StringBuilder stringBuilder = new StringBuilder(length);
-
-        for (int i = 0; i < length; i++) {
-            stringBuilder.append(symbols.charAt(random.nextInt(symbols.length())));
-        }
-
-        return stringBuilder.toString();
     }
 
     /**

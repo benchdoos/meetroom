@@ -2,9 +2,11 @@ package com.github.benchdoos.meetroom.controller.api.v1;
 
 import com.github.benchdoos.meetroom.config.constants.ApiConstants;
 import com.github.benchdoos.meetroom.domain.dto.EditUserUsernameDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.exceptions.PermissionDeniedForAction;
+import com.github.benchdoos.meetroom.exceptions.UserInformationCanOnlyBeUpdatedByItsOwner;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.service.UserService;
 import com.github.benchdoos.meetroom.utils.UserUtils;
@@ -86,4 +88,18 @@ public class ApiV1UserController {
 
         throw new PermissionDeniedForAction(MANAGE_AUTHORITY);
     }
+
+    @PreAuthorize("hasAnyAuthority('USER:USE')")
+    @PostMapping("/update/{userId}")
+    public UserPublicInfoDto updateUserInfo(@PathVariable("userId") UUID userId,
+                                            @RequestBody @Valid UpdateUserInfoDto updateUserInfoDto,
+                                            Principal principal) {
+
+        final boolean owner = UserUtils.checkPrincipalToGivenId(principal, userId);
+        if (owner) {
+            return userService.updateUserInfo(userId, updateUserInfoDto);
+        }
+        throw new UserInformationCanOnlyBeUpdatedByItsOwner();
+    }
+
 }
