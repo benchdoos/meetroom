@@ -1,8 +1,9 @@
 package com.github.benchdoos.meetroom.controller.api.v1;
 
 import com.github.benchdoos.meetroom.config.constants.ApiConstants;
-import com.github.benchdoos.meetroom.domain.dto.EditUserUsernameDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.exceptions.PermissionDeniedForAction;
@@ -77,13 +78,13 @@ public class ApiV1UserController {
     }
 
     @PreAuthorize("hasAnyAuthority('USER:USE', 'MANAGE_USERS:USE')")
-    @PostMapping("/change-username")
-    public UserPublicInfoDto changeUserName(@RequestBody @Valid EditUserUsernameDto editUserUsernameDto,
+    @PostMapping("/update-username")
+    public UserPublicInfoDto updateUserName(@RequestBody @Valid UpdateUserUsernameDto updateUserUsernameDto,
                                             @NotNull Principal principal) {
         final String MANAGE_AUTHORITY = "MANAGE_USERS:USE";
-        if (ObjectUtils.nullSafeEquals(editUserUsernameDto.getOldUsername(), principal.getName()) ||
+        if (ObjectUtils.nullSafeEquals(updateUserUsernameDto.getOldUsername(), principal.getName()) ||
                 UserUtils.hasAnyAuthority(principal, MANAGE_AUTHORITY)) {
-            return userService.updateUserUsername(editUserUsernameDto);
+            return userService.updateUserUsername(updateUserUsernameDto);
         }
 
         throw new PermissionDeniedForAction(MANAGE_AUTHORITY);

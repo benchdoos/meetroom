@@ -10,9 +10,9 @@ import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
-import com.github.benchdoos.meetroom.domain.dto.EditUserUsernameDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
 import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
@@ -414,18 +414,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserPublicInfoDto updateUserUsername(EditUserUsernameDto editUserUsernameDto) {
+    public UserPublicInfoDto updateUserUsername(UpdateUserUsernameDto updateUserUsernameDto) {
 
-        if (ObjectUtils.nullSafeEquals(editUserUsernameDto.getOldUsername(), editUserUsernameDto.getNewUsername())) {
-            return getUserPublicInfoDtoByUsername(editUserUsernameDto.getOldUsername());
+        if (ObjectUtils.nullSafeEquals(updateUserUsernameDto.getOldUsername(), updateUserUsernameDto.getNewUsername())) {
+            return getUserPublicInfoDtoByUsername(updateUserUsernameDto.getOldUsername());
         }
 
-        validateNewUser(editUserUsernameDto::getNewUsername);
+        validateNewUser(updateUserUsernameDto::getNewUsername);
 
-        final User byUsername = userRepository.findByUsername(editUserUsernameDto.getOldUsername())
+        final User byUsername = userRepository.findByUsername(updateUserUsernameDto.getOldUsername())
                 .orElseThrow(UserNotFoundException::new);
 
-        byUsername.setUsername(editUserUsernameDto.getNewUsername());
+        byUsername.setUsername(updateUserUsernameDto.getNewUsername());
 
         final User savedUser = userRepository.save(byUsername);
         final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();

@@ -12,7 +12,7 @@ import lombok.ToString;
 @RequiredArgsConstructor
 @Getter
 @ToString
-public class EditUserUsernameDto {
+public class UpdateUserUsernameDto {
 
     @Username
     private final String oldUsername;

@@ -16,7 +16,7 @@ function getUserInfo(userId) {
 }
 
 function updateUserUsername(changeUsernameDto) {
-    let url = "/user/change-username";
+    let url = "/user/update-username";
 
     console.log("URL: ", url);
     console.log("DTO:", changeUsernameDto);
