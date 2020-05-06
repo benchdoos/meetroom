@@ -1,5 +1,6 @@
 package com.github.benchdoos.meetroom.controller;
 
+import com.github.benchdoos.meetroom.controller.api.v1.ApiV1UserController;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.service.UserService;
@@ -53,11 +54,13 @@ public class LoginController {
     /**
      * Change password for user
      *
+     * @deprecated use api method instead: {@link ApiV1UserController#updateUserPassword(UUID, UpdateUserPasswordDto, Principal)}
      * @param id user id
      * @param updateUserPasswordDto dto with passwords
      * @param principal principal
      * @return user
      */
+    @Deprecated
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/change-password/{id}")
     public String changeUserPassword(@PathVariable("id") UUID id,
