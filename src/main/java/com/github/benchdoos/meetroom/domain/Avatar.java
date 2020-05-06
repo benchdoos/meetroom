@@ -31,6 +31,6 @@ public class Avatar {
     @Column(name = "type",length = 36)
     private AvatarDataType type;
 
-    @Column(name = "data", length = 32768)
+    @Column(name = "data", length = 98304)
     private String data;
 }
