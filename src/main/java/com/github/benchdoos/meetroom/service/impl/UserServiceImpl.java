@@ -432,6 +432,9 @@ public class UserServiceImpl implements UserService {
         if (user.getAvatar() != null) {
             user.getAvatar().setType(updateUserAvatarDto.getType());
             user.getAvatar().setData(updateUserAvatarDto.getData());
+        } else {
+            final Avatar avatar = new Avatar(null, updateUserAvatarDto.getType(), updateUserAvatarDto.getData());
+            user.setAvatar(avatar);
         }
 
         userRepository.save(user);

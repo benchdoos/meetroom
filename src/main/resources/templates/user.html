@@ -46,12 +46,15 @@
         <div class="container" style="display: flex">
             <div class="editable-avatar">
                 <div id="edit-avatar-block">
-                    <a id="update-avatar-link" data-toggle="modal" data-target="#editAvatarModal"
+                    <a id="update-avatar-link"
+                       th:if="${user.username} == ${#authentication.getPrincipal().getUsername()}"
+                       data-toggle="modal" data-target="#editAvatarModal"
                        style="cursor: pointer">
                         <span class="edit-avatar-button rounded-top-left">Update</span>
                     </a>
                 </div>
-                <img class="rounded-left user-avatar" th:if="${user.getAvatar() != null}"
+                <img id="user-page-avatar"
+                     class="rounded-left user-avatar" th:if="${user.getAvatar() != null}"
                      th:src="${user.getAvatar().getSrc()}"
                      width="256px"
                      height="256px"/>

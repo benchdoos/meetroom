@@ -61,8 +61,39 @@ function updateImage(url, targetObjectId) {
         success: function (output, status, xhr) {
             $('#' + targetObjectId).attr('src', output.src).show();
         },
-        failure: function (error) {
+        error: function (error) {
             console.log("error: ", error);
+        }
+    });
+}
+
+/**
+ * Update user avatar
+ *
+ * @param context application context root url
+ * @param targetObjectId id of model to hide
+ * @param targetErrorObjectId id of object where to show errors
+ * @param userAvatarImageToReplaceId user image
+ * @param userId id of user
+ * @param updateUserAvatarDto dto with avatar data
+ */
+function updateUserAvatar(context, targetObjectId, targetErrorObjectId, userAvatarImageToReplaceId, userId, updateUserAvatarDto) {
+    let url = getApiV1Context(context) + "/user-avatar/update/" + userId;
+    console.log("Getting gravatar image by url: ", url);
+
+    $('#' + targetErrorObjectId).html("").hide();
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(updateUserAvatarDto),
+        contentType: "application/json",
+        success: function (output, status, xhr) {
+            $('#' + targetObjectId).modal('hide');
+            $('#' + userAvatarImageToReplaceId).attr('src', output.src);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $('#' + targetErrorObjectId).html(XMLHttpRequest.responseJSON.message).show();
         }
     });
 }

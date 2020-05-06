@@ -49,7 +49,7 @@ function getApiV1Context(context) {
  * @param userId user id of user to update image
  * @param targetObjectId id of object to update
  */
-function updateUserAvatar(context, userId, targetObjectId) {
+function updateUserAvatarPreview(context, userId, targetObjectId) {
     let url = getApiV1Context(context) + "/user-avatar/by-user/" + userId;
 
     updateUserAvatarImage(url, targetObjectId);
