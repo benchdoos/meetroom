@@ -11,6 +11,12 @@
 <body>
 <div style="padding: 20px">
     <div class="header" style="display: flex">
+        <a class="btn btn-dark h2 btn-outline-dark"
+           th:href="@{/}"
+           style="margin-right: 10px"
+           data-toggle="tooltip"
+           data-placement="bottom"
+           title="Main page"><i class="fas fa-home"></i></a>
         <button class="btn btn-light h2" onclick="goBack()"
                 data-toggle="tooltip"
                 data-placement="bottom"
@@ -88,7 +94,6 @@
     </div>
     <div class="container" style="display: flex;">
         <div style="text-align: center; width: 100%">
-            <a class="btn btn-light" th:href="@{/}">Main page</a>
             <!--<a class="btn btn-primary" th:href="@{/user/{userId}/events(userId = ${user.getId()})}">Events</a>-->
         </div>
     </div>
