@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletContext;
 
+/**
+ * Component to get {@link ServletContext} from spring bean processor
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Getter
