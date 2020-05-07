@@ -118,3 +118,29 @@ function updateUserInfo(context, userId, targetErrorObjectId, userUpdateInfoDto)
         }
     });
 }
+
+/**
+ * Update user password
+ *
+ * @param context root url
+ * @param targetErrorObjectId target object to display errors
+ * @param userId id of user
+ * @param updateUserPasswordDto dto with new password info
+ */
+function updateUserPassword(context, targetErrorObjectId, userId, updateUserPasswordDto) {
+    let url = getApiV1Context(context) + "/user/update-password/" + userId;
+    console.log(url, userId);
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(updateUserPasswordDto),
+        contentType: "application/json",
+        success: function (output, status, xhr) {
+            location.reload();
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $('#' + targetErrorObjectId).html(XMLHttpRequest.responseJSON.message).show();
+        }
+    });
+}
