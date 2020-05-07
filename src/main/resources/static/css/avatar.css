@@ -1,0 +1,21 @@
+.editable-avatar {
+    position: relative;
+    padding-top: 20px;
+    display: inline-block;
+}
+
+#edit-avatar-block {
+    display: none;
+}
+
+.editable-avatar:hover #edit-avatar-block{
+    display: block;
+}
+
+.edit-avatar-button {
+    position: absolute;
+    background: #a8a8a8b0;
+    text-align: center;
+    color: white;
+    width: 100%;
+}

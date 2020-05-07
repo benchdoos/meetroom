@@ -9,9 +9,9 @@ import javax.validation.constraints.NotNull;
  * Exception thrown when username is gonna be changed, but user with new username already exists
  */
 @ResponseStatus(code = HttpStatus.CONFLICT)
-public class UserWithSuchUsernameAlreadyExists extends RuntimeException {
+public class UserWithSuchUsernameAlreadyExistsException extends RuntimeException {
 
-    public UserWithSuchUsernameAlreadyExists(@NotNull String username) {
+    public UserWithSuchUsernameAlreadyExistsException(@NotNull String username) {
         super("User with given username already exists: " + username);
     }
 }

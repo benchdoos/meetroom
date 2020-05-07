@@ -37,6 +37,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/registration",
                         "/user/reset-password/**").permitAll();
 
+        //favicon
+        httpSecurity.authorizeRequests()
+                .antMatchers("/favicon.ico").permitAll();
+
         //public additional sources
         httpSecurity.authorizeRequests()
                 .antMatchers(

@@ -3,6 +3,7 @@ package com.github.benchdoos.meetroom.service.impl;
 import com.github.benchdoos.meetroom.config.properties.ApiSecurityProperties;
 import com.github.benchdoos.meetroom.domain.dto.security.TokenDto;
 import com.github.benchdoos.meetroom.service.TokenService;
+import com.github.benchdoos.meetroom.service.TokenStorageService;
 import com.github.benchdoos.meetroom.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -35,10 +36,23 @@ public class JwtTokenServiceImpl implements TokenService {
 
     private final ApiSecurityProperties apiSecurityProperties;
     private final UserService userService;
+    private final TokenStorageService tokenStorageService;
 
     @Override
     public TokenDto createToken(UserDetails userDetails) {
-        return new TokenDto(generateToken(new HashMap<>(), userDetails.getUsername()), null);
+        final String username = userDetails.getUsername();
+        final TokenDto tokenForUser = tokenStorageService.getTokenForUser(username);
+
+        if (tokenForUser != null) {
+            if (!isTokenExpired(tokenForUser.getAccessToken().getToken())) {
+                return tokenForUser;
+            }
+            tokenStorageService.removeTokenForUser(username);
+        }
+
+        final TokenDto tokenDto = new TokenDto(generateToken(new HashMap<>(), username), null);
+        tokenStorageService.storeToken(username, tokenDto);
+        return tokenDto;
     }
 
     @Override
@@ -84,13 +98,8 @@ public class JwtTokenServiceImpl implements TokenService {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    /**
-     * Validates if token is not expired
-     *
-     * @param token token to validate
-     * @return true if not expired
-     */
-    private boolean isTokenExpired(String token) {
+    @Override
+    public boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }

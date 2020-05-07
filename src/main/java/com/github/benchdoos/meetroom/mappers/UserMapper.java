@@ -1,9 +1,12 @@
 package com.github.benchdoos.meetroom.mappers;
 
+import com.github.benchdoos.meetroom.domain.Avatar;
 import com.github.benchdoos.meetroom.domain.User;
+import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
+import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -16,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         componentModel = "spring")
+@DecoratedWith(UserMapperDecorator.class)
 public interface UserMapper {
 
     void convert(User user, @MappingTarget UserPublicInfoDto userPublicInfoDto);
@@ -25,6 +29,8 @@ public interface UserMapper {
     void convert(User user, @MappingTarget UserExtendedInfoDto userExtendedInfoDto);
 
     void convert(UserExtendedInfoDto userExtendedInfoDto, @MappingTarget User user);
+
+    void convertAvatar(Avatar avatar, @MappingTarget UserAvatarDto userAvatarDto);
 
     default void convert(UsernamePasswordAuthenticationToken token, @MappingTarget UserExtendedInfoDto userExtendedInfoDto) {
         final Object principal = token.getPrincipal();

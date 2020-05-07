@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
- * DTOwith important public personal information for {@link User}
+ * DTO with important public personal information for {@link User}
  */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,5 +33,5 @@ public class UserPublicInfoDto {
     @NotNull
     private Boolean enabled;
 
-    private String avatar;
+    private UserAvatarDto avatar;
 }

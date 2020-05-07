@@ -67,7 +67,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event createEvent(CreateEventDto createEventDto) {
-        final User user = userService.getById(createEventDto.getUserId());
+        final User user = userService.getUserById(createEventDto.getUserId());
         final MeetingRoom meetingRoom = meetingRoomService.getById(createEventDto.getMeetingRoomId());
 
         Assert.isTrue(user.isEnabled(), "User must be enabled to create events");
