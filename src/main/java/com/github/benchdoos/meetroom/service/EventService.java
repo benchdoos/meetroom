@@ -75,4 +75,12 @@ public interface EventService {
      * @return boolean, {@code true} is successfully deleted
      */
     boolean deleteEvent(UUID id);
+
+    /**
+     * Get current event for user
+     *
+     * @param userId user id
+     * @return event or {@code null} if not found
+     */
+    EventDto getCurrentEventForUser(UUID userId);
 }

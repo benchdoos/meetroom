@@ -8,6 +8,7 @@ import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.dto.CreateEventDto;
 import com.github.benchdoos.meetroom.domain.dto.EventDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateEventDto;
+import com.github.benchdoos.meetroom.domain.projections.EventDtoProjection;
 import com.github.benchdoos.meetroom.exceptions.EventNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.TimeNotAvailableException;
 import com.github.benchdoos.meetroom.mappers.EventMapper;
@@ -17,6 +18,7 @@ import com.github.benchdoos.meetroom.service.MeetingRoomService;
 import com.github.benchdoos.meetroom.service.UserService;
 import com.github.benchdoos.meetroom.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class EventServiceImpl implements EventService {
@@ -137,6 +140,22 @@ public class EventServiceImpl implements EventService {
         return save.getDeleted() != null && save.getDeleted();
     }
 
+    @Override
+    public EventDto getCurrentEventForUser(UUID userId) {
+        final User user = userService.getUserById(userId);
+
+        final ZonedDateTime now = ZonedDateTime.now();
+
+        final Specification<EventDtoProjection> prepareSpecification = prepareEventSpecificationToFindEventsByUserAndTime(user, now);
+
+        final EventDtoProjection all = eventRepository.findFirst(prepareSpecification);
+
+        log.debug("all:> {}", all);
+
+        return null; //todo change it
+
+    }
+
     /**
      * Check event duration. Duration must be in range of minimum and maximum reservation values.
      * {@code fromDate} must be earlier then {@code toDate}.
@@ -181,6 +200,35 @@ public class EventServiceImpl implements EventService {
 
             return criteriaBuilder.and(
                     meetingRoomPredicate,
+                    criteriaBuilder.not(deletedPredicate),
+                    criteriaBuilder.or(datePredicates.toArray(new Predicate[0])));
+        };
+    }
+
+    /**
+     * Get {@link Specification} for {@link Event} to get events by user for given time, that are not deleted
+     *
+     * @param user user
+     * @param time time
+     * @return prepared specification
+     */
+    private Specification<EventDtoProjection> prepareEventSpecificationToFindEventsByUserAndTime(User user, ZonedDateTime time) {
+
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            final Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
+
+            final Predicate deletedPredicate = criteriaBuilder.and(
+                    criteriaBuilder.isNotNull(root.get("deleted").as(Boolean.class)),
+                    criteriaBuilder.isTrue(root.get("deleted").as(Boolean.class)));
+
+            final List<Predicate> datePredicates = new ArrayList<>();
+            final Predicate fromDatePredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("fromDate"), time);
+            final Predicate toDatePredicate = criteriaBuilder.lessThanOrEqualTo(root.get("toDate"), time);
+            datePredicates.add(fromDatePredicate);
+            datePredicates.add(toDatePredicate);
+
+            return criteriaBuilder.and(
+                    userPredicate,
                     criteriaBuilder.not(deletedPredicate),
                     criteriaBuilder.or(datePredicates.toArray(new Predicate[0])));
         };
