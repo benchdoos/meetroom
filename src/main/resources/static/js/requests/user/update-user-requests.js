@@ -1,3 +1,12 @@
+/**
+ * Creates url with api v1 prefix
+ * @param context application context
+ * @returns {string} context/api/v1
+ */
+function getApiV1Context(context) {
+    return context + "api/v1";
+}
+
 function getUserInfo(userId) {
     let url = "/user/" + userId;
 
@@ -15,8 +24,17 @@ function getUserInfo(userId) {
 
 }
 
-function updateUserUsername(context, changeUsernameDto) {
+/**
+ * Update user username
+ *
+ * @param context application context root url
+ * @param targetErrorObjectId id of target error block
+ * @param changeUsernameDto dto with new username
+ */
+function updateUserUsername(context, targetErrorObjectId, changeUsernameDto) {
     let url = getApiV1Context(context) + "/user/update-username";
+
+    $('#' + targetErrorObjectId).html("").hide();
 
     console.log("URL: ", url);
     console.log("DTO:", changeUsernameDto);
@@ -31,14 +49,11 @@ function updateUserUsername(context, changeUsernameDto) {
             console.log("XHR is:", xhr);
             location.reload();
         },
-        failure: function (error) {
+        error: function (XMLHttpRequest, error) {
             console.log("error: ", error);
+            $('#' + targetErrorObjectId).html(XMLHttpRequest.responseJSON.message).show();
         }
     });
-}
-
-function getApiV1Context(context) {
-    return context + "api/v1";
 }
 
 /**

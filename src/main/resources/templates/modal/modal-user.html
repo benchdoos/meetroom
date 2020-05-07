@@ -100,6 +100,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div id="editUserUserNameModalAlert" class="alert alert-danger" role="alert" style="display: none"></div>
                     <form id="update-user-username-form">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
@@ -116,7 +117,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" form="update-user-username-form">
+                    <button id="update-user-username-submit-button" type="button" class="btn btn-primary" form="update-user-username-form">
                         Save changes
                     </button>
                 </div>
@@ -129,14 +130,14 @@
             /*]]>*/
 
             $(function () {
-                $('#update-user-username-form').submit(function (e) {
+                $('#update-user-username-submit-button').click(function (e) {
                     let newUsername = $('#update-user-username-username').val();
                     let oldUsername = [[${user.username}]];
 
                     let updateUserUsernameDto = new UpdateUserUsernameDto(oldUsername, newUsername);
 
                     console.log("dto:", updateUserUsernameDto);
-                    updateUserUsername(contextRoot, updateUserUsernameDto);
+                    updateUserUsername(contextRoot,'editUserUserNameModalAlert', updateUserUsernameDto);
                 })
             });
     </script>
