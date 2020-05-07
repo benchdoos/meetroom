@@ -15,8 +15,8 @@ function getUserInfo(userId) {
 
 }
 
-function updateUserUsername(changeUsernameDto) {
-    let url = "/user/update-username";
+function updateUserUsername(context, changeUsernameDto) {
+    let url = getApiV1Context(context) + "/user/update-username";
 
     console.log("URL: ", url);
     console.log("DTO:", changeUsernameDto);
@@ -29,7 +29,7 @@ function updateUserUsername(changeUsernameDto) {
         success: function (output, status, xhr) {
             console.log("Response: ", status, output);
             console.log("XHR is:", xhr);
-            location.reload(); //todo fix session problem (see: meetroom-75)
+            location.reload();
         },
         failure: function (error) {
             console.log("error: ", error);

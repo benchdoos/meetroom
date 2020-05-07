@@ -22,7 +22,7 @@
         </button>
         <div class="dropdown-menu">
             <!--todo fix session problem (see: meetroom-75)-->
-            <button class="dropdown-item" data-toggle="modal" data-target="#editUsernameModal" disabled>
+            <button class="dropdown-item" data-toggle="modal" data-target="#editUsernameModal">
                 Change username
             </button>
             <button class="dropdown-item">Change password</button>
@@ -101,30 +101,44 @@
                 </div>
                 <div class="modal-body">
                     <form id="update-user-username-form">
-                        <label for="update-user-username-username">@</label>
-                        <input id="update-user-username-username" type="text" th:value="${user.username}">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">@</span>
+                            </div>
+                            <input id="update-user-username-username" type="text"
+                                   class="form-control"
+                                   placeholder="Username"
+                                   aria-label="Username"
+                                   aria-describedby="basic-addon1"
+                                   th:value="${user.username}">
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" form="update-user-username-form">Save changes
+                    <button type="submit" class="btn btn-primary" form="update-user-username-form">
+                        Save changes
                     </button>
                 </div>
             </div>
         </div>
     </div>
     <script th:inline="javascript">
-        $(function () {
-            $('#update-user-username-form').submit(function (e) {
-                let newUsername = $('#update-user-username-username').val();
-                let oldUsername = [[${user.username}]];
+        /*<![CDATA[*/
+        var contextRoot = [[@{/}]];
+            /*]]>*/
 
-                let updateUserUsernameDto = new UpdateUserUsernameDto(oldUsername, newUsername);
+            $(function () {
+                $('#update-user-username-form').submit(function (e) {
+                    let newUsername = $('#update-user-username-username').val();
+                    let oldUsername = [[${user.username}]];
 
-                console.log("dto:", updateUserUsernameDto);
-                updateUserUsername(updateUserUsernameDto);
-            })
-        })
+                    let updateUserUsernameDto = new UpdateUserUsernameDto(oldUsername, newUsername);
+
+                    console.log("dto:", updateUserUsernameDto);
+                    updateUserUsername(contextRoot, updateUserUsernameDto);
+                })
+            });
     </script>
 </div>
 

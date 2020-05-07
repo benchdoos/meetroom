@@ -14,6 +14,7 @@ import com.github.benchdoos.meetroom.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
@@ -80,11 +82,16 @@ public class ApiV1UserController {
     @PreAuthorize("hasAnyAuthority('USER:USE', 'MANAGE_USERS:USE')")
     @PostMapping("/update-username")
     public UserPublicInfoDto updateUserName(@RequestBody @Valid UpdateUserUsernameDto updateUserUsernameDto,
+                                            @NotNull HttpServletRequest httpServletRequest,
                                             @NotNull Principal principal) {
         final String MANAGE_AUTHORITY = "MANAGE_USERS:USE";
         if (ObjectUtils.nullSafeEquals(updateUserUsernameDto.getOldUsername(), principal.getName()) ||
                 UserUtils.hasAnyAuthority(principal, MANAGE_AUTHORITY)) {
-            return userService.updateUserUsername(updateUserUsernameDto);
+            final UserPublicInfoDto userPublicInfoDto = userService.updateUserUsername(updateUserUsernameDto);
+
+            logout(httpServletRequest); //need to log out if current user is online
+
+            return userPublicInfoDto;
         }
 
         throw new PermissionDeniedForAction(MANAGE_AUTHORITY);
@@ -122,4 +129,13 @@ public class ApiV1UserController {
         throw new UserInformationCanOnlyBeUpdatedByItsOwner();
     }
 
+
+    /**
+     * Logs out user by given request
+     *
+     * @param request http request
+     */
+    private void logout(HttpServletRequest request) {
+        new SecurityContextLogoutHandler().logout(request, null, null);
+    }
 }
