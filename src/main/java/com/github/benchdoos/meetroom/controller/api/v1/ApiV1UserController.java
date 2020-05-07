@@ -79,6 +79,14 @@ public class ApiV1UserController {
         return userExtendedInfoDto;
     }
 
+    /**
+     * Update username of user. After update requested user logs out. Requested user must be equal to updating
+     *
+     * @param updateUserUsernameDto dto with new information
+     * @param httpServletRequest http request
+     * @param principal principal
+     * @return updated info about user
+     */
     @PreAuthorize("hasAnyAuthority('USER:USE', 'MANAGE_USERS:USE')")
     @PostMapping("/update-username")
     public UserPublicInfoDto updateUserName(@RequestBody @Valid UpdateUserUsernameDto updateUserUsernameDto,
@@ -116,6 +124,14 @@ public class ApiV1UserController {
         return userService.getUserPublicInfoDtoById(userId);
     }
 
+    /**
+     * Update user information. Only can be accessed by owner (principal id must equal to given userId).
+     *
+     * @param userId id of user
+     * @param updateUserInfoDto dto with new info
+     * @param principal principal
+     * @return update user info
+     */
     @PreAuthorize("hasAnyAuthority('USER:USE')")
     @PostMapping("/update/{userId}")
     public UserPublicInfoDto updateUserInfo(@PathVariable("userId") UUID userId,
