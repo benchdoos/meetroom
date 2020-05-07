@@ -84,8 +84,8 @@ function updateUserAvatarImage(url, targetObjectId) {
         success: function (output, status, xhr) {
             $('#' + targetObjectId).attr('src', output.src).show();
         },
-        failure: function (error) {
-            console.log("error: ", error);
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log("error: ", XMLHttpRequest.responseJSON);
             $('#' + targetObjectId)
                 .attr('class', 'fas fa-user')
                 .attr('style', "color: black").show();
@@ -93,6 +93,14 @@ function updateUserAvatarImage(url, targetObjectId) {
     });
 }
 
+/**
+ * Update user information
+ *
+ * @param context root url
+ * @param userId id of user to update
+ * @param targetErrorObjectId target object to display errors
+ * @param userUpdateInfoDto dto with new info
+ */
 function updateUserInfo(context, userId, targetErrorObjectId, userUpdateInfoDto) {
     let url = getApiV1Context(context) + "/user/update/" + userId;
     console.log(url, userId, userUpdateInfoDto);
