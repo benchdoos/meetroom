@@ -9,9 +9,9 @@ import java.util.Arrays;
  * Exception thrown if given user has no authorities from given list
  */
 @ResponseStatus(code = HttpStatus.FORBIDDEN)
-public class PermissionDeniedForAction extends RuntimeException {
+public class PermissionDeniedForActionException extends RuntimeException {
 
-    public PermissionDeniedForAction(String... authorities) {
+    public PermissionDeniedForActionException(String... authorities) {
         super("User has not any of needed authorities: " + Arrays.toString(authorities));
     }
 }

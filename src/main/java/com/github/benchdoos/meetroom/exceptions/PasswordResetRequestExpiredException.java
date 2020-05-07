@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Exception thrown when {@link PasswordResetRequest} expired
  */
 @ResponseStatus(code = HttpStatus.FORBIDDEN, reason = "This password reset request expired")
-public class PasswordResetRequestExpired extends RuntimeException {
+public class PasswordResetRequestExpiredException extends RuntimeException {
 }

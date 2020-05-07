@@ -7,5 +7,5 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Exception thrown when password reset request is not active
  */
 @ResponseStatus(code = HttpStatus.FORBIDDEN, reason = "This password reset request is not active anymore")
-public class PasswordResetRequestIsNotActiveAnyMore extends RuntimeException {
+public class PasswordResetRequestIsNotActiveAnyMoreException extends RuntimeException {
 }

@@ -12,6 +12,10 @@ import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+/**
+ * Decorator for {@link UserMapper}.
+ * This class can override default {@link UserMapper} behavior. Has ability to access Spring bean injection.
+ */
 public abstract class UserMapperDecorator implements UserMapper {
 
     @Autowired

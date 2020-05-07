@@ -20,18 +20,18 @@ import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.security.LoginDto;
 import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
-import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimself;
+import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimselfException;
 import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
 import com.github.benchdoos.meetroom.exceptions.InvalidCurrentPasswordException;
 import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePasswordException;
-import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpired;
-import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestIsNotActiveAnyMore;
+import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpiredException;
+import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestIsNotActiveAnyMoreException;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.UserAlreadyExistsException;
-import com.github.benchdoos.meetroom.exceptions.UserCanNotUpdateThisDataByHimself;
+import com.github.benchdoos.meetroom.exceptions.UserCanNotUpdateThisDataByHimselfException;
 import com.github.benchdoos.meetroom.exceptions.UserDisabledException;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
-import com.github.benchdoos.meetroom.exceptions.UserWithSuchUsernameAlreadyExists;
+import com.github.benchdoos.meetroom.exceptions.UserWithSuchUsernameAlreadyExistsException;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.repository.PasswordResetRequestRepository;
 import com.github.benchdoos.meetroom.repository.RoleRepository;
@@ -289,11 +289,11 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(PasswordResetRequestNotFoundException::new);
 
         if (!passwordResetRequest.isActive()) {
-            throw new PasswordResetRequestIsNotActiveAnyMore();
+            throw new PasswordResetRequestIsNotActiveAnyMoreException();
         }
 
         if (ZonedDateTime.now().isAfter(passwordResetRequest.getExpires())) {
-            throw new PasswordResetRequestExpired();
+            throw new PasswordResetRequestExpiredException();
         }
 
         final User user = passwordResetRequest.getRequestedFor();
@@ -314,7 +314,7 @@ public class UserServiceImpl implements UserService {
 
         if (principal != null) {
             if (principal.getName().equals(user.getUsername())) {
-                throw new UserCanNotUpdateThisDataByHimself();
+                throw new UserCanNotUpdateThisDataByHimselfException();
             }
         }
 
@@ -342,7 +342,7 @@ public class UserServiceImpl implements UserService {
                 final boolean isCurrentUserEditingHimself = principal.getName().equals(user.getUsername());
 
                 if (isCurrentUserEditingHimself) { //no need to check if user is admin
-                    throw new AdminCanNotRemoveAdminRoleForHimself(user.getUsername());
+                    throw new AdminCanNotRemoveAdminRoleForHimselfException(user.getUsername());
                 }
             }
         }
@@ -362,7 +362,7 @@ public class UserServiceImpl implements UserService {
 
             if (byUsername.isPresent()) {
                 if (!user.getId().equals(byUsername.get().getId())) {
-                    throw new UserWithSuchUsernameAlreadyExists(editOtherUserDto.getUsername());
+                    throw new UserWithSuchUsernameAlreadyExistsException(editOtherUserDto.getUsername());
                 }
             }
         }

@@ -6,8 +6,8 @@ import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
-import com.github.benchdoos.meetroom.exceptions.PermissionDeniedForAction;
-import com.github.benchdoos.meetroom.exceptions.UserInformationCanOnlyBeUpdatedByItsOwner;
+import com.github.benchdoos.meetroom.exceptions.PermissionDeniedForActionException;
+import com.github.benchdoos.meetroom.exceptions.UserInformationCanOnlyBeUpdatedByItsOwnerException;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.service.UserService;
 import com.github.benchdoos.meetroom.utils.UserUtils;
@@ -102,7 +102,7 @@ public class ApiV1UserController {
             return userPublicInfoDto;
         }
 
-        throw new PermissionDeniedForAction(MANAGE_AUTHORITY);
+        throw new PermissionDeniedForActionException(MANAGE_AUTHORITY);
     }
 
     /***
@@ -142,7 +142,7 @@ public class ApiV1UserController {
         if (owner) {
             return userService.updateUserInfo(userId, updateUserInfoDto);
         }
-        throw new UserInformationCanOnlyBeUpdatedByItsOwner();
+        throw new UserInformationCanOnlyBeUpdatedByItsOwnerException();
     }
 
 

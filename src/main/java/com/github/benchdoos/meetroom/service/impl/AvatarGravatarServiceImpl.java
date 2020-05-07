@@ -10,6 +10,9 @@ import com.timgroup.jgravatar.GravatarRating;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Default {@link AvatarGravatarService} implementation
+ */
 @RequiredArgsConstructor
 @Service
 public class AvatarGravatarServiceImpl implements AvatarGravatarService {
