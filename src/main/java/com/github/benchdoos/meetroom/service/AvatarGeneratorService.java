@@ -4,6 +4,9 @@ import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * Service that provides different kinds of avatar generation
+ */
 public interface AvatarGeneratorService {
 
     /**

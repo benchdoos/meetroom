@@ -15,6 +15,10 @@ import javax.validation.constraints.Size;
 import java.io.InputStream;
 import java.util.Arrays;
 
+/**
+ * Adorable avatar generation client
+ * @see <a href="adorable.io">adorable.io</a>
+ */
 @RequiredArgsConstructor
 @Service
 public class AdorableAvatarGeneratorClientImpl implements AvatarGeneratorClient {
