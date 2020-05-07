@@ -39,3 +39,20 @@ function UpdateUserInfoDto(firstName, lastName) {
         lastName: lastName
     }
 }
+
+/**
+ * Update user password dto
+ *
+ * @param currentPassword of user
+ * @param password new user password
+ * @param confirmPassword new user password confirmation (must equal to password)
+ * @returns {{password: string, confirmPassword: string, currentPassword: string}}
+ * @constructor
+ */
+function UpdateUserPasswordDto(currentPassword, password, confirmPassword) {
+    return {
+        currentPassword: currentPassword,
+        password: password,
+        confirmPassword: confirmPassword
+    }
+}
