@@ -26,20 +26,12 @@ function generateAvatarByGivenName(context, key, targetObjectId) {
 }
 
 /**
- * Get current user avatar by user id
+ * Update src attribute of image by src of gravatar avatar by given email
  *
- * @param context context path of application
- * @param userId user id of user to update image
- * @param targetObjectId id of object to update
+ * @param {string} context context
+ * @param {string} email of user
+ * @param {string} targetObjectId
  */
-function getUserAvatarAndSetToTargetObject(context, userId, targetObjectId) {
-    let url = getApiV1Context(context) + "/user-avatar/by-user/" + userId;
-
-    console.log("Requesting user avatar by url:", url);
-
-    updateImage(url, targetObjectId);
-}
-
 function updateImageSrcByGravatarEmail(context, email, targetObjectId) {
     let url = getApiV1Context(context) + "/user-avatar/gravatar/" + email;
     console.log("Getting gravatar image by url: ", url);

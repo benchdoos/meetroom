@@ -1,7 +1,13 @@
+/**
+ * For go back buttons and links. Goes to previous history page.
+ */
 function goBack() {
     window.history.back();
 }
 
+/**
+ * Enable bootstrap tooltips
+ */
 $(document).ready(function () {
     console.log("Tooltip enabled");
     $('[data-toggle="tooltip"]').tooltip()

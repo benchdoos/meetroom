@@ -7,23 +7,6 @@ function getApiV1Context(context) {
     return context + "api/v1";
 }
 
-function getUserInfo(userId) {
-    let url = "/user/" + userId;
-
-    console.log("URL: ", url);
-
-    $.ajax({
-        type: 'GET',
-        url: url,
-        success: function (output, status, xhr) {
-            console.log("Response is:", output);
-            console.log("Status is:", status);
-            console.log("xhr is:", xhr);
-        }
-    });
-
-}
-
 /**
  * Update user username
  *
