@@ -22,7 +22,7 @@ public class InternalConfiguration {
      * Configuration for user endpoints. Defaults and settings
      */
     @NotNull
-    private UserSettings users;
+    private UserSettings userSettings;
 
     @Getter
     @Setter
@@ -34,5 +34,11 @@ public class InternalConfiguration {
          */
         @NotNull
         private int avatarSize;
+
+        /**
+         * Default user avatar if user has no avatar
+         */
+        @NotNull
+        private String defaultAvatarId;
     }
 }

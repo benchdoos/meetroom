@@ -40,4 +40,12 @@ public interface TokenService {
      * @return true if match and token is not expired
      */
     boolean validateToken(String token, UserDetails userDetails);
+
+    /**
+     * Checks if token is expired
+     *
+     * @param token token to validate
+     * @return true if expired
+     */
+    boolean isTokenExpired(String token);
 }

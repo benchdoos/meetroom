@@ -1,8 +1,11 @@
 package com.github.benchdoos.meetroom.controller;
 
-import com.github.benchdoos.meetroom.config.constants.UsersConstants;
+import com.github.benchdoos.meetroom.domain.Avatar;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
+import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
-import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
+import com.github.benchdoos.meetroom.mappers.UserMapper;
+import com.github.benchdoos.meetroom.service.AvatarService;
 import com.github.benchdoos.meetroom.service.PasswordResetRequestService;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,8 @@ import java.util.UUID;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+    private final UserMapper userMapper;
+    private final AvatarService avatarService;
     private final PasswordResetRequestService passwordResetRequestService;
 
     @PreAuthorize("hasAnyAuthority('USER:USE')")
@@ -42,7 +47,7 @@ public class UserController {
         }
         model.addAttribute("user", userDto);
         if (userDto.getAvatar() == null) {
-            userDto.setAvatar(UsersConstants.DEFAULT_AVATAR);
+            appendDefaultUserAvatar(userDto);
         }
         return "user";
     }
@@ -52,7 +57,7 @@ public class UserController {
     public String getResetPasswordByResetRequestPage(@PathVariable("id") UUID id, Model model) {
 
         model.addAttribute("request", passwordResetRequestService.getById(id));
-        model.addAttribute("passwordDto", new UserPasswordChangeDto());
+        model.addAttribute("passwordDto", new UpdateUserPasswordDto());
 
         return "reset-password";
     }
@@ -60,11 +65,26 @@ public class UserController {
     @PreAuthorize("isAnonymous()")
     @PostMapping("/reset-password/{id}")
     public String resetPasswordByResetRequest(@PathVariable("id") UUID id,
-                                              @Valid UserPasswordChangeDto userPasswordChangeDto) {
+                                              @Valid UpdateUserPasswordDto updateUserPasswordDto) {
 
-        userService.resetUserPasswordByResetRequest(id, userPasswordChangeDto);
+        userService.resetUserPasswordByResetRequest(id, updateUserPasswordDto);
 
         return "redirect:/login";
     }
 
+
+    /**
+     * Appends default user avatar to userDto
+     *
+     * @param userDto dto of user
+     */
+    private void appendDefaultUserAvatar(UserExtendedInfoDto userDto) {
+        final Avatar defaultAvatar = avatarService.getDefaultUserAvatar();
+
+        if (defaultAvatar != null) {
+            final UserAvatarDto userAvatarDto = new UserAvatarDto();
+            userMapper.convertAvatar(defaultAvatar, userAvatarDto);
+            userDto.setAvatar(userAvatarDto);
+        }
+    }
 }

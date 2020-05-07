@@ -87,6 +87,7 @@ Admins can:
 Users can:
 
 - create events, edit, delete their own events
+- manage their profile and other stuff
 
 
 
@@ -114,3 +115,5 @@ To override VM options:
 ![Manage users](https://i.postimg.cc/g0qpGkm9/image.png)
 ![Manage roles](https://i.postimg.cc/cCF1qVcf/image.png)
 ![See privileges](https://i.postimg.cc/66bNXLXV/image.png)
+![User page](https://i.postimg.cc/rFb57vVg/image.png)
+![Update your avatar](https://i.postimg.cc/44P52LHF/image.png)

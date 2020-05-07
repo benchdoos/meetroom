@@ -1,8 +1,8 @@
 package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
-import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpired;
-import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestIsNotActiveAnyMore;
+import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpiredException;
+import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestIsNotActiveAnyMoreException;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestNotFoundException;
 import com.github.benchdoos.meetroom.repository.PasswordResetRequestRepository;
 import com.github.benchdoos.meetroom.service.PasswordResetRequestService;
@@ -22,11 +22,11 @@ public class PasswordResetRequestServiceImpl implements PasswordResetRequestServ
         final PasswordResetRequest passwordResetRequest = resetRequestRepository.findById(id)
                 .orElseThrow(PasswordResetRequestNotFoundException::new);
         if (!passwordResetRequest.isActive()) {
-            throw new PasswordResetRequestIsNotActiveAnyMore();
+            throw new PasswordResetRequestIsNotActiveAnyMoreException();
         }
 
         if (ZonedDateTime.now().isAfter(passwordResetRequest.getExpires())) {
-            throw new PasswordResetRequestExpired();
+            throw new PasswordResetRequestExpiredException();
         }
 
         return passwordResetRequest;

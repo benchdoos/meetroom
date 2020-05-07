@@ -37,7 +37,7 @@ public class UserExtendedInfoDto extends UserPublicInfoDto {
                                String lastName,
                                Boolean enabled,
                                Collection<Role> roles,
-                               String avatar) {
+                               UserAvatarDto avatar) {
         super(id, username, firstName, lastName, enabled, avatar);
         this.roles = roles;
     }

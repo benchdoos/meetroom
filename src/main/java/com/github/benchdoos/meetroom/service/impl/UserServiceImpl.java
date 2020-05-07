@@ -1,6 +1,8 @@
 package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.config.constants.SecurityConstants;
+import com.github.benchdoos.meetroom.config.properties.InternalConfiguration;
+import com.github.benchdoos.meetroom.domain.Avatar;
 import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
 import com.github.benchdoos.meetroom.domain.Role;
 import com.github.benchdoos.meetroom.domain.User;
@@ -8,27 +10,33 @@ import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
+import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
-import com.github.benchdoos.meetroom.domain.dto.UserPasswordChangeDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.security.LoginDto;
 import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
-import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimself;
+import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimselfException;
 import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
-import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePassword;
-import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpired;
-import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestIsNotActiveAnyMore;
+import com.github.benchdoos.meetroom.exceptions.InvalidCurrentPasswordException;
+import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePasswordException;
+import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpiredException;
+import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestIsNotActiveAnyMoreException;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.UserAlreadyExistsException;
-import com.github.benchdoos.meetroom.exceptions.UserCanNotUpdateThisDataByHimself;
+import com.github.benchdoos.meetroom.exceptions.UserCanNotUpdateThisDataByHimselfException;
 import com.github.benchdoos.meetroom.exceptions.UserDisabledException;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
-import com.github.benchdoos.meetroom.exceptions.UserWithSuchUsernameAlreadyExists;
+import com.github.benchdoos.meetroom.exceptions.UserWithSuchUsernameAlreadyExistsException;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.repository.PasswordResetRequestRepository;
 import com.github.benchdoos.meetroom.repository.RoleRepository;
 import com.github.benchdoos.meetroom.repository.UserRepository;
+import com.github.benchdoos.meetroom.service.AvatarGeneratorService;
 import com.github.benchdoos.meetroom.service.UserService;
 import com.github.benchdoos.meetroom.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +49,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
@@ -68,6 +77,27 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordResetRequestRepository passwordResetRequestRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AvatarGeneratorService avatarGeneratorService;
+    private final InternalConfiguration internalConfiguration;
+
+    /**
+     * Random password generator
+     *
+     * @param length password length
+     * @return password
+     */
+    private static String generateRandomPassword(int length) {
+        final String symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_-";
+        final Random random = new Random();
+
+        final StringBuilder stringBuilder = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            stringBuilder.append(symbols.charAt(random.nextInt(symbols.length())));
+        }
+
+        return stringBuilder.toString();
+    }
 
     @Override
     public UserPublicInfoDto getUserPublicInfoDtoByUsername(String username) {
@@ -89,13 +119,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getById(UUID id) {
+    public User getUserById(UUID id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
     public UserExtendedInfoDto getUserExtendedInfoById(UUID id) {
-        final User user = getUser(id);
+        final User user = getUserById(id);
         final UserExtendedInfoDto userExtendedInfoDto = new UserExtendedInfoDto();
 
         userMapper.convert(user, userExtendedInfoDto);
@@ -104,10 +134,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserPublicInfoDto getUserPublicInfoDtoById(UUID userId) {
+        final User user = getUserById(userId);
+
+        final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
+        userMapper.convert(user, userPublicInfoDto);
+        return userPublicInfoDto;
+    }
+
+    @Override
     public UserPublicInfoDto createUser(CreateUserDto createUserDto) {
         validateNewUser(createUserDto);
 
         final Role role = roleRepository.findFirstByInternalName(SecurityConstants.ROLE_USER);
+
+        final Avatar avatar = prepareUserAvatar(createUserDto.getUsername());
 
         final User user = User.builder()
                 .firstName(createUserDto.getFirstName())
@@ -115,6 +156,7 @@ public class UserServiceImpl implements UserService {
                 .username(createUserDto.getUsername())
                 .password(passwordEncoder.encode(createUserDto.getPassword()))
                 .roles(Collections.singleton(role))
+                .avatar(avatar)
                 .needActivation(false) //todo add email-activation, change to true
                 .enabled(true)
                 .build();
@@ -140,12 +182,15 @@ public class UserServiceImpl implements UserService {
 
         final Role role = roleRepository.findFirstByInternalName(SecurityConstants.ROLE_USER);
 
+        final Avatar avatar = prepareUserAvatar(createOtherUserDto.getUsername());
+
         final User userToSave = User.builder()
                 .username(createOtherUserDto.getUsername())
                 .firstName(createOtherUserDto.getFirstName())
                 .lastName(createOtherUserDto.getLastName())
                 .password(passwordEncoder.encode(password))
                 .roles(Collections.singletonList(role))
+                .avatar(avatar)
                 .needActivation(true)
                 .enabled(true)
                 .build();
@@ -155,7 +200,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserExtendedInfoDto editOtherUser(UUID id, EditOtherUserDto editOtherUserDto) {
-        final User user = getUser(id);
+        final User user = getUserById(id);
 
         validateUsernameChange(editOtherUserDto, user);
 
@@ -173,7 +218,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserExtendedInfoDto updateUserRoles(UUID id, EditRolesForUserDto editRolesForUserDto, Principal principal) {
-        final User user = getUser(id);
+        final User user = getUserById(id);
 
         final List<Role> rolesByIds = roleRepository.findAllById(editRolesForUserDto.getRoles());
 
@@ -194,7 +239,7 @@ public class UserServiceImpl implements UserService {
     public void callForUserPasswordReset(@NotNull UUID id, @NotNull Principal principal) {
         final ZonedDateTime requestTime = ZonedDateTime.now();
 
-        final User user = getUser(id);
+        final User user = getUserById(id);
 
         final Collection<PasswordResetRequest> allActivePasswordResetRequests =
                 passwordResetRequestRepository.findByRequestedForAndExpiresIsAfterAndActiveIsTrue(user, requestTime);
@@ -218,38 +263,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeUserPassword(UUID id, UserPasswordChangeDto userPasswordChangeDto, Principal principal) {
-        final User user = getUser(id);
+    public void updateUserPassword(UUID id, UpdateUserPasswordDto updateUserPasswordDto, Principal principal) {
+        final User user = getUserById(id);
 
-        final User changer = userRepository.findByUsername(principal.getName()).orElseThrow(UserNotFoundException::new);
+        final boolean owner = UserUtils.checkPrincipalToGivenId(principal, id);
 
-        if (!user.getId().equals(changer.getId())) {
-            throw new OnlyAccountOwnerCanChangePassword(user.getUsername(), changer.getUsername());
+        if (!owner) {
+            throw new OnlyAccountOwnerCanChangePasswordException(user.getUsername(), principal.getName());
         }
 
-        user.setPassword(passwordEncoder.encode(userPasswordChangeDto.getPassword()));
+        final boolean matches = passwordEncoder.matches(updateUserPasswordDto.getCurrentPassword(), user.getPassword());
 
+        if (!matches) {
+            throw new InvalidCurrentPasswordException();
+        }
+
+        user.setPassword(passwordEncoder.encode(updateUserPasswordDto.getPassword()));
         userRepository.save(user);
     }
 
     @Transactional
     @Override
-    public void resetUserPasswordByResetRequest(UUID id, UserPasswordChangeDto userPasswordChangeDto) {
+    public void resetUserPasswordByResetRequest(UUID id, UpdateUserPasswordDto updateUserPasswordDto) {
         final PasswordResetRequest passwordResetRequest = passwordResetRequestRepository.findById(id)
                 .orElseThrow(PasswordResetRequestNotFoundException::new);
 
         if (!passwordResetRequest.isActive()) {
-            throw new PasswordResetRequestIsNotActiveAnyMore();
+            throw new PasswordResetRequestIsNotActiveAnyMoreException();
         }
 
         if (ZonedDateTime.now().isAfter(passwordResetRequest.getExpires())) {
-            throw new PasswordResetRequestExpired();
+            throw new PasswordResetRequestExpiredException();
         }
 
         final User user = passwordResetRequest.getRequestedFor();
         user.setNeedActivation(false);
 
-        user.setPassword(passwordEncoder.encode(userPasswordChangeDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(updateUserPasswordDto.getPassword()));
 
         passwordResetRequest.setActive(false);
 
@@ -260,11 +310,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserEnable(@NotNull UUID id, boolean enabled, Principal principal) {
-        final User user = getUser(id);
+        final User user = getUserById(id);
 
         if (principal != null) {
             if (principal.getName().equals(user.getUsername())) {
-                throw new UserCanNotUpdateThisDataByHimself();
+                throw new UserCanNotUpdateThisDataByHimselfException();
             }
         }
 
@@ -292,7 +342,7 @@ public class UserServiceImpl implements UserService {
                 final boolean isCurrentUserEditingHimself = principal.getName().equals(user.getUsername());
 
                 if (isCurrentUserEditingHimself) { //no need to check if user is admin
-                    throw new AdminCanNotRemoveAdminRoleForHimself(user.getUsername());
+                    throw new AdminCanNotRemoveAdminRoleForHimselfException(user.getUsername());
                 }
             }
         }
@@ -312,7 +362,7 @@ public class UserServiceImpl implements UserService {
 
             if (byUsername.isPresent()) {
                 if (!user.getId().equals(byUsername.get().getId())) {
-                    throw new UserWithSuchUsernameAlreadyExists(editOtherUserDto.getUsername());
+                    throw new UserWithSuchUsernameAlreadyExistsException(editOtherUserDto.getUsername());
                 }
             }
         }
@@ -365,46 +415,101 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails getUserByLoginDto(LoginDto loginDto) {
-        final UserDetails user =loadUserByUsername(loginDto.getUsername());
+        final UserDetails user = loadUserByUsername(loginDto.getUsername());
 
         final String encodedPassword = passwordEncoder.encode(loginDto.getPassword());
 
         log.debug("e: [{}] [{}]", encodedPassword, user.getPassword());
 
-        if (passwordEncoder.matches(loginDto.getPassword(),user.getPassword())) {
+        if (passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             return user;
         }
 
         throw new IllegalUserCredentialsException();
     }
 
-    /**
-     * Random password generator
-     *
-     * @param length password length
-     * @return password
-     */
-    private static String generateRandomPassword(int length) {
-        final String symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_-";
-        final Random random = new Random();
+    @Override
+    public UserPublicInfoDto updateUserUsername(UpdateUserUsernameDto updateUserUsernameDto) {
 
-        final StringBuilder stringBuilder = new StringBuilder(length);
-
-        for (int i = 0; i < length; i++) {
-            stringBuilder.append(symbols.charAt(random.nextInt(symbols.length())));
+        if (ObjectUtils.nullSafeEquals(updateUserUsernameDto.getOldUsername(), updateUserUsernameDto.getNewUsername())) {
+            return getUserPublicInfoDtoByUsername(updateUserUsernameDto.getOldUsername());
         }
 
-        return stringBuilder.toString();
+        validateNewUser(updateUserUsernameDto::getNewUsername);
+
+        final User byUsername = userRepository.findByUsername(updateUserUsernameDto.getOldUsername())
+                .orElseThrow(UserNotFoundException::new);
+
+        byUsername.setUsername(updateUserUsernameDto.getNewUsername());
+
+        final User savedUser = userRepository.save(byUsername);
+        final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
+
+        userMapper.convert(savedUser, userPublicInfoDto);
+
+        return userPublicInfoDto;
+    }
+
+    @Override
+    public UserAvatarDto getAvatarForUserId(UUID id) {
+        final User byId = getUserById(id);
+        final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
+        userMapper.convert(byId, userPublicInfoDto);
+        return userPublicInfoDto.getAvatar();
+    }
+
+    @Override
+    public UserAvatarDto updateUserAvatar(UUID userId, UpdateUserAvatarDto updateUserAvatarDto) {
+        final User user = getUserById(userId);
+
+        validateAvatar(updateUserAvatarDto);
+
+        if (user.getAvatar() != null) {
+            user.getAvatar().setType(updateUserAvatarDto.getType());
+            user.getAvatar().setData(updateUserAvatarDto.getData());
+        } else {
+            final Avatar avatar = new Avatar(null, updateUserAvatarDto.getType(), updateUserAvatarDto.getData());
+            user.setAvatar(avatar);
+        }
+
+        userRepository.save(user);
+
+        final UserAvatarDto userAvatarDto = new UserAvatarDto();
+        userMapper.convertAvatar(user.getAvatar(), userAvatarDto);
+
+        return userAvatarDto;
+    }
+
+    @Override
+    public UserPublicInfoDto updateUserInfo(UUID userId, UpdateUserInfoDto updateUserInfoDto) {
+        final User user = getUserById(userId);
+
+        user.setFirstName(updateUserInfoDto.getFirstName());
+        user.setLastName(updateUserInfoDto.getLastName());
+
+        final User saved = userRepository.save(user);
+
+        final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
+
+        userMapper.convert(user, userPublicInfoDto);
+
+        return userPublicInfoDto;
     }
 
     /**
-     * Get user or throw exception
+     * Validate avatar data by given avatar type
      *
-     * @param id user id
-     * @return user
+     * @param updateUserAvatar dto to validate
      */
-    private User getUser(@NotNull UUID id) {
-        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    private void validateAvatar(UpdateUserAvatarDto updateUserAvatar) {
+        switch (updateUserAvatar.getType()) {
+            case GRAVATAR:
+                //validate email
+                break;
+            case BASE64:
+                //validate base64
+                break;
+        }
     }
 
     /**
@@ -439,4 +544,18 @@ public class UserServiceImpl implements UserService {
             return criteriaBuilder.or(username, firstNameAndLastNamePredicate, lastNameAndFirstNamePredicate);
         };
     }
+
+    /**
+     * Creates {@link Avatar} instance (in memory, not in database) by given username
+     *
+     * @param username as a keyword
+     * @return avatar
+     */
+    private Avatar prepareUserAvatar(String username) {
+        final UserAvatarDto userAvatarDto = avatarGeneratorService.generateAvatarForString(
+                username,
+                internalConfiguration.getUserSettings().getAvatarSize());
+        return new Avatar(null, userAvatarDto.getType(), userAvatarDto.getSrc());
+    }
+
 }
