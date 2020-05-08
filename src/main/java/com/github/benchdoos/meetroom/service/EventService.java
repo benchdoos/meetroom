@@ -77,10 +77,19 @@ public interface EventService {
     boolean deleteEvent(UUID id);
 
     /**
-     * Get current event for user
+     * Get current events for user
      *
      * @param userId user id
-     * @return event or {@code null} if not found
+     * @return events
      */
     List<EventDto> getCurrentEventsForUser(UUID userId);
+
+    /**
+     * Get future user's events
+     *
+     * @param userId id of user
+     * @param pageable pageable
+     * @return events if there are any future events, or empty list
+     */
+    Page<EventDto> getFutureEventsForUser(UUID userId, Pageable pageable);
 }

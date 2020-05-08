@@ -19,6 +19,7 @@ import com.github.benchdoos.meetroom.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -142,7 +143,7 @@ public class EventServiceImpl implements EventService {
 
         final ZonedDateTime now = ZonedDateTime.now();
 
-        final Specification<Event> prepareSpecification = prepareEventSpecificationToFindEventsByUserAndTime(user, now);
+        final Specification<Event> prepareSpecification = prepareEventSpecificationToFindEventsByUserAndTimeBetweenEventStartAndEnd(user, now);
 
         final List<Event> userCurrentEvents = eventRepository.findAll(prepareSpecification);
 
@@ -151,6 +152,23 @@ public class EventServiceImpl implements EventService {
         eventMapper.convert(userCurrentEvents, eventDtos);
 
         return eventDtos;
+    }
+
+    @Override
+    public Page<EventDto> getFutureEventsForUser(UUID userId, Pageable pageable) {
+        final User user = userService.getUserById(userId);
+
+        final ZonedDateTime now = ZonedDateTime.now();
+
+        final Specification<Event> prepareSpecification = prepareEventSpecificationToFindEventsByUserSinceGivenTime(user, now);
+
+        final Page<Event> userCurrentEvents = eventRepository.findAll(prepareSpecification, pageable);
+
+        final List<EventDto> eventDtos = new ArrayList<>();
+
+        eventMapper.convert(userCurrentEvents.getContent(), eventDtos);
+
+        return new PageImpl<>(eventDtos, pageable, userCurrentEvents.getTotalElements());
     }
 
     /**
@@ -209,7 +227,7 @@ public class EventServiceImpl implements EventService {
      * @param time time
      * @return prepared specification
      */
-    private Specification<Event> prepareEventSpecificationToFindEventsByUserAndTime(User user, ZonedDateTime time) {
+    private Specification<Event> prepareEventSpecificationToFindEventsByUserAndTimeBetweenEventStartAndEnd(User user, ZonedDateTime time) {
 
         return (root, criteriaQuery, criteriaBuilder) -> {
             final Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
@@ -224,16 +242,36 @@ public class EventServiceImpl implements EventService {
                     root.get("fromDate"),
                     root.get("toDate"));
 
-            final List<Predicate> datePredicates = new ArrayList<>();
-            final Predicate fromDatePredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("fromDate"), DateUtils.truncateSecondsToStart(time));
-            final Predicate toDatePredicate = criteriaBuilder.lessThanOrEqualTo(root.get("toDate"), DateUtils.truncateSecondsToEnd(time));
-            datePredicates.add(fromDatePredicate);
-            datePredicates.add(toDatePredicate);
-
             return criteriaBuilder.and(
                     userPredicate,
                     criteriaBuilder.not(deletedPredicate),
                     between);
+        };
+    }
+
+    /**
+     * Get {@link Specification} for {@link Event} to get future starting events from given time
+     *
+     * @param user user
+     * @param time time to find future events starting from this time
+     * @return prepared specification
+     */
+    private Specification<Event> prepareEventSpecificationToFindEventsByUserSinceGivenTime(User user, ZonedDateTime time) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            final Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
+
+            final Predicate deletedPredicate = criteriaBuilder.and(
+                    criteriaBuilder.isNotNull(root.get("deleted").as(Boolean.class)),
+                    criteriaBuilder.isTrue(root.get("deleted").as(Boolean.class)));
+
+
+            final Predicate futureTimePredicate = criteriaBuilder
+                    .greaterThan(root.get("fromDate"), DateUtils.truncateSecondsToStart(time));
+
+            return criteriaBuilder.and(
+                    userPredicate,
+                    criteriaBuilder.not(deletedPredicate),
+                    futureTimePredicate);
         };
     }
 }
