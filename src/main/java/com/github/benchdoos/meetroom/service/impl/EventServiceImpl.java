@@ -162,13 +162,18 @@ public class EventServiceImpl implements EventService {
 
         final Specification<Event> prepareSpecification = prepareEventSpecificationToFindEventsByUserSinceGivenTime(user, now);
 
-        final Page<Event> userCurrentEvents = eventRepository.findAll(prepareSpecification, pageable);
+        return findAllEventsDto(prepareSpecification, pageable);
+    }
 
-        final List<EventDto> eventDtos = new ArrayList<>();
+    @Override
+    public Page<EventDto> getPreviousEventsForUser(UUID userId, Pageable pageable) {
+        final User user = userService.getUserById(userId);
 
-        eventMapper.convert(userCurrentEvents.getContent(), eventDtos);
+        final ZonedDateTime now = ZonedDateTime.now();
 
-        return new PageImpl<>(eventDtos, pageable, userCurrentEvents.getTotalElements());
+        final Specification<Event> prepareSpecification = prepareEventSpecificationToFindEventsByUserBeforeGivenTime(user, now);
+
+        return findAllEventsDto(prepareSpecification, pageable);
     }
 
     /**
@@ -273,5 +278,48 @@ public class EventServiceImpl implements EventService {
                     criteriaBuilder.not(deletedPredicate),
                     futureTimePredicate);
         };
+    }
+
+    /**
+     * Get {@link Specification} for {@link Event} to get previous ending events before given time
+     *
+     * @param user user
+     * @param time time to find previous events ending before this time
+     * @return prepared specification
+     */
+    private Specification<Event> prepareEventSpecificationToFindEventsByUserBeforeGivenTime(User user, ZonedDateTime time) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            final Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
+
+            final Predicate deletedPredicate = criteriaBuilder.and(
+                    criteriaBuilder.isNotNull(root.get("deleted").as(Boolean.class)),
+                    criteriaBuilder.isTrue(root.get("deleted").as(Boolean.class)));
+
+
+            final Predicate futureTimePredicate = criteriaBuilder
+                    .lessThan(root.get("toDate"), DateUtils.truncateSecondsToEnd(time));
+
+            return criteriaBuilder.and(
+                    userPredicate,
+                    criteriaBuilder.not(deletedPredicate),
+                    futureTimePredicate);
+        };
+    }
+
+    /**
+     * Find all events by given specification and pageable
+     *
+     * @param prepareSpecification specification
+     * @param pageable pageable
+     * @return page of event dto
+     */
+    private Page<EventDto> findAllEventsDto(Specification<Event> prepareSpecification, Pageable pageable) {
+        final Page<Event> userCurrentEvents = eventRepository.findAll(prepareSpecification, pageable);
+
+        final List<EventDto> eventDtos = new ArrayList<>();
+
+        eventMapper.convert(userCurrentEvents.getContent(), eventDtos);
+
+        return new PageImpl<>(eventDtos, pageable, userCurrentEvents.getTotalElements());
     }
 }

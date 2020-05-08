@@ -92,4 +92,13 @@ public interface EventService {
      * @return events if there are any future events, or empty list
      */
     Page<EventDto> getFutureEventsForUser(UUID userId, Pageable pageable);
+
+    /**
+     * Get passed (previous) user's events
+     *
+     * @param userId id of user
+     * @param pageable pageable
+     * @return events
+     */
+    Page<EventDto> getPreviousEventsForUser(UUID userId, Pageable pageable);
 }

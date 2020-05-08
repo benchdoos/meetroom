@@ -50,4 +50,17 @@ public class ApiV1EventController {
                                           @PageableDefault Pageable pageable) {
         return eventService.getFutureEventsForUser(userId, pageable);
     }
+
+    /**
+     * Get previous user's events
+     *
+     * @param userId id of user
+     * @return events if there are any past events, or empty list
+     */
+    @PreAuthorize("hasAnyAuthority('EVENT:USE')")
+    @GetMapping("/previous/{userId}")
+    public Page<EventDto> getPreviousEvents(@PathVariable("userId") UUID userId,
+                                          @PageableDefault Pageable pageable) {
+        return eventService.getPreviousEventsForUser(userId, pageable);
+    }
 }
