@@ -32,6 +32,8 @@ function drawTimePanel(dateRange) {
     for (let i = 0; i <= MAXIMUM_HOURS; i++) {
         let row = table.insertRow(i + 1);
 
+        row.setAttribute("class", "timeRow");
+
         const tomorrow = new Date(fromDate);
 
         for (let j = 0; j <= MAXIMUM_DAYS; j++) {
@@ -138,6 +140,7 @@ function shadeColor(color, percent) {
 
     return "#" + RR + GG + BB;
 }
+
 /**
  * Pseudo - random color generation by uuid
  * @param event to generate code from its id

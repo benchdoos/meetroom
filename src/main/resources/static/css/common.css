@@ -7,22 +7,25 @@
     user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
-.verticalHr{
+.verticalHr {
 
-    border:         none;
-    border-left:    1px solid hsla(200, 10%, 50%,100);
-    width:          1px;
+    border: none;
+    border-left: 1px solid hsla(200, 10%, 50%, 100);
+    width: 1px;
 }
 
 .rounded-top-left {
     border-top-left-radius: 3px;
 }
+
 .rounded-top-right {
     border-top-right-radius: 3px;
 }
+
 .rounded-bottom-left {
     border-bottom-left-radius: 3px;
 }
+
 .rounded-bottom-right {
     border-bottom-right-radius: 3px;
 }
@@ -37,4 +40,8 @@
     color: white;
     padding: 5px 10px;
     font-size: 20px;
+}
+
+.table-striped tbody .timeRow {
+    line-height: 15px
 }
