@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -75,8 +75,8 @@ public interface ModelViewService {
      *
      * @param id event id
      * @param model model
-     * @param request request
+     * @param principal principal
      * @return name of page
      */
-    String deleteEvent(UUID id, Model model, HttpServletRequest request);
+    String deleteEvent(UUID id, Model model, Principal principal);
 }

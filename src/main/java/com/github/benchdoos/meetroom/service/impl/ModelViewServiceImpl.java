@@ -17,8 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+import java.security.Principal;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -70,32 +70,42 @@ public class ModelViewServiceImpl implements ModelViewService {
     public String getEventInfoById(UUID id, Model model) {
         final EventDto eventDto = eventService.getEventDtoById(id);
 
+        return getEventPage(eventDto, model);
+    }
+
+    @Override
+    public String createEvent(CreateEventDto createEventDto, Model model) {
+        final EventDto eventDto = eventService.createEvent(createEventDto);
+
+        return getEventPage(eventDto, model);
+    }
+
+    @Override
+    public String updateEvent(UUID id, UpdateEventDto updateEventDto, Model model) {
+        final EventDto eventDto = eventService.updateEvent(id, updateEventDto);
+
+        return getEventPage(eventDto, model);
+    }
+
+    /**
+     * Get event page for event dto
+     *
+     * @param eventDto dto
+     * @param model model
+     * @return event page
+     */
+    private String getEventPage(EventDto eventDto, Model model) {
         model.addAttribute("event", eventDto);
 
         return "event.html";
     }
 
     @Override
-    public String createEvent(CreateEventDto createEventDto, Model model) {
-        final Event event = eventService.createEvent(createEventDto);
-
-        return getEventInfoById(event.getId(), model);
-    }
-
-    @Override
-    public String updateEvent(UUID id, UpdateEventDto updateEventDto, Model model) {
-        final Event event = eventService.updateEvent(id, updateEventDto);
-
-        return getEventInfoById(event.getId(), model);
-    }
-
-    @Override
-    //todo add check that only admin or creator can do this
-    public String deleteEvent(UUID id, Model model, HttpServletRequest request) {
+    public String deleteEvent(UUID id, Model model, Principal principal) {
         final Event event = eventService.getEventById(id);
         @NotNull final ZonedDateTime fromDate = event.getFromDate();
         @NotNull final MeetingRoom meetingRoom = event.getMeetingRoom();
-        final boolean deleted = eventService.deleteEvent(id);
+        final boolean deleted = eventService.deleteEvent(id, principal);
         log.info("Event with id: {} is deleted: {}", id, deleted);
 
         return getMeetingRoomById(meetingRoom.getId(), fromDate, model);

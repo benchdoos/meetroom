@@ -8,6 +8,7 @@ import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.dto.CreateEventDto;
 import com.github.benchdoos.meetroom.domain.dto.EventDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateEventDto;
+import com.github.benchdoos.meetroom.exceptions.EventCanBeDeletedByOwnerOrAdminException;
 import com.github.benchdoos.meetroom.exceptions.EventNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.TimeNotAvailableException;
 import com.github.benchdoos.meetroom.mappers.EventMapper;
@@ -16,6 +17,7 @@ import com.github.benchdoos.meetroom.service.EventService;
 import com.github.benchdoos.meetroom.service.MeetingRoomService;
 import com.github.benchdoos.meetroom.service.UserService;
 import com.github.benchdoos.meetroom.utils.DateUtils;
+import com.github.benchdoos.meetroom.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,6 +29,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.Predicate;
+import java.security.Principal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +69,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event createEvent(CreateEventDto createEventDto) {
+    public EventDto createEvent(CreateEventDto createEventDto) {
         final User user = userService.getUserById(createEventDto.getUserId());
         final MeetingRoom meetingRoom = meetingRoomService.getById(createEventDto.getMeetingRoomId());
 
@@ -95,12 +98,13 @@ public class EventServiceImpl implements EventService {
                 .deleted(false)
                 .build();
 
-        return eventRepository.save(event);
+        final Event saved = eventRepository.save(event);
+        return eventMapper.toEventDto(saved);
     }
 
 
     @Override
-    public Event updateEvent(UUID id, UpdateEventDto updateEventDto) {
+    public EventDto updateEvent(UUID id, UpdateEventDto updateEventDto) {
         final Event event = eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
 
         Assert.isTrue(event.getDeleted() == null || !event.getDeleted(),
@@ -126,12 +130,22 @@ public class EventServiceImpl implements EventService {
         event.setTitle(updateEventDto.getTitle());
         event.setDescription(updateEventDto.getDescription());
 
-        return eventRepository.save(event);
+        final Event saved = eventRepository.save(event);
+        return eventMapper.toEventDto(saved);
     }
 
     @Override
-    public boolean deleteEvent(UUID id) {
+    public boolean deleteEvent(UUID id, Principal principal) {
         final Event event = eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
+
+        final boolean owner = UserUtils.checkPrincipalToGivenId(principal, event.getUser().getId());
+        if (!owner) {
+            final boolean role_admin = UserUtils.hasAnyAuthority(principal, "ROLE_ADMIN");
+            if (!role_admin) {
+                throw new EventCanBeDeletedByOwnerOrAdminException();
+            }
+        }
+
         event.setDeleted(true);
         final Event save = eventRepository.save(event);
         return save.getDeleted() != null && save.getDeleted();
