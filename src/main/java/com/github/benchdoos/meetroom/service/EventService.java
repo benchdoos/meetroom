@@ -82,5 +82,5 @@ public interface EventService {
      * @param userId user id
      * @return event or {@code null} if not found
      */
-    EventDto getCurrentEventForUser(UUID userId);
+    List<EventDto> getCurrentEventsForUser(UUID userId);
 }

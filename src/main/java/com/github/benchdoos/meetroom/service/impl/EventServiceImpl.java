@@ -8,7 +8,6 @@ import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.dto.CreateEventDto;
 import com.github.benchdoos.meetroom.domain.dto.EventDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateEventDto;
-import com.github.benchdoos.meetroom.domain.projections.EventDtoProjection;
 import com.github.benchdoos.meetroom.exceptions.EventNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.TimeNotAvailableException;
 import com.github.benchdoos.meetroom.mappers.EventMapper;
@@ -57,10 +56,7 @@ public class EventServiceImpl implements EventService {
     public EventDto getEventDtoById(UUID id) {
         final Event event = eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
 
-        final EventDto eventDto = new EventDto();
-        eventMapper.convert(event, eventDto);
-
-        return eventDto;
+        return eventMapper.toEventDto(event);
     }
 
     @Override
@@ -141,19 +137,20 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDto getCurrentEventForUser(UUID userId) {
+    public List<EventDto> getCurrentEventsForUser(UUID userId) {
         final User user = userService.getUserById(userId);
 
         final ZonedDateTime now = ZonedDateTime.now();
 
-        final Specification<EventDtoProjection> prepareSpecification = prepareEventSpecificationToFindEventsByUserAndTime(user, now);
+        final Specification<Event> prepareSpecification = prepareEventSpecificationToFindEventsByUserAndTime(user, now);
 
-        final EventDtoProjection all = eventRepository.findFirst(prepareSpecification);
+        final List<Event> userCurrentEvents = eventRepository.findAll(prepareSpecification);
 
-        log.debug("all:> {}", all);
+        final List<EventDto> eventDtos = new ArrayList<>();
 
-        return null; //todo change it
+        eventMapper.convert(userCurrentEvents, eventDtos);
 
+        return eventDtos;
     }
 
     /**
@@ -168,7 +165,7 @@ public class EventServiceImpl implements EventService {
         final long eventDuration = DateUtils.getDateRangeDuration(fromDate, toDate);
 
         Assert.isTrue(eventDuration >= properties.getMinimumReservationValue()
-                && eventDuration <= properties.getMaximumReservationValue(),
+                        && eventDuration <= properties.getMaximumReservationValue(),
                 String.format("Event duration is not in given range: %s", properties.getViewableDurationString()));
 
         Assert.isTrue(fromDate.isBefore(toDate), "Start date must be before the end date.");
@@ -212,7 +209,7 @@ public class EventServiceImpl implements EventService {
      * @param time time
      * @return prepared specification
      */
-    private Specification<EventDtoProjection> prepareEventSpecificationToFindEventsByUserAndTime(User user, ZonedDateTime time) {
+    private Specification<Event> prepareEventSpecificationToFindEventsByUserAndTime(User user, ZonedDateTime time) {
 
         return (root, criteriaQuery, criteriaBuilder) -> {
             final Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
@@ -221,16 +218,22 @@ public class EventServiceImpl implements EventService {
                     criteriaBuilder.isNotNull(root.get("deleted").as(Boolean.class)),
                     criteriaBuilder.isTrue(root.get("deleted").as(Boolean.class)));
 
+
+            final Predicate between = criteriaBuilder.between(
+                    criteriaBuilder.literal(DateUtils.truncateSecondsToStart(time)),
+                    root.get("fromDate"),
+                    root.get("toDate"));
+
             final List<Predicate> datePredicates = new ArrayList<>();
-            final Predicate fromDatePredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("fromDate"), time);
-            final Predicate toDatePredicate = criteriaBuilder.lessThanOrEqualTo(root.get("toDate"), time);
+            final Predicate fromDatePredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("fromDate"), DateUtils.truncateSecondsToStart(time));
+            final Predicate toDatePredicate = criteriaBuilder.lessThanOrEqualTo(root.get("toDate"), DateUtils.truncateSecondsToEnd(time));
             datePredicates.add(fromDatePredicate);
             datePredicates.add(toDatePredicate);
 
             return criteriaBuilder.and(
                     userPredicate,
                     criteriaBuilder.not(deletedPredicate),
-                    criteriaBuilder.or(datePredicates.toArray(new Predicate[0])));
+                    between);
         };
     }
 }

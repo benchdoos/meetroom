@@ -2,7 +2,6 @@ package com.github.benchdoos.meetroom.repository;
 
 import com.github.benchdoos.meetroom.domain.Event;
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
-import com.github.benchdoos.meetroom.domain.projections.EventDtoProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -25,6 +24,4 @@ public interface EventRepository extends JpaRepository<Event, UUID>, JpaSpecific
     Page<Event> findByMeetingRoom(MeetingRoom meetingRoom, Pageable pageable);
 
     List<Event> findAll(@Nullable Specification<Event> prepareSpecification);
-
-    EventDtoProjection findFirstBy(Specification<EventDtoProjection> prepared);
 }

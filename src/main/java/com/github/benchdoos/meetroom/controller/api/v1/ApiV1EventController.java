@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -20,14 +21,14 @@ public class ApiV1EventController {
     private final EventService eventService;
 
     /**
-     * Get current event for user by id.
+     * Get current events for user by id.
      *
      * @param userId user id
-     * @return event if there are any current events, or null otherwise
+     * @return events if there are any current events, or empty list
      */
     @PreAuthorize("hasAnyAuthority('EVENT:USE')")
     @GetMapping("/current/{userId}")
-    public EventDto getCurrentEvent(@PathVariable("userId") UUID userId) {
-        return eventService.getCurrentEventForUser(userId);
+    public List<EventDto> getCurrentEvent(@PathVariable("userId") UUID userId) {
+        return eventService.getCurrentEventsForUser(userId);
     }
 }
