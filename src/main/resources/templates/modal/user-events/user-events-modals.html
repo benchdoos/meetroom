@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="fr-currentUserEvents">
+    <div style="text-align: center">
+        <span class="h2">Current user events</span>
+        <div id="current-events-content">
+            <span class="text-muted" id="no-current-events-message">No current events</span>
+            <div id="current-events-block">
+                <!--//todo create table here-->
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var contextRoot = [[@{/}]];
+        var user = [[${user}]];
+        /*]]>*/
+
+        $(document).ready(function () {
+            getCurrentUserEvents(contextRoot, user.id, 'no-current-events-message', 'current-events-block');
+        })
+    </script>
+</div>
+</body>
+</html>
