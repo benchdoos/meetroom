@@ -26,8 +26,8 @@
         </button>
         <div style="width: 100%; padding-left: 10px; display: inline-flex">
             <h2>Account information</h2>
-            <a class="btn btn-primary h2 disabled"
-               th:href="@{/user/{username}/events(username = ${user.getUsername()})}"
+            <a class="btn btn-primary h2"
+               th:href="@{/user/events/{username}(username = ${user.getUsername()})}"
                style="margin-left: 10px;"
                data-toggle="tooltip"
                data-placement="bottom"

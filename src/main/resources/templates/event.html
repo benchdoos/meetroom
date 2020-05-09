@@ -60,7 +60,7 @@
     <p class="h2">Organizer:</p>
     <a class="h4"
        th:text="|${event.creator.firstName} ${event.creator.lastName}|"
-       th:href="@{/user(username=${event.creator.username})}"></a>
+       th:href="@{/user/{username}(username = ${event.creator.username})}"></a>
 
 </div>
 

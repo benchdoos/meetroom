@@ -45,3 +45,12 @@
 .table-striped tbody .timeRow {
     line-height: 15px
 }
+
+.header-link {
+    color: white;
+}
+
+.header-link:hover{
+    color: white;
+    text-decoration: none;
+}

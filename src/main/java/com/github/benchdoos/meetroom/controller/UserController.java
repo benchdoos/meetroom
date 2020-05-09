@@ -4,6 +4,7 @@ import com.github.benchdoos.meetroom.domain.Avatar;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.service.AvatarService;
 import com.github.benchdoos.meetroom.service.PasswordResetRequestService;
@@ -12,12 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -34,22 +33,36 @@ public class UserController {
 
     @PreAuthorize("hasAnyAuthority('USER:USE')")
     @GetMapping
-    public String getUserPage(@RequestParam(value = "username", required = false) String username,
-                              Model model,
-                              Principal principal) {
+    public String getUserPage(Principal principal, Model model) {
 
-        final UserExtendedInfoDto userDto;
-
-        if (StringUtils.hasText(username)) {
-            userDto = userService.getUserExtendedInfoDtoByUsername(username);
-        } else {
-            userDto = userService.getUserExtendedInfoDtoByUsername(principal.getName());
-        }
+        final UserExtendedInfoDto userDto = userService.getUserExtendedInfoDtoByUsername(principal.getName());
         model.addAttribute("user", userDto);
-        if (userDto.getAvatar() == null) {
-            appendDefaultUserAvatar(userDto);
-        }
         return "user";
+    }
+
+    @PreAuthorize("hasAnyAuthority('USER:USE')")
+    @GetMapping("/{username}")
+    public String getUserPageByUsername(@PathVariable("username") String username, Model model) {
+
+        final UserExtendedInfoDto userDto = userService.getUserExtendedInfoDtoByUsername(username);
+
+        model.addAttribute("user", userDto);
+        return "user";
+    }
+
+    /**
+     * User events page
+     *
+     * @param username user username
+     * @param model model
+     * @return user events page
+     */
+    @PreAuthorize("hasAnyAuthority('USER:USE')")
+    @GetMapping("/events/{username}")
+    public String getUserEventsPage(@PathVariable("username") String username, Model model) {
+        final UserPublicInfoDto userDto = userService.getUserPublicInfoDtoByUsername(username);
+        model.addAttribute("user", userDto);
+        return "user-events";
     }
 
     @PreAuthorize("isAnonymous()")
