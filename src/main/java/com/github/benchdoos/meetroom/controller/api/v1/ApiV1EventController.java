@@ -42,7 +42,7 @@ public class ApiV1EventController {
     @PreAuthorize("hasAnyAuthority('EVENT:USE')")
     @GetMapping("/{id}")
     public EventDto getDtoById(@PathVariable UUID id) {
-        return eventService.getEventDtoById(id);
+        return eventService.getEventById(id);
     }
 
     /**

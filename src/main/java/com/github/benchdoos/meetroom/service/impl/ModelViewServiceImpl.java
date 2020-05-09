@@ -5,6 +5,7 @@ import com.github.benchdoos.meetroom.domain.Event;
 import com.github.benchdoos.meetroom.domain.MeetingRoom;
 import com.github.benchdoos.meetroom.domain.dto.CreateEventDto;
 import com.github.benchdoos.meetroom.domain.dto.EventDto;
+import com.github.benchdoos.meetroom.domain.dto.MeetingRoomDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateEventDto;
 import com.github.benchdoos.meetroom.service.EventService;
 import com.github.benchdoos.meetroom.service.MeetingRoomService;
@@ -68,7 +69,7 @@ public class ModelViewServiceImpl implements ModelViewService {
 
     @Override
     public String getEventInfoById(UUID id, Model model) {
-        final EventDto eventDto = eventService.getEventDtoById(id);
+        final EventDto eventDto = eventService.getEventById(id);
 
         return getEventPage(eventDto, model);
     }
@@ -102,9 +103,9 @@ public class ModelViewServiceImpl implements ModelViewService {
 
     @Override
     public String deleteEvent(UUID id, Model model, Principal principal) {
-        final Event event = eventService.getEventById(id);
+        final EventDto event = eventService.getEventById(id);
         @NotNull final ZonedDateTime fromDate = event.getFromDate();
-        @NotNull final MeetingRoom meetingRoom = event.getMeetingRoom();
+        @NotNull final MeetingRoomDto meetingRoom = event.getMeetingRoom();
         final boolean deleted = eventService.deleteEvent(id, principal);
         log.info("Event with id: {} is deleted: {}", id, deleted);
 

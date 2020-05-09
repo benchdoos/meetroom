@@ -42,15 +42,7 @@ public interface EventService {
      * @param id of event
      * @return info about event
      */
-    EventDto getEventDtoById(UUID id);
-
-    /**
-     * Get event by id
-     *
-     * @param id id
-     * @return event
-     */
-    Event getEventById(UUID id);
+    EventDto getEventById(UUID id);
 
     /**
      * Create event
