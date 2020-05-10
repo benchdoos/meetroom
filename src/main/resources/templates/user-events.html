@@ -38,6 +38,19 @@
     <div>
         <div th:include="modal/user-events/user-events-modals :: fr-currentUserEvents"></div>
     </div>
+    <div style="text-align: center">
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-primary">
+                <input type="radio" name="options" id="option1" autocomplete="off" checked> Future events
+            </label>
+            <label class="btn btn-secondary active">
+                <input type="radio" name="options" id="option2" autocomplete="off"> Previous events
+            </label>
+        </div>
+    </div>
+    <div>
+        <div th:include="modal/user-events/user-events-modals :: fr-pastUserEvents"></div>
+    </div>
 </div>
 
 <!-- todo use webjars-->

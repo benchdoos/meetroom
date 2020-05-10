@@ -4,7 +4,7 @@
 <div th:fragment="fr-currentUserEvents">
     <div style="text-align: center">
         <span class="h2">Current user events</span>
-        <div id="current-events-content">
+        <div id="current-events-content" style="padding-bottom: 10px">
             <span class="text-muted" id="no-current-events-message">No current events</span>
             <div id="current-events-block" style="display: none">
                 <table id="current-user-events-table" class="table table-striped" >
@@ -34,6 +34,10 @@
             getCurrentUserEvents(contextRoot, user.id, 'no-current-events-message', 'current-events-block', 'current-user-events-table');
         })
     </script>
+</div>
+
+<div th:fragment="fr-pastUserEvents">
+
 </div>
 </body>
 </html>
