@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Event info</title>
     <link rel="shortcut icon" href="/favicon.ico" th:href="@{/favicon.ico}" type="image/x-icon">
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.4.1-1/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.12.0/css/all.css}">
     <link href="/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet">
     <link href="/css/common.css" th:href="@{/css/common.css}" rel="stylesheet">
@@ -18,29 +18,44 @@
      th:if="!meetingRoomAvailable ? hidden">
     Meeting room is unavailable
 </div>
-<div class="header" style="background-color: cornflowerblue">
-    <div class="h2" style="color: white; display: flex;">
+<nav class="navbar navbar-dark bg-primary">
+    <div class="header">
         <div class="w-100">
-            <a class="btn btn-info"
-               th:href="@{/meetroom/{roomId}(roomId = ${event.meetingRoom.id}, day=${#temporals.format(event.fromDate,'dd.MM.yyyy')})}">
-                <i class="fas fa-chevron-left"></i></a>
-            <span class="h3">Event info</span>
+            <a class="btn btn-dark h2 btn-dark"
+               th:href="@{/}"
+               style="margin-right: 10px"
+               data-toggle="tooltip"
+               data-placement="bottom"
+               title="Main page"><i class="fas fa-home"></i></a>
+            <button class="btn btn-light h2" onclick="goBack()"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Go back">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <a class="btn btn-info h2"
+               th:href="@{/meetroom/{roomId}(roomId = ${event.meetingRoom.id}, day=${#temporals.format(event.fromDate,'dd.MM.yyyy')})}"
+               data-toggle="tooltip"
+               data-placement="bottom"
+               title="Go to event's week">
+                <i class="fas fa-table"></i>
+            </a>
+            <span class="h2 noselect">Event info</span>
         </div>
-        <div style="display: flex" sec:authorize="isAuthenticated()"
+        <div class="h2" style="display: flex" sec:authorize="isAuthenticated()"
              th:if="((${event.creator.username} == ${#authentication.getPrincipal().getUsername()})
                     or ${#authorization.expression('hasAnyAuthority(''EVENT:EDIT:OTHER'')')})
                     and ${event.deleted} != true">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editEventModal">
-                Edit
+            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#editEventModal">
+                Update
             </button>
-            &nbsp;
-            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteEventModal">
+            <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteEventModal">
                 Delete
             </button>
-            <div th:include="modal/modal-login :: fr-login"></div>
         </div>
+        <div th:include="modal/modal-login :: fr-login"></div>
     </div>
-</div>
+</nav>
 
 <div>
     <div class="w-100" style="text-align: center">
@@ -66,8 +81,13 @@
 <div th:include="modal/ui-modals :: modal-edit-event"></div>
 <div th:include="modal/ui-modals :: modal-delete-event"></div>
 
+<!-- todo use webjars-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+        integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+        crossorigin="anonymous"></script>
 <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
-<script th:src="@{/webjars/bootstrap/4.1.3/js/bootstrap.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.4.1-1/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
 
 </body>
 </html>
