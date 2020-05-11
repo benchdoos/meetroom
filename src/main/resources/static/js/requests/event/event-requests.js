@@ -20,11 +20,11 @@ function getCurrentUserEvents(context, userId, noEventsAvailableId, availableEve
                 $("#" + noEventsAvailableId).hide();
                 $("#" + availableEventsId).show();
 
-                let table = document.getElementById(targetTable);
+                let table = document.getElementById(targetTable).getElementsByTagName('tbody')[0];
 
                 for (let i = 0; i <= output.length; i++) {
                     let event = output[i];
-                    appendEventToTable(context, event, table, i + 1);
+                    appendEventToTable(context, event, table, i);
                 }
             } else {
                 $("#" + availableEventsId).hide();
@@ -50,16 +50,18 @@ function appendEventToTable(context, event, targetTable, rowIndex) {
 
     let from = new Date(event.fromDate);
     let to = new Date(event.toDate);
-    row.insertCell(0).innerHTML = "<a href=\"" + context + "event/" + event.id + "\">" + from.toLocaleString()
-        + " - " + to.toLocaleString() + "</a>";
+    row.insertCell(0).outerHTML = "<th><a href=\"" + context + "event/" + event.id + "\">" + from.toLocaleString()
+        + " - " + to.toLocaleString() + "</a></th>";
 
-    row.insertCell(1).innerText = event.title;
+    row.insertCell(1).outerHTML = "<th>" + event.title + "</th>";
 
     let user = event.creator;
-    //todo change it to thymeleaf fragment
-    row.insertCell(2).innerHTML = "<span>\n" +
-        "    <a href=\"" + context + "user/" + user.username + "\" data-toggle=\"tooltip\" data-placement=\"top\"" +
-        " title=\"\" data-original-title=\"" + user.firstName + " " + user.lastName + "\">" + user.firstName + " " + user.lastName + "</a>\n" +
-        "</span>";
-    row.insertCell(3).innerHTML = "<a href=\"" + context + "meetroom/" + event.meetingRoom.id + "\" class=\"card-link\">" + event.meetingRoom.name + "</a>";
+
+    row.insertCell(2).outerHTML = "<th>" +
+        "<a href=\"" + context + "user/" + user.username + "\">"
+        + user.firstName + " " + user.lastName + "</a>" +
+        "</th>";
+    row.insertCell(3).outerHTML = "<th>" +
+        "<a href=\"" + context + "meetroom/" + event.meetingRoom.id + "\"" +
+        " class=\"card-link\">" + event.meetingRoom.name + "</a></th>";
 }

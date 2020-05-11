@@ -8,6 +8,7 @@ import com.github.benchdoos.meetroom.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -104,7 +105,7 @@ public class ApiV1EventController {
     @PreAuthorize("hasAnyAuthority('EVENT:USE')")
     @GetMapping("/future/{userId}")
     public Page<EventDto> getFutureEvents(@PathVariable("userId") UUID userId,
-                                          @PageableDefault Pageable pageable) {
+                                          @PageableDefault(sort = "fromDate", direction = Sort.Direction.ASC) Pageable pageable) {
         return eventService.getFutureEventsForUser(userId, pageable);
     }
 
@@ -117,7 +118,7 @@ public class ApiV1EventController {
     @PreAuthorize("hasAnyAuthority('EVENT:USE')")
     @GetMapping("/previous/{userId}")
     public Page<EventDto> getPreviousEvents(@PathVariable("userId") UUID userId,
-                                          @PageableDefault Pageable pageable) {
+                                          @PageableDefault(sort = "fromDate", direction = Sort.Direction.ASC) Pageable pageable) {
         return eventService.getPreviousEventsForUser(userId, pageable);
     }
 }
