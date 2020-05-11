@@ -5,6 +5,7 @@ import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
+import com.github.benchdoos.meetroom.domain.enumirations.UserEventTabType;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.service.AvatarService;
 import com.github.benchdoos.meetroom.service.PasswordResetRequestService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -59,7 +61,9 @@ public class UserController {
      */
     @PreAuthorize("hasAnyAuthority('USER:USE')")
     @GetMapping("/events/{username}")
-    public String getUserEventsPage(@PathVariable("username") String username, Model model) {
+    public String getUserEventsPage(@PathVariable("username") String username,
+                                    @RequestParam(value = "tab", required = false, defaultValue = "NEXT") UserEventTabType tab,
+                                    Model model) {
         final UserPublicInfoDto userDto = userService.getUserPublicInfoDtoByUsername(username);
         model.addAttribute("user", userDto);
         return "user-events";

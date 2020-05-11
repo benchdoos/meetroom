@@ -38,10 +38,10 @@
     <div>
         <div th:include="modal/user-events/user-events-modals :: fr-currentUserEvents"></div>
     </div>
-    <div style="text-align: center">
+    <div style="text-align: center" id="event-type-selector">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
             <label class="btn btn-primary">
-                <input type="radio" name="options" id="option1" autocomplete="off" checked> Future events
+                <input type="radio" name="options" id="option1" autocomplete="off" checked> Next events
             </label>
             <label class="btn btn-secondary active">
                 <input type="radio" name="options" id="option2" autocomplete="off"> Previous events
