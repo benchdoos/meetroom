@@ -7,22 +7,30 @@
     user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
-.verticalHr{
+.login-block {
+    margin-left: 10px;
+    margin-right: 10px;
+}
 
-    border:         none;
-    border-left:    1px solid hsla(200, 10%, 50%,100);
-    width:          1px;
+.verticalHr {
+
+    border: none;
+    border-left: 1px solid hsla(200, 10%, 50%, 100);
+    width: 1px;
 }
 
 .rounded-top-left {
     border-top-left-radius: 3px;
 }
+
 .rounded-top-right {
     border-top-right-radius: 3px;
 }
+
 .rounded-bottom-left {
     border-bottom-left-radius: 3px;
 }
+
 .rounded-bottom-right {
     border-bottom-right-radius: 3px;
 }
@@ -37,4 +45,27 @@
     color: white;
     padding: 5px 10px;
     font-size: 20px;
+}
+
+/**
+ * Makes time row more compact
+ */
+.table-striped tbody .timeRow {
+    line-height: 5px;
+}
+
+/**
+ * Makes time row more compact
+ */
+.eventCell {
+    padding: 5px !important;
+}
+
+.header-link {
+    color: white;
+}
+
+.header-link:hover{
+    color: white;
+    text-decoration: none;
 }

@@ -8,6 +8,8 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+
 /**
  * Mapper for {@link Event}
  */
@@ -18,6 +20,7 @@ public interface EventMapper {
 
     @Mapping(source = "user", target = "creator") //for example
     @Mapping(target = "creator.avatar", ignore = true)
-    void convert(Event event, @MappingTarget EventDto eventDto);
+    EventDto toEventDto(Event event);
 
+    void convert(List<Event> userCurrentEvents, @MappingTarget List<EventDto> eventDtos);
 }

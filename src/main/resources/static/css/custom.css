@@ -12,16 +12,8 @@
     margin: 10px;
 }
 
-.login-block {
-    align-content: end;
-}
-
 .content {
     grid-area: content;
-}
-
-.pagination {
-    display: inline-flex;
 }
 
 .top-date {

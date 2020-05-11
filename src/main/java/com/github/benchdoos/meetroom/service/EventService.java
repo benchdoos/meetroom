@@ -8,6 +8,7 @@ import com.github.benchdoos.meetroom.domain.dto.UpdateEventDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.security.Principal;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -41,15 +42,7 @@ public interface EventService {
      * @param id of event
      * @return info about event
      */
-    EventDto getEventDtoById(UUID id);
-
-    /**
-     * Get event by id
-     *
-     * @param id id
-     * @return event
-     */
-    Event getEventById(UUID id);
+    EventDto getEventById(UUID id);
 
     /**
      * Create event
@@ -57,7 +50,7 @@ public interface EventService {
      * @param createEventDto DTO
      * @return created event
      */
-    Event createEvent(CreateEventDto createEventDto);
+    EventDto createEvent(CreateEventDto createEventDto);
 
     /**
      * Update event
@@ -66,13 +59,40 @@ public interface EventService {
      * @param updateEventDto DTO with data to update
      * @return updated event
      */
-    Event updateEvent(UUID id, UpdateEventDto updateEventDto);
+    EventDto updateEvent(UUID id, UpdateEventDto updateEventDto);
 
     /**
      * Marks event as deleted
      *
      * @param id of event
+     * @param principal
      * @return boolean, {@code true} is successfully deleted
      */
-    boolean deleteEvent(UUID id);
+    boolean deleteEvent(UUID id, Principal principal);
+
+    /**
+     * Get current events for user
+     *
+     * @param userId user id
+     * @return events
+     */
+    List<EventDto> getCurrentEventsForUser(UUID userId);
+
+    /**
+     * Get future user's events
+     *
+     * @param userId id of user
+     * @param pageable pageable
+     * @return events if there are any future events, or empty list
+     */
+    Page<EventDto> getFutureEventsForUser(UUID userId, Pageable pageable);
+
+    /**
+     * Get passed (previous) user's events
+     *
+     * @param userId id of user
+     * @param pageable pageable
+     * @return events
+     */
+    Page<EventDto> getPreviousEventsForUser(UUID userId, Pageable pageable);
 }

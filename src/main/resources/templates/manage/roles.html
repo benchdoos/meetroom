@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <title>Manage user roles</title>
-    <link rel="shortcut icon"  href="/favicon.ico" th:href="@{/favicon.ico}" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" th:href="@{/favicon.ico}" type="image/x-icon">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
@@ -32,9 +32,7 @@
     <div class="search">
         <div th:include="modal/modal-search :: fr-search(@{/manage/roles/search}, 'Search role')"></div>
     </div>
-    <div class="login-block" style="margin-left: 10px;">
-        <div th:include="modal/modal-login :: fr-login"></div>
-    </div>
+    <div th:include="modal/modal-login :: fr-login"></div>
 </div>
 
 <div class="content" sec:authorize="hasAnyAuthority('MANAGE_ROLES:USE')" style="overflow-y: auto;">
@@ -113,7 +111,7 @@
 <script th:src="@{/js/common.js}"></script>
 
 <script>
-    $(document).on('click', '.dc-color-input-switcher', function() {
+    $(document).on('click', '.dc-color-input-switcher', function () {
         var dcInputColor = $(this).parent().parent().prev();
         if (dcInputColor.attr('type') === 'text') {
             dcInputColor.attr('type', 'color');
@@ -122,7 +120,7 @@
         }
     });
 
-    $(document).on('click', '.dc-color-input-clearer', function() {
+    $(document).on('click', '.dc-color-input-clearer', function () {
         var dcInputColor2 = $(this).parent().parent().next();
         if (dcInputColor2.attr('type') === 'color') {
             dcInputColor2.attr('type', 'text');
