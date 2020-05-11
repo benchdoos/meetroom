@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="|${user.firstName} ${user.lastName}&#39;s events|"></title>
+    <link rel="shortcut icon" href="/favicon.ico" th:href="@{/favicon.ico}" type="image/x-icon">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.12.0/css/all.css}">
     <link href="/css/common.css" th:href="@{/css/common.css}" rel="stylesheet">
+    <link href="/css/pagination.css" th:href="@{/css/pagination.css}" rel="stylesheet">
 </head>
 <body>
 <div>
@@ -27,7 +29,8 @@
                 <span class="h2" style="display: inline-flex;">
                     <div th:style="|height: 38px; width: 38px; background-image: url(${user.getAvatar().getSrc()}); background-size: contain;|"></div>
                     <a th:href="@{/user/{username}(username = ${user.getUsername()})}" class="header-link">
-                        <span th:text="|${user.getFirstName()} ${user.getLastName()}&#39;s events|" style="padding-left: 10px"></span>
+                        <span th:text="|${user.getFirstName()} ${user.getLastName()}&#39;s events|"
+                              style="padding-left: 10px"></span>
                     </a>
                 </span>
             </div>
@@ -38,19 +41,28 @@
     <div>
         <div th:include="modal/user-events/user-events-modals :: fr-currentUserEvents"></div>
     </div>
-    <div style="text-align: center" id="event-type-selector">
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-primary">
-                <input type="radio" name="options" id="option1" autocomplete="off" checked> Next events
-            </label>
-            <label class="btn btn-secondary active">
-                <input type="radio" name="options" id="option2" autocomplete="off"> Previous events
-            </label>
+    <div style="text-align: center; padding-bottom: 10px" id="event-type-selector">
+        <div class="btn-group" style="color: white">
+            <button class="btn" th:classappend="${(#request.getParameter('tab') != 'PREVIOUS')} ? 'btn-primary' : 'btn-secondary'"
+                    th:onclick="reloadPage([[@{/user/events/{username}(username = ${user.getUsername()}, tab = 'NEXT')}]])">
+                Next events
+            </button>
+            <button class="btn" th:classappend="${(#request.getParameter('tab') != 'PREVIOUS')} ? 'btn-secondary' : 'btn-primary'"
+                    th:onclick="reloadPage([[@{/user/events/{username}(username = ${user.getUsername()}, tab = 'PREVIOUS')}]])">
+                Previous events
+            </button>
         </div>
     </div>
     <div>
-        <div th:include="modal/user-events/user-events-modals :: fr-pastUserEvents"></div>
+        <div th:include="modal/user-events/user-events-modals :: fr-userEvents"></div>
     </div>
+
+    <script>
+        function reloadPage(pageLink) {
+            console.log("reloading to page:", pageLink);
+            window.location.href = pageLink;
+        }
+    </script>
 </div>
 
 <!-- todo use webjars-->
