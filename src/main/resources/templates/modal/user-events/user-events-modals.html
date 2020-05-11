@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="fr-currentUserEvents">
+    <div style="text-align: center">
+        <span class="h2">Current user events</span>
+        <div id="current-events-content" style="padding-bottom: 10px">
+            <span class="text-muted" id="no-current-events-message">No current events</span>
+            <div id="current-events-block" style="display: none">
+                <table id="current-user-events-table" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Time spending</th>
+                        <th>Title</th>
+                        <th>Owner</th>
+                        <th>Location</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!--will be replaced-->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var contextRoot = [[@{/}]];
+        var user = [[${user}]];
+        /*]]>*/
+
+        $(document).ready(function () {
+            getCurrentUserEvents(contextRoot, user.id, 'no-current-events-message', 'current-events-block', 'current-user-events-table');
+        })
+    </script>
+</div>
+
+<div th:fragment="fr-userEvents">
+    <div style="text-align: center">
+        <div id="user-events-content" style="padding-bottom: 10px">
+            <span class="text-muted" id="no-user-events-message"
+                  th:style="${(events.getTotalElements()>0) ? 'display:none' : ''}">No events</span>
+
+            <div id="user-events-block" th:style="${(events.getTotalElements()>0) ? '' : 'display:none'}">
+                <table id="user-events-table" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Time spending</th>
+                        <th>Title</th>
+                        <th>Owner</th>
+                        <th>Location</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="event : ${events.content}">
+                        <th>
+                            <a th:href="@{/event/{eventId}(eventId = ${event.id})}"
+                               style="display: block">
+                                <span th:text="|
+                                ${#temporals.format(event.fromDate.toLocalDateTime(), 'dd.MM.yyyy, HH:mm')}
+                                -
+                                ${#temporals.format(event.toDate.toLocalDateTime(), 'dd.MM.yyyy, HH:mm')}|">
+                                </span>
+                            </a>
+                        </th>
+                        <th>
+                            <span th:text="${event.title}"></span>
+                        </th>
+                        <th>
+                            <a th:with="user = ${event.creator}"
+                               th:href="@{/user/{username}(username = ${user.username})}"
+                               th:text="|${user.firstName} ${user.lastName}|"
+                               style="display: block"></a>
+                        </th>
+                        <th>
+                            <a th:href="@{/meetroom/{roomId}(roomId = ${event.meetingRoom.id})}"
+                               th:text="${event.meetingRoom.name}"
+                               style="display: block"></a>
+                        </th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div th:if="${events.getTotalElements() > 0}"
+             th:with="page=${events}"
+             th:include="modal/modal-pagination :: fr-pagination"></div>
+    </div>
+
+</div>
+</body>
+</html>

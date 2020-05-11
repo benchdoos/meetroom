@@ -3,7 +3,7 @@
 >
 <head>
     <title>Meeting users</title>
-    <link rel="shortcut icon"  href="/favicon.ico" th:href="@{/favicon.ico}" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" th:href="@{/favicon.ico}" type="image/x-icon">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
@@ -38,9 +38,7 @@
     <div class="search">
         <div th:include="modal/modal-search :: fr-search(@{/manage/users/search}, 'Search user')"></div>
     </div>
-    <div class="login-block" style="margin-left: 10px;">
-        <div th:include="modal/modal-login :: fr-login"></div>
-    </div>
+    <div th:include="modal/modal-login :: fr-login"></div>
 </div>
 
 <div class="content" sec:authorize="hasAnyAuthority('MANAGE_USERS:USE')" style="overflow-y: auto;">
@@ -77,7 +75,7 @@
                         <div th:include="modal/modal-role :: fr-role-label"></div>
                     </span>
                 <!--todo: iterate role names like: ROLE_ADMIN ROLE_USER ...-->
-                <a th:href="@{/user(username=${user.username})}">
+                <a th:href="@{/user/{username}(username = ${user.username})}">
                     <span th:if="${#lists.size(user.roles)>5}"
                           class="badge badge-info" data-toggle="tooltip" data-placement="top"
                           th:title="|Total roles: ${#lists.size(user.roles)}|">...</span>

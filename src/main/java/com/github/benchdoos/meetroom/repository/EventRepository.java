@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.time.ZonedDateTime;
@@ -24,4 +25,7 @@ public interface EventRepository extends JpaRepository<Event, UUID>, JpaSpecific
     Page<Event> findByMeetingRoom(MeetingRoom meetingRoom, Pageable pageable);
 
     List<Event> findAll(@Nullable Specification<Event> prepareSpecification);
+
+    Page<Event> findAll(@Nullable Specification<Event> prepareSpecification, @NonNull Pageable pageable);
+
 }

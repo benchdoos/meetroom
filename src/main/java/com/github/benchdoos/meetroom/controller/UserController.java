@@ -1,18 +1,23 @@
 package com.github.benchdoos.meetroom.controller;
 
 import com.github.benchdoos.meetroom.domain.Avatar;
+import com.github.benchdoos.meetroom.domain.dto.EventDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
+import com.github.benchdoos.meetroom.domain.enumirations.UserEventTabType;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.service.AvatarService;
+import com.github.benchdoos.meetroom.service.EventService;
 import com.github.benchdoos.meetroom.service.PasswordResetRequestService;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,28 +33,70 @@ import java.util.UUID;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+    private final EventService eventService;
     private final UserMapper userMapper;
     private final AvatarService avatarService;
     private final PasswordResetRequestService passwordResetRequestService;
 
+    /**
+     * Get user page by principal
+     *
+     * @param principal principal
+     * @param model model
+     * @return user page name
+     */
     @PreAuthorize("hasAnyAuthority('USER:USE')")
     @GetMapping
-    public String getUserPage(@RequestParam(value = "username", required = false) String username,
-                              Model model,
-                              Principal principal) {
+    public String getUserPage(Principal principal, Model model) {
 
-        final UserExtendedInfoDto userDto;
-
-        if (StringUtils.hasText(username)) {
-            userDto = userService.getUserExtendedInfoDtoByUsername(username);
-        } else {
-            userDto = userService.getUserExtendedInfoDtoByUsername(principal.getName());
-        }
+        final UserExtendedInfoDto userDto = userService.getUserExtendedInfoDtoByUsername(principal.getName());
         model.addAttribute("user", userDto);
-        if (userDto.getAvatar() == null) {
-            appendDefaultUserAvatar(userDto);
-        }
         return "user";
+    }
+
+    /**
+     * Get user page by username
+     *
+     * @param username username of user
+     * @param model model
+     * @return user page name by given username
+     */
+    @PreAuthorize("hasAnyAuthority('USER:USE')")
+    @GetMapping("/{username}")
+    public String getUserPageByUsername(@PathVariable("username") String username, Model model) {
+
+        final UserExtendedInfoDto userDto = userService.getUserExtendedInfoDtoByUsername(username);
+
+        model.addAttribute("user", userDto);
+        return "user";
+    }
+
+    /**
+     * User events page
+     *
+     * @param username user username
+     * @param model model
+     * @return user events page
+     */
+    @PreAuthorize("hasAnyAuthority('USER:USE')")
+    @GetMapping("/events/{username}")
+    public String getUserEventsPage(@PathVariable("username") String username,
+                                    @RequestParam(value = "tab", required = false, defaultValue = "NEXT") UserEventTabType tab,
+                                    Pageable pageable,
+                                    Model model) {
+        final UserPublicInfoDto userDto = userService.getUserPublicInfoDtoByUsername(username);
+        model.addAttribute("user", userDto);
+
+        final Page<EventDto> eventsForUser;
+
+        if (tab.equals(UserEventTabType.PREVIOUS)) {
+            eventsForUser = eventService.getPreviousEventsForUser(userDto.getId(), pageable);
+        } else {
+            eventsForUser = eventService.getFutureEventsForUser(userDto.getId(), pageable);
+        }
+
+        model.addAttribute("events", eventsForUser);
+        return "user-events";
     }
 
     @PreAuthorize("isAnonymous()")
