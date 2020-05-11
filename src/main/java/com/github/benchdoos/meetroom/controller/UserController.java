@@ -38,6 +38,13 @@ public class UserController {
     private final AvatarService avatarService;
     private final PasswordResetRequestService passwordResetRequestService;
 
+    /**
+     * Get user page by principal
+     *
+     * @param principal principal
+     * @param model model
+     * @return user page name
+     */
     @PreAuthorize("hasAnyAuthority('USER:USE')")
     @GetMapping
     public String getUserPage(Principal principal, Model model) {
@@ -47,6 +54,13 @@ public class UserController {
         return "user";
     }
 
+    /**
+     * Get user page by username
+     *
+     * @param username username of user
+     * @param model model
+     * @return user page name by given username
+     */
     @PreAuthorize("hasAnyAuthority('USER:USE')")
     @GetMapping("/{username}")
     public String getUserPageByUsername(@PathVariable("username") String username, Model model) {
