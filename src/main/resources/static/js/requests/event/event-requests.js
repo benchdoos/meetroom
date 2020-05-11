@@ -1,4 +1,19 @@
 /**
+ * Date time formatter already set to furmat date in format:
+ * dd.MM.yyyy, HH:mm
+ * @type {Intl.DateTimeFormat}
+ */
+const dtf = new Intl.DateTimeFormat('ru', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hc: 'h24',
+        hour: '2-digit',
+        minute: '2-digit'
+    }
+);
+
+/**
  * Get current user's events
  *
  * @param context application context
@@ -50,8 +65,14 @@ function appendEventToTable(context, event, targetTable, rowIndex) {
 
     let from = new Date(event.fromDate);
     let to = new Date(event.toDate);
-    row.insertCell(0).outerHTML = "<th><a href=\"" + context + "event/" + event.id + "\">" + from.toLocaleString()
-        + " - " + to.toLocaleString() + "</a></th>";
+
+
+    let fromFormatted = dtf.format(from);
+    let toFormatted = dtf.format(to);
+
+    row.insertCell(0).outerHTML = "<th><a href=\"" + context + "event/" + event.id + "\">"
+        + fromFormatted + " - " + toFormatted
+        + "</a></th>";
 
     row.insertCell(1).outerHTML = "<th>" + event.title + "</th>";
 
@@ -59,9 +80,10 @@ function appendEventToTable(context, event, targetTable, rowIndex) {
 
     row.insertCell(2).outerHTML = "<th>" +
         "<a href=\"" + context + "user/" + user.username + "\">"
-        + user.firstName + " " + user.lastName + "</a>" +
-        "</th>";
+        + user.firstName + " " + user.lastName
+        + "</a></th>";
     row.insertCell(3).outerHTML = "<th>" +
-        "<a href=\"" + context + "meetroom/" + event.meetingRoom.id + "\"" +
-        " class=\"card-link\">" + event.meetingRoom.name + "</a></th>";
+        "<a href=\"" + context + "meetroom/" + event.meetingRoom.id + "\" class=\"card-link\">"
+        + event.meetingRoom.name
+        + "</a></th>";
 }
