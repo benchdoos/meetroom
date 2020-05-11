@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Management</title>
-    <link rel="shortcut icon"  href="/favicon.ico" th:href="@{/favicon.ico}" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" th:href="@{/favicon.ico}" type="image/x-icon">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.12.0/css/all.css}">
@@ -16,9 +16,7 @@
         &nbsp;
         <span class="h2">Management</span>
     </div>
-    <div class="login-block">
-        <div th:include="modal/modal-login :: fr-login"></div>
-    </div>
+    <div th:include="modal/modal-login :: fr-login"></div>
 </div>
 
 <div class="card-list">

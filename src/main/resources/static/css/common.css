@@ -7,6 +7,11 @@
     user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
+.login-block {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 .verticalHr {
 
     border: none;
@@ -42,8 +47,18 @@
     font-size: 20px;
 }
 
+/**
+ * Makes time row more compact
+ */
 .table-striped tbody .timeRow {
-    line-height: 15px
+    line-height: 5px;
+}
+
+/**
+ * Makes time row more compact
+ */
+.eventCell {
+    padding: 5px !important;
 }
 
 .header-link {

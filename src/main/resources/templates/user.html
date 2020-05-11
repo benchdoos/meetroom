@@ -51,8 +51,7 @@
                 <button class="btn btn-danger" type="submit" value="Sign Out">Sign Out</button>
             </form>
 
-            <div th:if="${user.username} != ${#authentication.getPrincipal().getUsername()}"
-                 class="login-block">
+            <div th:if="${user.username} != ${#authentication.getPrincipal().getUsername()}">
                 <div th:include="modal/modal-login :: fr-login"></div>
             </div>
         </div>
