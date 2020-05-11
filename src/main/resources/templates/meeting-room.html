@@ -15,7 +15,6 @@
         <div style="width: 100%">
             <a class="btn btn-dark h2 btn-dark"
                th:href="@{/}"
-               style="margin-right: 10px"
                data-toggle="tooltip"
                data-placement="bottom"
                title="Main page"><i class="fas fa-home"></i></a>
@@ -27,7 +26,10 @@
             </button>
             <a class="h3 noselect" style="color: white; margin-right: 10px"
                th:href="@{/meetroom/{roomId}(roomId = ${room.id})}"
-               th:text="${room.name}"></a>
+               th:text="${room.name}"
+               data-toggle="tooltip"
+               data-placement="bottom"
+               title="Go to current week"></a>
             <span class="h3">
                      <span th:if="${room.enabled == false}"
                            class="badge badge-danger noselect">
