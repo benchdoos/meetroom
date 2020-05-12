@@ -35,7 +35,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/",
                         "/login",
                         "/registration",
-                        "/user/reset-password/**").permitAll();
+                        "/user/reset-password/**",
+                        "/user/activate/**").permitAll();
 
         //favicon
         httpSecurity.authorizeRequests()

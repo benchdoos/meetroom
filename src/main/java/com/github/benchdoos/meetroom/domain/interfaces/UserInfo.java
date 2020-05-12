@@ -6,4 +6,6 @@ package com.github.benchdoos.meetroom.domain.interfaces;
 public interface UserInfo {
 
     String getUsername();
+
+    String getEmail();
 }

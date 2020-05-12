@@ -123,7 +123,7 @@ public class UserController {
     }
 
     @PreAuthorize("isAnonymous()")
-    @PostMapping("/activate/{id}")
+    @GetMapping("/activate/{id}")
     public String activateAccount(@PathVariable("id") UUID id) {
 
         accountActivationService.activateAccount(id);

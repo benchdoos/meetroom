@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserPublicInfoDto getUserPublicInfoDtoByUsername(String username) {
-        final User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+        final User user = userRepository.findFirstByUsername(username).orElseThrow(UserNotFoundException::new);
         final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
 
         userMapper.convert(user, userPublicInfoDto);
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserExtendedInfoDto getUserExtendedInfoDtoByUsername(String username) {
-        final User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+        final User user = userRepository.findFirstByUsername(username).orElseThrow(UserNotFoundException::new);
         final UserExtendedInfoDto userExtendedInfoDto = new UserExtendedInfoDto();
 
         userMapper.convert(user, userExtendedInfoDto);
@@ -172,6 +172,14 @@ public class UserServiceImpl implements UserService {
 
         final User savedUser = userRepository.save(user);
         log.info("Successfully created user with username: {}", savedUser.getUsername());
+
+        final AccountActivationRequest accountActivationRequest = accountActivationService.createAccountActivationRequest(savedUser);
+        try {
+            emailService.sendAccountActivation(savedUser, accountActivationRequest);
+        } catch (final MessagingException e) {
+            log.warn("Could not send activation account email for user: {}", savedUser.getUsername(), e);
+        }
+
         final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
         userMapper.convert(savedUser, userPublicInfoDto);
 
@@ -266,7 +274,7 @@ public class UserServiceImpl implements UserService {
             passwordResetRequestRepository.saveAll(allActivePasswordResetRequests);
         }
 
-        final User byUsername = userRepository.findByUsername(principal.getName()).orElseThrow(UserNotFoundException::new);
+        final User byUsername = userRepository.findFirstByUsername(principal.getName()).orElseThrow(UserNotFoundException::new);
 
         //todo move to service layer
         final PasswordResetRequest passwordResetRequest = PasswordResetRequest.builder()
@@ -384,7 +392,7 @@ public class UserServiceImpl implements UserService {
 
         if (!user.getUsername().equals(editOtherUserDto.getUsername())) {
 
-            final Optional<User> byUsername = userRepository.findByUsername(editOtherUserDto.getUsername());
+            final Optional<User> byUsername = userRepository.findFirstByUsername(editOtherUserDto.getUsername());
 
             if (byUsername.isPresent()) {
                 if (!user.getId().equals(byUsername.get().getId())) {
@@ -397,7 +405,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        final User user = userRepository.findByUsername(username)
+        final User user = userRepository.findFirstByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Can not find user by username: " + username));
 
         checkUserIsNotDisabled(user);
@@ -416,10 +424,14 @@ public class UserServiceImpl implements UserService {
      */
     private void validateNewUser(UserInfo userInfo) {
 
-        final Optional<User> byUsername = userRepository.findByUsername(userInfo.getUsername());
-
+        final Optional<User> byUsername = userRepository.findFirstByUsername(userInfo.getUsername());
         if (byUsername.isPresent()) {
-            throw new UserAlreadyExistsException(userInfo.getUsername());
+            throw new UserAlreadyExistsException(byUsername.get().getUsername());
+        }
+
+        final Optional<User> byEmail = userRepository.findFirstByEmail(userInfo.getEmail());
+        if (byEmail.isPresent()) {
+            throw new UserAlreadyExistsException(byEmail.get().getUsername());
         }
     }
 
@@ -461,9 +473,12 @@ public class UserServiceImpl implements UserService {
             return getUserPublicInfoDtoByUsername(updateUserUsernameDto.getOldUsername());
         }
 
-        validateNewUser(updateUserUsernameDto::getNewUsername);
+        final Optional<User> firstByUsername = userRepository.findFirstByUsername(updateUserUsernameDto.getNewUsername());
+        if (firstByUsername.isPresent()) {
+            throw new UserAlreadyExistsException(firstByUsername.get().getUsername());
+        }
 
-        final User byUsername = userRepository.findByUsername(updateUserUsernameDto.getOldUsername())
+        final User byUsername = userRepository.findFirstByUsername(updateUserUsernameDto.getOldUsername())
                 .orElseThrow(UserNotFoundException::new);
 
         byUsername.setUsername(updateUserUsernameDto.getNewUsername());
@@ -530,10 +545,10 @@ public class UserServiceImpl implements UserService {
     private void validateAvatar(UpdateUserAvatarDto updateUserAvatar) {
         switch (updateUserAvatar.getType()) {
             case GRAVATAR:
-                //validate email
+                //todo validate email
                 break;
             case BASE64:
-                //validate base64
+                //todo validate base64
                 break;
         }
     }
