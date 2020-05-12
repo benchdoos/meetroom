@@ -9,6 +9,7 @@ import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.domain.enumirations.UserEventTabType;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
+import com.github.benchdoos.meetroom.service.AccountActivationService;
 import com.github.benchdoos.meetroom.service.AvatarService;
 import com.github.benchdoos.meetroom.service.EventService;
 import com.github.benchdoos.meetroom.service.PasswordResetRequestService;
@@ -38,6 +39,7 @@ public class UserController {
     private final UserMapper userMapper;
     private final AvatarService avatarService;
     private final PasswordResetRequestService passwordResetRequestService;
+    private final AccountActivationService accountActivationService;
 
     /**
      * Get user page by principal
@@ -116,6 +118,15 @@ public class UserController {
                                               @Valid ResetUserPasswordDto resetUserPasswordDto) {
 
         userService.resetUserPasswordByResetRequest(id, resetUserPasswordDto);
+
+        return "redirect:/login";
+    }
+
+    @PreAuthorize("isAnonymous()")
+    @PostMapping("/activate/{id}")
+    public String activateAccount(@PathVariable("id") UUID id) {
+
+        accountActivationService.activateAccount(id);
 
         return "redirect:/login";
     }

@@ -2,6 +2,7 @@ package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.config.constants.SecurityConstants;
 import com.github.benchdoos.meetroom.config.properties.InternalConfiguration;
+import com.github.benchdoos.meetroom.domain.AccountActivationRequest;
 import com.github.benchdoos.meetroom.domain.Avatar;
 import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
 import com.github.benchdoos.meetroom.domain.Role;
@@ -37,6 +38,7 @@ import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.repository.PasswordResetRequestRepository;
 import com.github.benchdoos.meetroom.repository.RoleRepository;
 import com.github.benchdoos.meetroom.repository.UserRepository;
+import com.github.benchdoos.meetroom.service.AccountActivationService;
 import com.github.benchdoos.meetroom.service.AvatarGeneratorService;
 import com.github.benchdoos.meetroom.service.EmailService;
 import com.github.benchdoos.meetroom.service.UserService;
@@ -77,13 +79,14 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private static final int RANDOM_PASSWORD_LENGTH = 10;
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final RoleRepository roleRepository;
     private final PasswordResetRequestRepository passwordResetRequestRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
     private final AvatarGeneratorService avatarGeneratorService;
-    private final InternalConfiguration internalConfiguration;
+    private final AccountActivationService accountActivationService;
     private final EmailService emailService;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final InternalConfiguration internalConfiguration;
 
     /**
      * Random password generator
@@ -201,7 +204,15 @@ public class UserServiceImpl implements UserService {
                 .enabled(true)
                 .build();
 
-        userRepository.save(userToSave);
+        final User save = userRepository.save(userToSave);
+
+        final AccountActivationRequest accountActivationRequest = accountActivationService.createAccountActivationRequest(save);
+
+        try {
+            emailService.sendAccountActivation(save, accountActivationRequest);
+        } catch (final MessagingException e) {
+            log.warn("Could not send account activation email for user: {}", save.getUsername(), e);
+        }
     }
 
     @Override

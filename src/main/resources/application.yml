@@ -56,6 +56,17 @@ internal-configuration:
       If link is not available, go to: {resetPasswordLink}
       <br>
       If you didn't request for password reset - ignore this email.
+    account-activation-email-message: >
+      Hello,  {userFullName}!
+      <br>
+      Thank you for registration.
+      <br>
+      Activate your account: <a href="{activateAccountLink}">activate account</a>
+      <br>
+      If link is not available, go to: {activateAccountLink}
+      <br>
+      If you didn't register at Meetroom - ignore this email.
+
 
 ---
 
