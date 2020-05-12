@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.UUID;
@@ -41,8 +40,9 @@ public class AccountActivationServiceImpl implements AccountActivationService {
 
     @Override
     public void activateAccount(UUID requestId) {
-        final AccountActivationRequest accountActivationRequest =
-                activationRequestRepository.findById(requestId).orElseThrow(AccountActivationRequestNotFoundException::new);
+        final AccountActivationRequest accountActivationRequest = activationRequestRepository.findById(requestId)
+                .orElseThrow(AccountActivationRequestNotFoundException::new);
+
         if (!accountActivationRequest.isActive()) {
             throw new AccountActivationRequestIsNotActiveAnyMoreException();
         }
@@ -51,13 +51,11 @@ public class AccountActivationServiceImpl implements AccountActivationService {
             throw new AccountActivationRequestExpiredException();
         }
 
-        @NotNull final User requestedFor = accountActivationRequest.getRequestedFor();
+        final User requestedFor = accountActivationRequest.getRequestedFor();
         requestedFor.setNeedActivation(false);
         userRepository.save(requestedFor);
 
-
-        accountActivationRequest.setActive(false);
-        activationRequestRepository.save(accountActivationRequest);
+        activationRequestRepository.delete(accountActivationRequest); //not important information
     }
 
     /**
