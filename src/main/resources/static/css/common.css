@@ -46,12 +46,85 @@
     padding: 5px 10px;
     font-size: 20px;
 }
+/*-------------------HEADER-----------------------*/
+.header {
+    color: white;
+    width: 100% !important;
+    display: inline-flex;
+}
 
-/**
+.header .w-100 {
+    display: inline-flex;
+}
+
+.header a:hover{
+    text-decoration: none;
+}
+
+.header .btn {
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.header .btn-outline-secondary {
+    color: white;
+}
+
+.header .btn-outline-secondary:hover {
+    border-color: #6c757d;
+}
+
+.header .btn-outline-primary {
+    color: white;
+    border-color: #006bef;
+}
+
+.header .btn-outline-primary:hover {
+    color: #007bff;
+    border-color: #007bff;
+    background-color: white;
+}
+
+.header .btn-outline-danger {
+    color: white;
+}
+
+.header .btn-outline-info {
+    color: white;
+}
+
+.header .btn-outline-warning {
+    color: #f7cb47;
+}
+
+.header .btn-outline-warning:hover {
+    color: white;
+}
+
+.header .btn-outline-success {
+    color: white;
+}
+
+.header .btn-primary {
+    background-color: #208dff;
+}
+
+.header .btn-primary:hover {
+    background-color: #1a78dc;
+}
+
+/*----------------HEADER END------------------*/
+
+
+./**
  * Makes time row more compact
  */
 .table-striped tbody .timeRow {
     line-height: 5px;
+}
+
+.table-striped tbody .timeRow td .eventCell{
+    width: 100%;
 }
 
 /**
