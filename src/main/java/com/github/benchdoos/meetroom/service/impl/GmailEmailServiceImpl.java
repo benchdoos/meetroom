@@ -6,10 +6,12 @@ import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
 import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.service.EmailService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.CharEncoding;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -19,6 +21,7 @@ import java.util.Date;
 /**
  * Gmail email service
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class GmailEmailServiceImpl implements EmailService {
@@ -29,6 +32,7 @@ public class GmailEmailServiceImpl implements EmailService {
     @Value("spring.mail.username")
     private String sendingEmail;
 
+    @Async
     @Override
     public void sendResetPasswordNotification(User user, PasswordResetRequest passwordResetRequest) throws MessagingException {
         final MimeMessage simpleMailMessage = emailSender.createMimeMessage();
@@ -51,7 +55,7 @@ public class GmailEmailServiceImpl implements EmailService {
 
     @Override
     public void sendAccountActivation(User user) {
-
+        throw new UnsupportedOperationException("Not realized yet");
     }
 
     /**
