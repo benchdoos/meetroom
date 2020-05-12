@@ -24,6 +24,9 @@ public class InternalConfiguration {
     @NotNull
     private UserSettings userSettings;
 
+    @NotNull
+    private EmailSettings emailSettings;
+
     @Getter
     @Setter
     @Validated
@@ -40,5 +43,19 @@ public class InternalConfiguration {
          */
         @NotNull
         private String defaultAvatarId;
+    }
+
+    /**
+     * Email settings and messages
+     */
+    @Getter
+    @Setter
+    @Validated
+    public static class EmailSettings {
+        /**
+         * Message for resetting password
+         */
+        @NotNull
+        private String resetPasswordEmailMessage;
     }
 }

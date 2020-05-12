@@ -2,6 +2,7 @@ package com.github.benchdoos.meetroom.controller;
 
 import com.github.benchdoos.meetroom.domain.Avatar;
 import com.github.benchdoos.meetroom.domain.dto.EventDto;
+import com.github.benchdoos.meetroom.domain.dto.ResetUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
@@ -112,9 +113,9 @@ public class UserController {
     @PreAuthorize("isAnonymous()")
     @PostMapping("/reset-password/{id}")
     public String resetPasswordByResetRequest(@PathVariable("id") UUID id,
-                                              @Valid UpdateUserPasswordDto updateUserPasswordDto) {
+                                              @Valid ResetUserPasswordDto resetUserPasswordDto) {
 
-        userService.resetUserPasswordByResetRequest(id, updateUserPasswordDto);
+        userService.resetUserPasswordByResetRequest(id, resetUserPasswordDto);
 
         return "redirect:/login";
     }

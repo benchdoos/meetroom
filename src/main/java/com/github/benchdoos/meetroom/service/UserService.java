@@ -6,6 +6,7 @@ import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
+import com.github.benchdoos.meetroom.domain.dto.ResetUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
@@ -132,9 +133,9 @@ public interface UserService extends UserDetailsService {
      * Change user password by reset request
      *
      * @param id request id
-     * @param updateUserPasswordDto dto with new password
+     * @param resetUserPasswordDto dto with new password
      */
-    void resetUserPasswordByResetRequest(UUID id, UpdateUserPasswordDto updateUserPasswordDto);
+    void resetUserPasswordByResetRequest(UUID id, ResetUserPasswordDto resetUserPasswordDto);
 
     /**
      * Update user enable. User can not update himself.

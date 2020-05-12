@@ -10,6 +10,7 @@ import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
+import com.github.benchdoos.meetroom.domain.dto.ResetUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
@@ -37,6 +38,7 @@ import com.github.benchdoos.meetroom.repository.PasswordResetRequestRepository;
 import com.github.benchdoos.meetroom.repository.RoleRepository;
 import com.github.benchdoos.meetroom.repository.UserRepository;
 import com.github.benchdoos.meetroom.service.AvatarGeneratorService;
+import com.github.benchdoos.meetroom.service.EmailService;
 import com.github.benchdoos.meetroom.service.UserService;
 import com.github.benchdoos.meetroom.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +52,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
+import javax.mail.MessagingException;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
@@ -79,6 +83,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final AvatarGeneratorService avatarGeneratorService;
     private final InternalConfiguration internalConfiguration;
+    private final EmailService emailService;
 
     /**
      * Random password generator
@@ -259,7 +264,15 @@ public class UserServiceImpl implements UserService {
                 .expires(requestTime.plusDays(1))
                 .build();
 
-        passwordResetRequestRepository.save(passwordResetRequest);
+        final PasswordResetRequest saved = passwordResetRequestRepository.save(passwordResetRequest);
+
+        if (StringUtils.hasText(user.getEmail())) {
+            try {
+                emailService.sendResetPasswordNotification(user, saved);
+            } catch (final MessagingException e) {
+                log.warn("Could not send message to user: {}", user.getUsername(), e);
+            }
+        }
     }
 
     @Override
@@ -284,7 +297,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void resetUserPasswordByResetRequest(UUID id, UpdateUserPasswordDto updateUserPasswordDto) {
+    public void resetUserPasswordByResetRequest(UUID id, ResetUserPasswordDto resetUserPasswordDto) {
         final PasswordResetRequest passwordResetRequest = passwordResetRequestRepository.findById(id)
                 .orElseThrow(PasswordResetRequestNotFoundException::new);
 
@@ -299,7 +312,7 @@ public class UserServiceImpl implements UserService {
         final User user = passwordResetRequest.getRequestedFor();
         user.setNeedActivation(false);
 
-        user.setPassword(passwordEncoder.encode(updateUserPasswordDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(resetUserPasswordDto.getPassword()));
 
         passwordResetRequest.setActive(false);
 
