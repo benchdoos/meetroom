@@ -11,7 +11,7 @@
     <form class="form-inline" id="search-user" sec:authorize="isAuthenticated()"
           th:action="|${path}|" method="get"
           style="display: -webkit-inline-box;">
-        <div class="input-group mb-3">
+        <div class="input-group">
             <input type="text" class="form-control" id="userCredentials" th:placeholder="${placeHolder}" name="request">
             <div class="input-group-append">
                 <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>

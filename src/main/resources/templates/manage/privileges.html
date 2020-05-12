@@ -17,17 +17,32 @@
     </style>
 </head>
 <body>
-<div class="header" style="display: flex">
-    <div style="width: 100%; display: flex;" class="h2">
-        <a class="btn btn-light h2" th:href="@{/manage/}" data-toggle="tooltip" data-placement="bottom"
-           title="Management page">
-            <i class="fas fa-chevron-left"></i>
-        </a>
-        &nbsp;
-        <span>Privileges</span>
+<nav class="navbar navbar-dark bg-primary">
+    <div class="header">
+        <div class="w-100">
+            <a class="btn btn-dark h2 btn-dark"
+               th:href="@{/}"
+               style="margin-right: 10px"
+               data-toggle="tooltip"
+               data-placement="bottom"
+               title="Main page"><i class="fas fa-home"></i></a>
+            <button class="btn btn-light h2" onclick="goBack()"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Go back">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <a class="btn btn-info h2" th:href="@{/manage/}"
+               data-toggle="tooltip"
+               data-placement="bottom"
+               title="Management page">
+                <i class="fas fa-user-cog"></i>
+            </a>
+            <span class="h2 noselect">Privileges</span>
+        </div>
+        <div th:include="modal/modal-login :: fr-login"></div>
     </div>
-    <div th:include="modal/modal-login :: fr-login"></div>
-</div>
+</nav>
 
 <div class="content" sec:authorize="hasAnyAuthority('MANAGE:USE','MANAGE_USERS:USE','MANAGE_ROLES:USE')"
      style="overflow-y: auto;">

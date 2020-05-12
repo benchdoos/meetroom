@@ -42,18 +42,23 @@
             </a>
             <span class="h2 noselect">Event info</span>
         </div>
-        <div class="h2" style="display: flex" sec:authorize="isAuthenticated()"
-             th:if="((${event.creator.username} == ${#authentication.getPrincipal().getUsername()})
+        <div style="display: inline-flex">
+            <div style="display: inline-flex" sec:authorize="isAuthenticated()"
+                 th:if="((${event.creator.username} == ${#authentication.getPrincipal().getUsername()})
                     or ${#authorization.expression('hasAnyAuthority(''EVENT:EDIT:OTHER'')')})
                     and ${event.deleted} != true">
-            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#editEventModal">
-                Update
-            </button>
-            <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteEventModal">
-                Delete
-            </button>
+                <button type="button" class="btn btn-outline-primary h2" data-toggle="modal"
+                        data-target="#editEventModal">
+                    Update
+                </button>
+                <button type="button" class="btn btn-outline-danger h2" data-toggle="modal"
+                        data-target="#deleteEventModal">
+                    Delete
+                </button>
+            </div>
+            <div th:include="modal/modal-login :: fr-login"></div>
         </div>
-        <div th:include="modal/modal-login :: fr-login"></div>
+
     </div>
 </nav>
 

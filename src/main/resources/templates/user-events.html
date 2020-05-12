@@ -13,29 +13,33 @@
 <div>
     <nav class="navbar navbar-dark bg-primary">
         <div class="header" style="display: flex; color: white">
-            <a class="btn btn-dark h2 btn-outline-light"
+            <a class="btn btn-dark h2 btn-dark"
                th:href="@{/}"
                style="margin-right: 10px"
                data-toggle="tooltip"
                data-placement="bottom"
                title="Main page"><i class="fas fa-home"></i></a>
-            <button class="btn btn-outline-light h2" onclick="goBack()"
+            <button class="btn btn-light h2" onclick="goBack()"
                     data-toggle="tooltip"
                     data-placement="bottom"
                     title="Go back">
                 <i class="fas fa-chevron-left"></i>
             </button>
-            <div style="width: 100%; padding-left: 10px; display: inline-flex">
+            <div class="w-100">
                 <span class="h2" style="display: inline-flex;">
-                    <div th:style="|height: 38px; width: 38px; background-image: url(${user.getAvatar().getSrc()}); background-size: contain;|"></div>
-                    <a th:href="@{/user/{username}(username = ${user.getUsername()})}" class="header-link">
+                    <span th:style="|height: 38px; width: 38px; background-image: url(${user.getAvatar().getSrc()}); background-size: contain;|"></span>
+                    <a  class="header-link"
+                        th:href="@{/user/{username}(username = ${user.getUsername()})}"
+                        data-toggle="tooltip"
+                        data-placement="bottom"
+                        title="Go to user page">
                         <span th:text="|${user.getFirstName()} ${user.getLastName()}&#39;s events|"
                               style="padding-left: 10px"></span>
                     </a>
                 </span>
             </div>
+            <div th:include="modal/modal-login :: fr-login"></div>
         </div>
-        <div th:include="modal/modal-login :: fr-login"></div>
     </nav>
 
     <div>
