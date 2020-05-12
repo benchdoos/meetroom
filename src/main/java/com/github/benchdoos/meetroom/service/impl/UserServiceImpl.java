@@ -159,10 +159,11 @@ public class UserServiceImpl implements UserService {
                 .firstName(createUserDto.getFirstName())
                 .lastName(createUserDto.getLastName())
                 .username(createUserDto.getUsername())
+                .email(createUserDto.getEmail())
                 .password(passwordEncoder.encode(createUserDto.getPassword()))
                 .roles(Collections.singleton(role))
                 .avatar(avatar)
-                .needActivation(false) //todo add email-activation, change to true
+                .needActivation(true)
                 .enabled(true)
                 .build();
 
@@ -256,6 +257,7 @@ public class UserServiceImpl implements UserService {
 
         final User byUsername = userRepository.findByUsername(principal.getName()).orElseThrow(UserNotFoundException::new);
 
+        //todo move to service layer
         final PasswordResetRequest passwordResetRequest = PasswordResetRequest.builder()
                 .requestedBy(byUsername)
                 .requestedFor(user)
