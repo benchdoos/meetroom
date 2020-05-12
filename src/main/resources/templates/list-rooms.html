@@ -15,7 +15,7 @@
     <div class="header">
         <div style="width: 100%; display: flex;">
             <div th:style="|height: 32px; width: 32px; background-image: url(@{/}images/applicationIcon.png); background-size: contain;|"></div>
-            <span class="h2 noselect">Meeting rooms</span>
+            <span class="h2 noselect" style="padding-left: 10px">Meeting rooms</span>
             <div style="display: flex; padding-left: 10px">
                 <div sec:authorize="hasAnyAuthority('MEETING_ROOM:CREATE')">
                     <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#exampleModal">
