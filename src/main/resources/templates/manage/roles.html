@@ -5,35 +5,54 @@
     <link rel="shortcut icon" href="/favicon.ico" th:href="@{/favicon.ico}" type="image/x-icon">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.4.1-1/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.12.0/css/all.css}">
     <link href="/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet">
     <link href="/css/common.css" th:href="@{/css/common.css}" rel="stylesheet">
     <link href="/css/pagination.css" th:href="@{/css/pagination.css}" rel="stylesheet">
 </head>
 <body>
-<div class="header" style="display: flex">
-    <div style="width: 100%; display: flex;" class="h2">
-        <a class="btn btn-light h2" th:href="@{/manage/}" data-toggle="tooltip" data-placement="bottom"
-           title="Management page">
-            <i class="fas fa-chevron-left"></i>
-        </a>
-        &nbsp;
-        <span class="h2"><a class="link" th:href="@{/manage/roles}">Manage user roles</a></span>
-        <div sec:authorize="hasAnyAuthority('MANAGE_ROLES:CREATE')" style="display: flex; padding-left: 20px">
-            <div>
-                <button type="button" class="btn btn-primary h2" data-toggle="modal" data-target="#create-role-modal"
-                        title="Create new role">
-                    <i class="fas fa-plus"></i>
-                </button>
+<nav class="navbar navbar-dark bg-primary">
+    <div class="header">
+        <div class="w-100">
+            <a class="btn btn-dark h2"
+               th:href="@{/}"
+               data-toggle="tooltip"
+               data-placement="bottom"
+               title="Main page"><i class="fas fa-home"></i></a>
+            <button class="btn btn-light h2" onclick="goBack()"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Go back">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <a class="btn btn-info h2" th:href="@{/manage/}"
+               data-toggle="tooltip"
+               data-placement="bottom"
+               title="Management page">
+                <i class="fas fa-user-cog"></i>
+            </a>
+            <span class="h2">
+                <a class="link"
+                   th:href="@{/manage/roles}"
+                   style="color: white">Manage user roles</a>
+            </span>
+            <div sec:authorize="hasAnyAuthority('MANAGE_ROLES:CREATE')" style="display: flex; padding-left: 20px">
+                <div>
+                    <button type="button" class="btn btn-primary h2" data-toggle="modal"
+                            data-target="#create-role-modal"
+                            title="Create new role">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
             </div>
         </div>
+        <div class="search">
+            <div th:include="modal/modal-search :: fr-search(@{/manage/roles/search}, 'Search role')"></div>
+        </div>
+        <div th:include="modal/modal-login :: fr-login"></div>
     </div>
-    <div class="search">
-        <div th:include="modal/modal-search :: fr-search(@{/manage/roles/search}, 'Search role')"></div>
-    </div>
-    <div th:include="modal/modal-login :: fr-login"></div>
-</div>
+</nav>
 
 <div class="content" sec:authorize="hasAnyAuthority('MANAGE_ROLES:USE')" style="overflow-y: auto;">
     <table class="table table-striped" id="users-table">
@@ -98,7 +117,7 @@
 <div th:include="modal/modal-manage-roles :: fr-delete-role" th:each="role : ${roles.content}"></div>
 <!--/Modals-->
 
-<script th:src="@{/webjars/bootstrap/4.1.3/js/bootstrap.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.4.1-1/js/bootstrap.min.js}"></script>
 <script th:src="@{/js/pagination-fix.js}"></script>
 
 <!-- todo use webjars-->
@@ -107,7 +126,7 @@
         crossorigin="anonymous"></script>
 
 <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
-<script th:src="@{/webjars/bootstrap/4.1.3/js/bootstrap.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.4.1-1/js/bootstrap.min.js}"></script>
 <script th:src="@{/js/common.js}"></script>
 
 <script>

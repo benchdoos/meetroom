@@ -38,7 +38,6 @@ function drawTimePanel(dateRange) {
 
         for (let j = 0; j <= MAXIMUM_DAYS; j++) {
             let cell = row.insertCell(j);
-            cell.width = 100;
 
             let strHour = hour < 10 ? '0' + hour : hour;
             let strMin = min < 10 ? '0' + min : min;
