@@ -27,7 +27,7 @@ public class SpringConfigurationInfoBean {
         final String prefix = servletRequest.isSecure() ? "https://" : "http://";
 
         final String fullApplicationPath = prefix
-                + InetAddress.getLoopbackAddress().getHostAddress()
+                + InetAddress.getLoopbackAddress().getCanonicalHostName()
                 + ":"
                 + servletRequest.getLocalPort()
                 + servletContext.getContextPath();
