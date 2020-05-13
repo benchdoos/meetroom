@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import java.net.InetAddress;
@@ -21,8 +20,7 @@ public class SpringConfigurationInfoBean {
     private final ServletContext servletContext;
     private final ServletRequest servletRequest;
 
-    @PostConstruct
-    private void afterCreate() {
+    private void afterCreate(String created) {
         System.out.println("HELLO FROM POST CONSTRACT!");
         System.out.println("------------------------------");
         System.out.println("canonicalHostName: " + InetAddress.getLoopbackAddress().getCanonicalHostName());
@@ -33,7 +31,7 @@ public class SpringConfigurationInfoBean {
         System.out.println("localPort: " + servletRequest.getLocalPort());
         System.out.println("contextPath: " + servletContext.getContextPath());
         System.out.println("------------------------------");
-        System.out.println("getPublicFullApplicationUrl: " + getPublicFullApplicationUrl());
+        System.out.println("getPublicFullApplicationUrl: " + created);
         System.out.println("------------------------------");
     }
 
@@ -46,6 +44,8 @@ public class SpringConfigurationInfoBean {
                 + servletRequest.getLocalPort()
                 + servletContext.getContextPath();
         log.debug("Full application path: {}", fullApplicationPath);
+
+        afterCreate(fullApplicationPath);
         return fullApplicationPath;
     }
 }
