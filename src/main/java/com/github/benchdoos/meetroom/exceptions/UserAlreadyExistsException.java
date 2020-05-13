@@ -9,6 +9,6 @@ import javax.validation.constraints.NotBlank;
 public class UserAlreadyExistsException extends RuntimeException {
 
     public UserAlreadyExistsException(@NotBlank String username) {
-        super("User with given username already exists: " + username);
+        super("User with given credentials already exists: " + username);
     }
 }

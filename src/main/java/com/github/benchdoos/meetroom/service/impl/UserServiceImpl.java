@@ -23,6 +23,7 @@ import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.security.LoginDto;
 import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
 import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimselfException;
+import com.github.benchdoos.meetroom.exceptions.EmailAlreadyExistsException;
 import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
 import com.github.benchdoos.meetroom.exceptions.InvalidCurrentPasswordException;
 import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePasswordException;
@@ -33,7 +34,6 @@ import com.github.benchdoos.meetroom.exceptions.UserAlreadyExistsException;
 import com.github.benchdoos.meetroom.exceptions.UserCanNotUpdateThisDataByHimselfException;
 import com.github.benchdoos.meetroom.exceptions.UserDisabledException;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
-import com.github.benchdoos.meetroom.exceptions.UserWithSuchUsernameAlreadyExistsException;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.repository.PasswordResetRequestRepository;
 import com.github.benchdoos.meetroom.repository.RoleRepository;
@@ -396,7 +396,7 @@ public class UserServiceImpl implements UserService {
 
             if (byUsername.isPresent()) {
                 if (!user.getId().equals(byUsername.get().getId())) {
-                    throw new UserWithSuchUsernameAlreadyExistsException(editOtherUserDto.getUsername());
+                    throw new UserAlreadyExistsException(editOtherUserDto.getUsername());
                 }
             }
         }
@@ -418,7 +418,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Validate user for creation
+     * Validate user for creation. Can not be used to validate updating user
      *
      * @param userInfo dto with user
      */
@@ -426,12 +426,12 @@ public class UserServiceImpl implements UserService {
 
         final Optional<User> byUsername = userRepository.findFirstByUsername(userInfo.getUsername());
         if (byUsername.isPresent()) {
-            throw new UserAlreadyExistsException(byUsername.get().getUsername());
+            throw new UserAlreadyExistsException(userInfo.getUsername());
         }
 
         final Optional<User> byEmail = userRepository.findFirstByEmail(userInfo.getEmail());
         if (byEmail.isPresent()) {
-            throw new UserAlreadyExistsException(byEmail.get().getUsername());
+            throw new EmailAlreadyExistsException(userInfo.getEmail());
         }
     }
 
