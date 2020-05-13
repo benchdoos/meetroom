@@ -169,6 +169,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         tokenCookie.setComment(comment);
         tokenCookie.setPath(springConfigurationInfoBean.getServletContext().getContextPath() + ApiConstants.API_PATH_PREFIX);
+        springConfigurationInfoBean.getPublicFullApplicationUrl();
         tokenCookie.setHttpOnly(true);
         return tokenCookie;
     }
