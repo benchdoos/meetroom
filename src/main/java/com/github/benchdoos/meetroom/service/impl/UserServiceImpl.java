@@ -1,5 +1,6 @@
 package com.github.benchdoos.meetroom.service.impl;
 
+import com.github.benchdoos.meetroom.config.beans.SpringConfigurationInfoBean;
 import com.github.benchdoos.meetroom.config.constants.SecurityConstants;
 import com.github.benchdoos.meetroom.config.properties.InternalConfiguration;
 import com.github.benchdoos.meetroom.domain.AccountActivationRequest;
@@ -56,7 +57,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
-import javax.mail.MessagingException;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
@@ -87,6 +87,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final InternalConfiguration internalConfiguration;
+    private final SpringConfigurationInfoBean configurationInfoBean;
 
     /**
      * Random password generator
@@ -174,21 +175,12 @@ public class UserServiceImpl implements UserService {
         log.info("Successfully created user with username: {}", savedUser.getUsername());
 
         final AccountActivationRequest accountActivationRequest = accountActivationService.createAccountActivationRequest(savedUser);
-        try {
-            emailService.sendAccountActivation(savedUser, accountActivationRequest);
-        } catch (final MessagingException e) {
-            log.warn("Could not send activation account email for user: {}", savedUser.getUsername(), e);
-        }
+        emailService.sendAccountActivation(configurationInfoBean.getPublicFullApplicationUrl(), savedUser, accountActivationRequest);
 
         final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
         userMapper.convert(savedUser, userPublicInfoDto);
 
         return userPublicInfoDto;
-    }
-
-    @Override
-    public Page<User> getAllUsers(Pageable pageable) {
-        return userRepository.findAll(pageable);
     }
 
     @Override
@@ -205,6 +197,7 @@ public class UserServiceImpl implements UserService {
                 .username(createOtherUserDto.getUsername())
                 .firstName(createOtherUserDto.getFirstName())
                 .lastName(createOtherUserDto.getLastName())
+                .email(createOtherUserDto.getEmail())
                 .password(passwordEncoder.encode(password))
                 .roles(Collections.singletonList(role))
                 .avatar(avatar)
@@ -216,11 +209,12 @@ public class UserServiceImpl implements UserService {
 
         final AccountActivationRequest accountActivationRequest = accountActivationService.createAccountActivationRequest(save);
 
-        try {
-            emailService.sendAccountActivation(save, accountActivationRequest);
-        } catch (final MessagingException e) {
-            log.warn("Could not send account activation email for user: {}", save.getUsername(), e);
-        }
+        emailService.sendAccountActivation(configurationInfoBean.getPublicFullApplicationUrl(), save, accountActivationRequest);
+    }
+
+    @Override
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     @Override
@@ -288,11 +282,7 @@ public class UserServiceImpl implements UserService {
         final PasswordResetRequest saved = passwordResetRequestRepository.save(passwordResetRequest);
 
         if (StringUtils.hasText(user.getEmail())) {
-            try {
-                emailService.sendResetPasswordNotification(user, saved);
-            } catch (final MessagingException e) {
-                log.warn("Could not send message to user: {}", user.getUsername(), e);
-            }
+            emailService.sendResetPasswordNotification(configurationInfoBean.getPublicFullApplicationUrl(), user, saved);
         }
     }
 

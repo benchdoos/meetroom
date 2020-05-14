@@ -23,6 +23,12 @@ public class SpringConfigurationInfoBean {
 
     private final Environment environment;
 
+    /**
+     * Get public application url. Can be called from request. Otherwise it will throw exception.
+     *
+     * @return full public application url
+     * @throws IllegalStateException if method called not from request
+     */
     public String getPublicFullApplicationUrl() {
         final String prefix = servletRequest.isSecure() ? "https://" : "http://";
 

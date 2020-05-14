@@ -4,26 +4,26 @@ import com.github.benchdoos.meetroom.domain.AccountActivationRequest;
 import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
 import com.github.benchdoos.meetroom.domain.User;
 
-import javax.mail.MessagingException;
-
 /**
  * Service that provides sending emails to users
  */
+//todo find method to avoid throwing publicFullApplicationUrl through parameters (mby without ServletRequest)
 public interface EmailService {
 
     /**
      * Send user account password reset notification email
-     *
+     * @param publicFullApplicationUrl full public url for application
      * @param user user to notify
      * @param passwordResetRequest password reset request
      */
-    void sendResetPasswordNotification(User user, PasswordResetRequest passwordResetRequest) throws MessagingException;
+    void sendResetPasswordNotification(String publicFullApplicationUrl, User user, PasswordResetRequest passwordResetRequest);
 
     /**
      * Send account activation email
      *
+     * @param publicFullApplicationUrl full public url for application
      * @param user user to notify
      * @param accountActivationRequest account activation request
      */
-    void sendAccountActivation(User user, AccountActivationRequest accountActivationRequest) throws MessagingException;
+    void sendAccountActivation(String publicFullApplicationUrl, User user, AccountActivationRequest accountActivationRequest);
 }
