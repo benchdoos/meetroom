@@ -53,7 +53,8 @@
                         value="Sign Out"
                         data-toggle="tooltip"
                         data-placement="bottom"
-                        title="Sing out from your account">Sign out</button>
+                        title="Sing out from your account">Sign out
+                </button>
             </form>
 
             <div th:if="${user.username} != ${#authentication.getPrincipal().getUsername()}">
@@ -87,7 +88,16 @@
                 <span id="firstName" th:text="${user.firstName}"></span>
                 <span id="lastName" th:text="${user.lastName}"></span>
             </h1>
-            <p class="lead">@<span id="username" th:text="${user.username}"></span></p>
+            <p class="lead">
+                <span>
+                    @<span id="username" th:text="${user.username}"></span>
+                </span>
+                <br>
+                <span th:if="${user.email != null}">
+                    <a th:href="|mailto:${user.email}|"
+                       th:text="${user.email}"></a>
+                </span>
+            </p>
         </div>
     </div>
     <div class="container" style="display: flex; padding-top: 10px">
@@ -128,13 +138,5 @@
 <div th:include="modal/modal-user :: fr-user-update-avatar"></div>
 <!--/Modals-->
 
-<script th:inline="javascript">
-    // var userAvatar = [[${user.avatar}]];
-    // $(document).ready(function () {
-    //     $("#update-avatar-link").click(function () {
-    //         $("#avatar-generated-preview").attr("src", userAvatar.src);
-    //     })
-    // })
-</script>
 </body>
 </html>

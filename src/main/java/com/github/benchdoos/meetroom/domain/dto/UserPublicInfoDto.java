@@ -30,6 +30,8 @@ public class UserPublicInfoDto {
     @NotNull
     private String lastName;
 
+    private String email;
+
     @NotNull
     private Boolean enabled;
 
