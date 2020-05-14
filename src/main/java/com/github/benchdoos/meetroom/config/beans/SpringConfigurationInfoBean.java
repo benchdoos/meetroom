@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
-import java.net.InetAddress;
 
 /**
  * Component to get {@link ServletContext} from spring bean processor
@@ -30,13 +30,7 @@ public class SpringConfigurationInfoBean {
      * @throws IllegalStateException if method called not from request
      */
     public String getPublicFullApplicationUrl() {
-        final String prefix = servletRequest.isSecure() ? "https://" : "http://";
-
-        final String fullApplicationPath = prefix
-                + InetAddress.getLoopbackAddress().getCanonicalHostName()
-                + ":"
-                + servletRequest.getLocalPort()
-                + servletContext.getContextPath();
+        final String fullApplicationPath = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
         log.debug("Full application path: {}", fullApplicationPath);
         return fullApplicationPath;
     }
