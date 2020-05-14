@@ -36,11 +36,6 @@
             </a>
         </div>
 
-        <div th:switch="${user.enabled}">
-            <span th:case="${false}" class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="top"
-                  title="Account disabled">Disabled</span>
-        </div>
-
         <div th:if="${user.username} == ${#authentication.getPrincipal().getUsername()}">
             <div th:include="modal/modal-user :: fr-user-edit-menu"></div>
         </div>
@@ -87,6 +82,11 @@
             <h1 class="display-4">
                 <span id="firstName" th:text="${user.firstName}"></span>
                 <span id="lastName" th:text="${user.lastName}"></span>
+                <span th:if="${user.enabled == true}"
+                      class="noselect notify-badge"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Account disabled"> Disabled</span>
             </h1>
             <p class="lead">
                 <span>
