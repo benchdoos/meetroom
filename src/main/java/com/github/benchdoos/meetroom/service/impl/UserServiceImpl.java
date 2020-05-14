@@ -25,6 +25,7 @@ import com.github.benchdoos.meetroom.domain.dto.security.LoginDto;
 import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
 import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimselfException;
 import com.github.benchdoos.meetroom.exceptions.EmailAlreadyExistsException;
+import com.github.benchdoos.meetroom.exceptions.EmailIsAlreadyUsedException;
 import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
 import com.github.benchdoos.meetroom.exceptions.InvalidCurrentPasswordException;
 import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePasswordException;
@@ -222,10 +223,16 @@ public class UserServiceImpl implements UserService {
         final User user = getUserById(id);
 
         validateUsernameChange(editOtherUserDto, user);
+        validateEmailChange(editOtherUserDto, user);
 
         user.setUsername(editOtherUserDto.getUsername());
         user.setFirstName(editOtherUserDto.getFirstName());
         user.setLastName(editOtherUserDto.getLastName());
+
+        if (StringUtils.hasText(editOtherUserDto.getEmail())) {
+            //empty emails are not pretty valid
+            user.setEmail(editOtherUserDto.getEmail());
+        }
 
         final User savedUser = userRepository.save(user);
 
@@ -387,6 +394,23 @@ public class UserServiceImpl implements UserService {
             if (byUsername.isPresent()) {
                 if (!user.getId().equals(byUsername.get().getId())) {
                     throw new UserAlreadyExistsException(editOtherUserDto.getUsername());
+                }
+            }
+        }
+    }
+
+    /**
+     * Validate email change
+     *
+     * @param editOtherUserDto dto with email to change
+     * @param user user from db
+     */
+    private void validateEmailChange(EditOtherUserDto editOtherUserDto, User user) {
+        if (editOtherUserDto.getEmail() != null) {
+            final Optional<User> firstByEmail = userRepository.findFirstByEmail(editOtherUserDto.getEmail());
+            if (firstByEmail.isPresent()) {
+                if (!user.getId().equals(firstByEmail.get().getId())) {
+                    throw new EmailIsAlreadyUsedException();
                 }
             }
         }

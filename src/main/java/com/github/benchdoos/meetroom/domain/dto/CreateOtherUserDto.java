@@ -1,5 +1,6 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
+import com.github.benchdoos.meetroom.domain.annotations.Email;
 import com.github.benchdoos.meetroom.domain.annotations.Username;
 import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
 import lombok.AllArgsConstructor;
@@ -28,7 +29,7 @@ public class CreateOtherUserDto implements UserInfo {
     @NotBlank
     private String lastName;
 
-    @NotBlank
+    @Email
     private String email;
 
 }
