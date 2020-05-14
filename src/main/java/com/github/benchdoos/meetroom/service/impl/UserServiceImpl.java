@@ -219,7 +219,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserExtendedInfoDto editOtherUser(UUID id, EditOtherUserDto editOtherUserDto) {
+    public UserExtendedInfoDto updateOtherUser(UUID id, EditOtherUserDto editOtherUserDto) {
         final User user = getUserById(id);
 
         validateUsernameChange(editOtherUserDto, user);
