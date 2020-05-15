@@ -35,6 +35,7 @@ protected:
   roles:
     - ROLE_ADMIN
     - ROLE_USER
+    - ROLE_GUEST
 
 api-security:
   secret: common-secret
