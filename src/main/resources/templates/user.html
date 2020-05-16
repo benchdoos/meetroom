@@ -82,7 +82,7 @@
             <h1 class="display-4">
                 <span id="firstName" th:text="${user.firstName}"></span>
                 <span id="lastName" th:text="${user.lastName}"></span>
-                <span th:if="${user.enabled == true}"
+                <span th:if="${user.enabled == false}"
                       class="noselect notify-badge"
                       data-toggle="tooltip"
                       data-placement="top"
