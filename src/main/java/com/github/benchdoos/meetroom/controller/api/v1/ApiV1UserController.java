@@ -1,6 +1,7 @@
 package com.github.benchdoos.meetroom.controller.api.v1;
 
 import com.github.benchdoos.meetroom.config.constants.ApiConstants;
+import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
@@ -143,6 +144,18 @@ public class ApiV1UserController {
             return userService.updateUserInfo(userId, updateUserInfoDto);
         }
         throw new UserInformationCanOnlyBeUpdatedByItsOwnerException();
+    }
+
+    /**
+     * Register user. Needs activation.
+     *
+     * @param createUserDto with user credentials
+     * @return user info
+     */
+    @PreAuthorize("isAnonymous()")
+    @PostMapping("/registration")
+    public UserPublicInfoDto registerUser(@RequestBody @Valid CreateUserDto createUserDto) {
+        return userService.createUser(createUserDto);
     }
 
 
