@@ -328,7 +328,7 @@ public class UserServiceImpl implements UserService {
         }
 
         final User user = passwordResetRequest.getRequestedFor();
-        user.setNeedActivation(false);
+        user.setNeedActivation(false); //todo analyze, probably can be removed
 
         user.setPassword(passwordEncoder.encode(resetUserPasswordDto.getPassword()));
 
