@@ -6,6 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -44,6 +46,20 @@ public class InternalConfiguration {
          */
         @NotNull
         private String defaultAvatarId;
+
+        /**
+         * Account activation request lives for count of days:
+         */
+        @Min(1)
+        @Max(30)
+        private short accountActivationExpiresInDays;
+
+        /**
+         * Reset password request lives for count of days:
+         */
+        @Min(1)
+        @Max(30)
+        private short resetPasswordExpiresInDays;
     }
 
     /**

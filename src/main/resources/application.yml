@@ -45,6 +45,8 @@ internal-configuration:
   user-settings:
     avatar-size: 256
     default-avatar-id: 1729ebbd-341e-40a5-a71e-a4dcb9b9f1b5
+    account-activation-expires-in-days: 1 #expires in 1 day. min - 1, max - 30
+    reset-password-expires-in-days: 1 #expires in 1 day. min - 1, max - 30
   email-settings:
     reset-password-email-message: >
       Hello, {userFullName}!

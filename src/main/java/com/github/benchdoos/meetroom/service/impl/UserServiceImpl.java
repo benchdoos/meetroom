@@ -31,7 +31,6 @@ import com.github.benchdoos.meetroom.exceptions.InvalidCurrentPasswordException;
 import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePasswordException;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpiredException;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestIsNotActiveAnyMoreException;
-import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.UserAlreadyExistsException;
 import com.github.benchdoos.meetroom.exceptions.UserCanNotUpdateThisDataByHimselfException;
 import com.github.benchdoos.meetroom.exceptions.UserDisabledException;
@@ -43,6 +42,7 @@ import com.github.benchdoos.meetroom.repository.UserRepository;
 import com.github.benchdoos.meetroom.service.AccountActivationService;
 import com.github.benchdoos.meetroom.service.AvatarGeneratorService;
 import com.github.benchdoos.meetroom.service.EmailService;
+import com.github.benchdoos.meetroom.service.PasswordResetRequestService;
 import com.github.benchdoos.meetroom.service.UserService;
 import com.github.benchdoos.meetroom.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +54,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -64,7 +63,6 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.time.ZonedDateTime;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -81,6 +79,7 @@ public class UserServiceImpl implements UserService {
     private static final int RANDOM_PASSWORD_LENGTH = 10;
     private final UserRepository userRepository;
     private final PasswordResetRequestRepository passwordResetRequestRepository;
+    private final PasswordResetRequestService passwordResetRequestService;
     private final RoleRepository roleRepository;
     private final AvatarGeneratorService avatarGeneratorService;
     private final AccountActivationService accountActivationService;
@@ -267,26 +266,9 @@ public class UserServiceImpl implements UserService {
 
         final User user = getUserById(id);
 
-        final Collection<PasswordResetRequest> allActivePasswordResetRequests =
-                passwordResetRequestRepository.findByRequestedForAndExpiresIsAfterAndActiveIsTrue(user, requestTime);
-
-        if (!CollectionUtils.isEmpty(allActivePasswordResetRequests)) {
-            allActivePasswordResetRequests.forEach(passwordResetRequest -> passwordResetRequest.setActive(false));
-            passwordResetRequestRepository.saveAll(allActivePasswordResetRequests);
-        }
-
         final User byUsername = userRepository.findFirstByUsername(principal.getName()).orElseThrow(UserNotFoundException::new);
 
-        //todo move to service layer
-        final PasswordResetRequest passwordResetRequest = PasswordResetRequest.builder()
-                .requestedBy(byUsername)
-                .requestedFor(user)
-                .active(true)
-                .requested(requestTime)
-                .expires(requestTime.plusDays(1))
-                .build();
-
-        final PasswordResetRequest saved = passwordResetRequestRepository.save(passwordResetRequest);
+        final PasswordResetRequest saved  = passwordResetRequestService.createPasswordResetRequest(byUsername, user, requestTime);
 
         if (StringUtils.hasText(user.getEmail())) {
             emailService.sendResetPasswordNotification(configurationInfoBean.getPublicFullApplicationUrl(), user, saved);
@@ -316,8 +298,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void resetUserPasswordByResetRequest(UUID id, ResetUserPasswordDto resetUserPasswordDto) {
-        final PasswordResetRequest passwordResetRequest = passwordResetRequestRepository.findById(id)
-                .orElseThrow(PasswordResetRequestNotFoundException::new);
+        final PasswordResetRequest passwordResetRequest = passwordResetRequestService.getById((id));
 
         if (!passwordResetRequest.isActive()) {
             throw new PasswordResetRequestIsNotActiveAnyMoreException();
@@ -332,9 +313,7 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(resetUserPasswordDto.getPassword()));
 
-        passwordResetRequest.setActive(false);
-
-        passwordResetRequestRepository.save(passwordResetRequest);
+        passwordResetRequestService.deactivateRequest(passwordResetRequest);
 
         userRepository.save(user);
     }

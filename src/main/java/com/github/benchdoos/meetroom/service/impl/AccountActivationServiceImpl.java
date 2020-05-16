@@ -1,5 +1,6 @@
 package com.github.benchdoos.meetroom.service.impl;
 
+import com.github.benchdoos.meetroom.config.properties.InternalConfiguration;
 import com.github.benchdoos.meetroom.domain.AccountActivationRequest;
 import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.exceptions.AccountActivationRequestExpiredException;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class AccountActivationServiceImpl implements AccountActivationService {
     private final AccountActivationRequestRepository activationRequestRepository;
     private final UserRepository userRepository;
+    private final InternalConfiguration internalConfiguration;
 
     @Override
     public AccountActivationRequest createAccountActivationRequest(User user) {
@@ -31,7 +33,7 @@ public class AccountActivationServiceImpl implements AccountActivationService {
         final AccountActivationRequest accountActivationRequest = AccountActivationRequest.builder()
                 .requestedFor(user)
                 .requested(requested)
-                .expires(requested.plusDays(1))
+                .expires(requested.plusDays(internalConfiguration.getUserSettings().getAccountActivationExpiresInDays()))
                 .active(true)
                 .build();
 
