@@ -8,12 +8,14 @@ import com.github.benchdoos.meetroom.domain.Avatar;
 import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
 import com.github.benchdoos.meetroom.domain.Role;
 import com.github.benchdoos.meetroom.domain.User;
+import com.github.benchdoos.meetroom.domain.UserEmailUpdateRequest;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
 import com.github.benchdoos.meetroom.domain.dto.ResetUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserEmailDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
@@ -43,6 +45,7 @@ import com.github.benchdoos.meetroom.service.AccountActivationService;
 import com.github.benchdoos.meetroom.service.AvatarGeneratorService;
 import com.github.benchdoos.meetroom.service.EmailService;
 import com.github.benchdoos.meetroom.service.PasswordResetRequestService;
+import com.github.benchdoos.meetroom.service.UserEmailUpdateService;
 import com.github.benchdoos.meetroom.service.UserService;
 import com.github.benchdoos.meetroom.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
@@ -79,10 +82,11 @@ public class UserServiceImpl implements UserService {
     private static final int RANDOM_PASSWORD_LENGTH = 10;
     private final UserRepository userRepository;
     private final PasswordResetRequestRepository passwordResetRequestRepository;
-    private final PasswordResetRequestService passwordResetRequestService;
     private final RoleRepository roleRepository;
+    private final PasswordResetRequestService passwordResetRequestService;
     private final AvatarGeneratorService avatarGeneratorService;
     private final AccountActivationService accountActivationService;
+    private final UserEmailUpdateService emailUpdateService;
     private final EmailService emailService;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
@@ -222,7 +226,7 @@ public class UserServiceImpl implements UserService {
         final User user = getUserById(id);
 
         validateUsernameChange(editOtherUserDto, user);
-        validateEmailChange(editOtherUserDto, user);
+        validateEmailChange(editOtherUserDto.getEmail(), user);
 
         user.setUsername(editOtherUserDto.getUsername());
         user.setFirstName(editOtherUserDto.getFirstName());
@@ -268,7 +272,7 @@ public class UserServiceImpl implements UserService {
 
         final User byUsername = userRepository.findFirstByUsername(principal.getName()).orElseThrow(UserNotFoundException::new);
 
-        final PasswordResetRequest saved  = passwordResetRequestService.createPasswordResetRequest(byUsername, user, requestTime);
+        final PasswordResetRequest saved = passwordResetRequestService.createPasswordResetRequest(byUsername, user, requestTime);
 
         if (StringUtils.hasText(user.getEmail())) {
             emailService.sendResetPasswordNotification(configurationInfoBean.getPublicFullApplicationUrl(), user, saved);
@@ -381,12 +385,12 @@ public class UserServiceImpl implements UserService {
     /**
      * Validate email change
      *
-     * @param editOtherUserDto dto with email to change
+     * @param newEmailAddress new email to validate
      * @param user user from db
      */
-    private void validateEmailChange(EditOtherUserDto editOtherUserDto, User user) {
-        if (editOtherUserDto.getEmail() != null) {
-            final Optional<User> firstByEmail = userRepository.findFirstByEmail(editOtherUserDto.getEmail());
+    private void validateEmailChange(String newEmailAddress, User user) {
+        if (newEmailAddress != null) {
+            final Optional<User> firstByEmail = userRepository.findFirstByEmail(newEmailAddress);
             if (firstByEmail.isPresent()) {
                 if (!user.getId().equals(firstByEmail.get().getId())) {
                     throw new EmailIsAlreadyUsedException();
@@ -528,6 +532,21 @@ public class UserServiceImpl implements UserService {
         userMapper.convert(user, userPublicInfoDto);
 
         return userPublicInfoDto;
+    }
+
+    @Override
+    public void updateUserEmail(UUID userId, UpdateUserEmailDto userEmailDto) {
+        final User user = getUserById(userId);
+        validateEmailChange(userEmailDto.getNewEmail(), user);
+
+        final UserEmailUpdateRequest emailUpdateRequest = emailUpdateService.createEmailUpdateRequest(user, userEmailDto.getNewEmail());
+
+        emailService.sendEmailUpdateRequests(
+                configurationInfoBean.getPublicFullApplicationUrl(),
+                user.getEmail(),
+                userEmailDto.getNewEmail(),
+                user,
+                emailUpdateRequest);
     }
 
     /**

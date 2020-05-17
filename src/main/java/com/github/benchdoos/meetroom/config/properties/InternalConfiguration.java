@@ -60,6 +60,13 @@ public class InternalConfiguration {
         @Min(1)
         @Max(30)
         private short resetPasswordExpiresInDays;
+
+        /**
+         * User email update request lives for count of days:
+         */
+        @Min(1)
+        @Max(30)
+        private short emailUpdateRequestExpiresInDays;
     }
 
     /**
@@ -77,5 +84,11 @@ public class InternalConfiguration {
 
         @NotBlank
         private String accountActivationEmailMessage;
+
+        @NotBlank
+        private String userEmailUpdateOldMessage;
+
+        @NotBlank
+        private String userEmailUpdateNewMessage;
     }
 }

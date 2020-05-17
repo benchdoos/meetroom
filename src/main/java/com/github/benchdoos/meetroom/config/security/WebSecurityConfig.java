@@ -36,7 +36,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/login",
                         "/registration",
                         "/user/reset-password/**",
-                        "/user/activate/**").permitAll();
+                        "/user/activate/**",
+                        "/user/submit-email-update/**"
+                ).permitAll();
+
+        //public methods for api
+        httpSecurity.authorizeRequests()
+                .antMatchers("/api/v1/public/**").permitAll();
 
         //favicon
         httpSecurity.authorizeRequests()

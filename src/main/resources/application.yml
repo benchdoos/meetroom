@@ -47,6 +47,7 @@ internal-configuration:
     default-avatar-id: 1729ebbd-341e-40a5-a71e-a4dcb9b9f1b5
     account-activation-expires-in-days: 1 #expires in 1 day. min - 1, max - 30
     reset-password-expires-in-days: 1 #expires in 1 day. min - 1, max - 30
+    email-update-request-expires-in-days: 1 #expires in 1 day. min - 1, max - 30
   email-settings:
     reset-password-email-message: >
       Hello, {userFullName}!
@@ -58,6 +59,8 @@ internal-configuration:
       If link is not available, go to: {resetPasswordLink}
       <br>
       If you didn't request for password reset - ignore this email.
+      <br>
+      <a href="{meetroomMainPage}">Meetroom</a>
     account-activation-email-message: >
       Hello,  {userFullName}!
       <br>
@@ -68,6 +71,36 @@ internal-configuration:
       If link is not available, go to: {activateAccountLink}
       <br>
       If you didn't register at Meetroom - ignore this email.
+      <br>
+      <a href="{meetroomMainPage}">Meetroom</a>
+    user-email-update-old-message: >
+      Hello,  {userFullName}!
+      <br>
+      You have requested email change to: {newEmailAddress}.
+      <br>
+      You need to confirm both email addresses.
+      <br>
+      Here is your submit request link: <a href="{submitAddressLink}">confirm</a>
+      <br>
+      If link is not available, go to: {submitAddressLink}
+      <br>
+      If you didn't request your email change - change your password.
+      <br>
+      <a href="{meetroomMainPage}">Meetroom</a>
+    user-email-update-new-message: >
+      Hello,  {userFullName}!
+      <br>
+      You have requested email update to this e-mail address.
+      <br>
+      You need to confirm both email addresses.
+      <br>
+      Here is your submit request link: <a href="{submitAddressLink}">confirm</a>
+      <br>
+      If link is not available, go to: {submitAddressLink}
+      <br>
+      If you didn't request your email change - change your password.
+      <br>
+      <a href="{meetroomMainPage}">Meetroom</a>
 
 
 ---
