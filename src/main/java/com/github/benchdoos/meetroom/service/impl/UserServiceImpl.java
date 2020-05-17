@@ -71,6 +71,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Default implementation for {@link UserService}
@@ -541,14 +543,21 @@ public class UserServiceImpl implements UserService {
         userEmailDto.setNewEmail(userEmailDto.getNewEmail().toLowerCase());
 
         if (!userEmailDto.getNewEmail().equals(user.getEmail())) {
-            final UserEmailUpdateRequest emailUpdateRequest = emailUpdateService.createEmailUpdateRequest(user, userEmailDto.getNewEmail());
+            final CompletableFuture<UserEmailUpdateRequest> emailUpdateRequest = emailUpdateService.createEmailUpdateRequest(user, userEmailDto.getNewEmail());
 
-            emailService.sendEmailUpdateRequests(
-                    configurationInfoBean.getPublicFullApplicationUrl(),
-                    user.getEmail(),
-                    userEmailDto.getNewEmail(),
-                    user,
-                    emailUpdateRequest);
+            CompletableFuture.allOf(emailUpdateRequest).join();
+            try {
+                emailService.sendEmailUpdateRequests(
+                        configurationInfoBean.getPublicFullApplicationUrl(),
+                        user.getEmail(),
+                        userEmailDto.getNewEmail(),
+                        user,
+                        emailUpdateRequest.get());
+
+                log.debug("Emails has been sent");
+            } catch (InterruptedException | ExecutionException e) {
+                log.warn("Could not execute completable feature for sending", e);
+            }
         }
     }
 

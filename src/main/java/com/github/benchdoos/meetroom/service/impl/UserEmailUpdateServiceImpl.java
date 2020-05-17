@@ -11,6 +11,7 @@ import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Default email update service
@@ -33,8 +35,9 @@ public class UserEmailUpdateServiceImpl implements UserEmailUpdateService {
     private final UserRepository userRepository;
     private final InternalConfiguration internalConfiguration;
 
+    @Async
     @Override
-    public UserEmailUpdateRequest createEmailUpdateRequest(User user, String newEmailAddress) {
+    public CompletableFuture<UserEmailUpdateRequest> createEmailUpdateRequest(User user, String newEmailAddress) {
         final ZonedDateTime requestTime = ZonedDateTime.now();
 
         deactivateAllPreviousUserEmailUpdateRequests(user);
@@ -56,7 +59,7 @@ public class UserEmailUpdateServiceImpl implements UserEmailUpdateService {
             builder.oldEmailAddressActivated(false);
         }
 
-        return userEmailUpdateRequestRepository.save(builder.build());
+        return CompletableFuture.completedFuture(userEmailUpdateRequestRepository.save(builder.build()));
     }
 
     @Transactional

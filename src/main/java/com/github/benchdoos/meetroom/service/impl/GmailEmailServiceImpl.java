@@ -72,6 +72,7 @@ public class GmailEmailServiceImpl implements EmailService {
         log.debug("Successfully sent activation account notification for user: {}", user.getUsername());
     }
 
+    @Async
     @Override
     public void sendEmailUpdateRequests(String publicFullApplicationUrl,
                                         String oldEmail,

@@ -4,6 +4,7 @@ import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.UserEmailUpdateRequest;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Service to operate with email updates
@@ -17,7 +18,7 @@ public interface UserEmailUpdateService {
      * @param newEmailAddress new address
      * @return request
      */
-    UserEmailUpdateRequest createEmailUpdateRequest(User user, String newEmailAddress);
+    CompletableFuture<UserEmailUpdateRequest> createEmailUpdateRequest(User user, String newEmailAddress);
 
     /**
      * Submit email change by {@link UserEmailUpdateRequest#getOldEmailConfirmation()} or
