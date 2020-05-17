@@ -24,8 +24,6 @@ public class UserEmailUpdateRequestDto {
 
     private ZonedDateTime expires;
 
-    private UserPublicInfoDto requestedFor;
-
     private boolean oldEmailAddressActivated;
 
     private boolean newEmailAddressActivated;
