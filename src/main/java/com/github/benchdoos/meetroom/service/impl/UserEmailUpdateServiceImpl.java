@@ -7,6 +7,7 @@ import com.github.benchdoos.meetroom.exceptions.UserEmailUpdateRequestNotFoundOr
 import com.github.benchdoos.meetroom.repository.UserEmailUpdateRequestRepository;
 import com.github.benchdoos.meetroom.repository.UserRepository;
 import com.github.benchdoos.meetroom.service.UserEmailUpdateService;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
@@ -38,17 +39,24 @@ public class UserEmailUpdateServiceImpl implements UserEmailUpdateService {
 
         deactivateAllPreviousUserEmailUpdateRequests(user);
 
-        final UserEmailUpdateRequest toSave = UserEmailUpdateRequest.builder()
+        final UserEmailUpdateRequest.UserEmailUpdateRequestBuilder builder = UserEmailUpdateRequest.builder()
                 .requestedFor(user)
                 .requested(requestTime)
                 .expires(requestTime.plusDays(internalConfiguration.getUserSettings().getEmailUpdateRequestExpiresInDays()))
                 .newEmailAddress(newEmailAddress)
                 .newEmailAddressActivated(false) //important
-                .oldEmailAddressActivated(false) //important
-                .active(true)
-                .build();
+                .newEmailConfirmation(UUID.randomUUID())
+                .active(true);
 
-        return userEmailUpdateRequestRepository.save(toSave);
+        if (StringUtils.isEmpty(user.getEmail())) {
+            builder.oldEmailConfirmation(null); // prevents problems if user has not email
+            builder.oldEmailAddressActivated(true);
+        } else {
+            builder.oldEmailConfirmation(UUID.randomUUID());
+            builder.oldEmailAddressActivated(false);
+        }
+
+        return userEmailUpdateRequestRepository.save(builder.build());
     }
 
     @Transactional
@@ -60,9 +68,15 @@ public class UserEmailUpdateServiceImpl implements UserEmailUpdateService {
         final UserEmailUpdateRequest request = userEmailUpdateRequestRepository.findOne(specification) // more records not expected
                 .orElseThrow(UserEmailUpdateRequestNotFoundOrNotActiveException::new);
 
-        if (request.getOldEmailConfirmation().equals(emailId)) {
+        if (request.getOldEmailConfirmation() != null) {
+            if (request.getOldEmailConfirmation().equals(emailId)) {
+                request.setOldEmailAddressActivated(true);
+            }
+        } else {
             request.setOldEmailAddressActivated(true);
-        } else if (request.getNewEmailConfirmation().equals(emailId)) {
+        }
+
+        if (request.getNewEmailConfirmation().equals(emailId)) {
             request.setNewEmailAddressActivated(true);
         }
 

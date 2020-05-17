@@ -45,11 +45,9 @@ public class UserEmailUpdateRequest {
     private User requestedFor;
 
     @Column(unique = true)
-    @GeneratedValue
     private UUID oldEmailConfirmation;
 
     @Column(unique = true)
-    @GeneratedValue
     private UUID newEmailConfirmation;
 
     @Email

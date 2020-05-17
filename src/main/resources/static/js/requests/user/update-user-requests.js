@@ -127,3 +127,31 @@ function updateUserPassword(context, targetErrorObjectId, userId, updateUserPass
         }
     });
 }
+
+/**
+ * Update user email address
+ *
+ * @param context root url
+ * @param targetErrorObjectId for erros
+ * @param userId id of user
+ * @param newUserEmail new user email
+ */
+function updateUserEmail(context, targetErrorObjectId, userId, newUserEmail) {
+    let url = getApiV1Context(context) + "/user/update-email/" + userId;
+    console.log(url, userId);
+
+    let updateUserEmailDto = new UpdateUserEmailDto(newUserEmail);
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(updateUserEmailDto),
+        contentType: "application/json",
+        success: function (output, status, xhr) {
+            location.reload();
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $('#' + targetErrorObjectId).html(XMLHttpRequest.responseJSON.message).show();
+        }
+    });
+}

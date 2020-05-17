@@ -538,15 +538,18 @@ public class UserServiceImpl implements UserService {
     public void updateUserEmail(UUID userId, UpdateUserEmailDto userEmailDto) {
         final User user = getUserById(userId);
         validateEmailChange(userEmailDto.getNewEmail(), user);
+        userEmailDto.setNewEmail(userEmailDto.getNewEmail().toLowerCase());
 
-        final UserEmailUpdateRequest emailUpdateRequest = emailUpdateService.createEmailUpdateRequest(user, userEmailDto.getNewEmail());
+        if (!userEmailDto.getNewEmail().equals(user.getEmail())) {
+            final UserEmailUpdateRequest emailUpdateRequest = emailUpdateService.createEmailUpdateRequest(user, userEmailDto.getNewEmail());
 
-        emailService.sendEmailUpdateRequests(
-                configurationInfoBean.getPublicFullApplicationUrl(),
-                user.getEmail(),
-                userEmailDto.getNewEmail(),
-                user,
-                emailUpdateRequest);
+            emailService.sendEmailUpdateRequests(
+                    configurationInfoBean.getPublicFullApplicationUrl(),
+                    user.getEmail(),
+                    userEmailDto.getNewEmail(),
+                    user,
+                    emailUpdateRequest);
+        }
     }
 
     /**

@@ -80,19 +80,22 @@ public class GmailEmailServiceImpl implements EmailService {
                                         UserEmailUpdateRequest emailUpdateRequest) {
 
         final String subject = "Meetroom - Update email request";
-
-        final String oldEmailMessage = internalConfiguration.getEmailSettings().getUserEmailUpdateOldMessage()
-                .replaceAll("\\{userFullName\\}", user.getFirstName() + " " + user.getLastName())
-                .replaceAll("\\{submitAddressLink\\}", createEmailUpdateSubmitLink(publicFullApplicationUrl, emailUpdateRequest.getOldEmailConfirmation()))
-                .replaceAll("\\{meetroomMainPage\\}", publicFullApplicationUrl);
-
-        final String newEmailMessage = internalConfiguration.getEmailSettings().getUserEmailUpdateOldMessage()
-                .replaceAll("\\{userFullName\\}", user.getFirstName() + " " + user.getLastName())
-                .replaceAll("\\{submitAddressLink\\}", createEmailUpdateSubmitLink(publicFullApplicationUrl, emailUpdateRequest.getOldEmailConfirmation()))
-                .replaceAll("\\{meetroomMainPage\\}", publicFullApplicationUrl);
-
         try {
-            sendEmailToUser(oldEmail, subject, oldEmailMessage);
+
+            if (emailUpdateRequest.getOldEmailConfirmation() != null) { //can be null if user had no email first
+                final String oldEmailMessage = internalConfiguration.getEmailSettings().getUserEmailUpdateOldMessage()
+                        .replaceAll("\\{userFullName\\}", user.getFirstName() + " " + user.getLastName())
+                        .replaceAll("\\{newEmailAddress\\}", newEmail)
+                        .replaceAll("\\{submitAddressLink\\}", createEmailUpdateSubmitLink(publicFullApplicationUrl, emailUpdateRequest.getOldEmailConfirmation()))
+                        .replaceAll("\\{meetroomMainPage\\}", publicFullApplicationUrl);
+                sendEmailToUser(oldEmail, subject, oldEmailMessage);
+            }
+
+            final String newEmailMessage = internalConfiguration.getEmailSettings().getUserEmailUpdateNewMessage()
+                    .replaceAll("\\{userFullName\\}", user.getFirstName() + " " + user.getLastName())
+                    .replaceAll("\\{submitAddressLink\\}", createEmailUpdateSubmitLink(publicFullApplicationUrl, emailUpdateRequest.getNewEmailConfirmation()))
+                    .replaceAll("\\{meetroomMainPage\\}", publicFullApplicationUrl);
+
             sendEmailToUser(newEmail, subject, newEmailMessage);
         } catch (final MessagingException e) {
             log.warn("Could not send message to user: {}", user.getUsername(), e);

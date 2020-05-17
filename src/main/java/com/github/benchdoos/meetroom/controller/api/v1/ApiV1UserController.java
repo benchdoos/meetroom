@@ -1,7 +1,7 @@
 package com.github.benchdoos.meetroom.controller.api.v1;
 
 import com.github.benchdoos.meetroom.config.constants.ApiConstants;
-import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserEmailDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
@@ -10,6 +10,7 @@ import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.exceptions.PermissionDeniedForActionException;
 import com.github.benchdoos.meetroom.exceptions.UserInformationCanOnlyBeUpdatedByItsOwnerException;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
+import com.github.benchdoos.meetroom.service.UserEmailUpdateService;
 import com.github.benchdoos.meetroom.service.UserService;
 import com.github.benchdoos.meetroom.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ import java.util.UUID;
 public class ApiV1UserController {
     private final UserService userService;
     private final UserMapper userMapper;
+    private final UserEmailUpdateService userEmailUpdateService;
 
     /**
      * Get extended info about user by id
@@ -147,15 +149,23 @@ public class ApiV1UserController {
     }
 
     /**
-     * Register user. Needs activation.
+     * Create update email request
      *
-     * @param createUserDto with user credentials
-     * @return user info
+     * @param userId user id
+     * @param userEmailDto dto with new email info
      */
-    @PreAuthorize("isAnonymous()")
-    @PostMapping("/registration")
-    public UserPublicInfoDto registerUser(@RequestBody @Valid CreateUserDto createUserDto) {
-        return userService.createUser(createUserDto);
+    @PreAuthorize("hasAnyAuthority('USER:USE')")
+    @PostMapping("/update-email/{userId}")
+    public void updateUserEmail(@PathVariable("userId") UUID userId,
+                                @RequestBody UpdateUserEmailDto userEmailDto,
+                                Principal principal) {
+        final boolean owner = UserUtils.checkPrincipalToGivenId(principal, userId);
+
+        if (!owner) {
+            throw new UserInformationCanOnlyBeUpdatedByItsOwnerException();
+        }
+
+        userService.updateUserEmail(userId, userEmailDto);
     }
 
 
