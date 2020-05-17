@@ -241,7 +241,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button id="update-user-email-submit-button" type="button" class="btn btn-primary"
+                    <button id="update-user-email-submit-button"
+                            class="btn btn-primary"
+                            type="button"
+                            onclick="submitEmailUpdateForm()"
                             form="update-user-username-form">
                         Save changes
                     </button>
@@ -255,10 +258,19 @@
         var user = [[${user}]];
         /*]]>*/
 
+        function submitEmailUpdateForm() {
+            let newEmail = $('#update-user-email').val();
+            updateUserEmail(contextRoot, 'update-user-email-form', 'updateUserEmailModalAlert', user.id, newEmail);
+        }
+
         $(function () {
+            $('#update-user-email-form').submit(function (e) {
+                e.preventDefault();
+                submitEmailUpdateForm();
+            });
+
             $('#update-user-email-submit-button').click(function (e) {
-                let newEmail = $('#update-user-email').val();
-                updateUserEmail(contextRoot, 'update-user-email-form', 'updateUserEmailModalAlert', user.id, newEmail);
+                submitEmailUpdateForm();
             })
         });
     </script>

@@ -155,14 +155,7 @@ function updateUserEmail(context, formId, targetErrorObjectId, userId, newUserEm
 
             let errors = XMLHttpRequest.responseJSON.errors;
             if (errors) {
-                if (errors.length > 0) {
-                    errors.forEach(error => {
-                        let field = error.field;
-                        let defaultMessage = error.defaultMessage;
-                        let fieldInput = $('#' + formId + ' input[name ="' + field + '"]');
-                        fieldInput.next().show().text(defaultMessage);
-                    });
-                }
+                appendValidationErrors(errors, formId);
             }
         }
     });
