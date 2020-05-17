@@ -225,14 +225,17 @@
                 <div class="modal-body">
                     <div id="updateUserEmailModalAlert" class="alert alert-danger" role="alert"
                          style="display: none"></div>
-                    <form id="update-user-email-form">
-                        <div class="input-group mb-3">
-                            <input id="update-user-email" type="text"
+                    <form id="update-user-email-form" novalidate>
+                        <div class="input-group mb-3" style="display: inline-grid">
+                            <input id="update-user-email"
+                                   type="email"
                                    class="form-control"
-                                   placeholder="Username"
-                                   aria-label="Username"
-                                   aria-describedby="basic-addon1"
+                                   placeholder="E-mail"
+                                   aria-label="E-mail"
+                                   name="newEmail"
+                                   required
                                    th:value="${user.email}">
+                            <span class='text-danger noselect' style="display: none"></span>
                         </div>
                     </form>
                 </div>
@@ -252,12 +255,12 @@
         var user = [[${user}]];
         /*]]>*/
 
-            $(function () {
-                $('#update-user-email-submit-button').click(function (e) {
-                    let newEmail = $('#update-user-email').val();
-                    updateUserEmail(contextRoot, 'updateUserEmailModalAlert', user.id, newEmail);
-                })
-            });
+        $(function () {
+            $('#update-user-email-submit-button').click(function (e) {
+                let newEmail = $('#update-user-email').val();
+                updateUserEmail(contextRoot, 'update-user-email-form', 'updateUserEmailModalAlert', user.id, newEmail);
+            })
+        });
     </script>
 </div>
 

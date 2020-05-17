@@ -136,7 +136,7 @@ function updateUserPassword(context, targetErrorObjectId, userId, updateUserPass
  * @param userId id of user
  * @param newUserEmail new user email
  */
-function updateUserEmail(context, targetErrorObjectId, userId, newUserEmail) {
+function updateUserEmail(context, formId, targetErrorObjectId, userId, newUserEmail) {
     let url = getApiV1Context(context) + "/user/update-email/" + userId;
     console.log(url, userId);
 
@@ -152,6 +152,18 @@ function updateUserEmail(context, targetErrorObjectId, userId, newUserEmail) {
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             $('#' + targetErrorObjectId).html(XMLHttpRequest.responseJSON.message).show();
+
+            let errors = XMLHttpRequest.responseJSON.errors;
+            if (errors) {
+                if (errors.length > 0) {
+                    errors.forEach(error => {
+                        let field = error.field;
+                        let defaultMessage = error.defaultMessage;
+                        let fieldInput = $('#' + formId + ' input[name ="' + field + '"]');
+                        fieldInput.next().show().text(defaultMessage);
+                    });
+                }
+            }
         }
     });
 }

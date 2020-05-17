@@ -157,7 +157,7 @@ public class ApiV1UserController {
     @PreAuthorize("hasAnyAuthority('USER:USE')")
     @PostMapping("/update-email/{userId}")
     public void updateUserEmail(@PathVariable("userId") UUID userId,
-                                @RequestBody UpdateUserEmailDto userEmailDto,
+                                @RequestBody @Valid UpdateUserEmailDto userEmailDto,
                                 Principal principal) {
         final boolean owner = UserUtils.checkPrincipalToGivenId(principal, userId);
 
