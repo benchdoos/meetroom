@@ -35,12 +35,14 @@ $(document).ready(function () {
  * @param {string} formId where to find fields by names
  */
 function appendValidationErrors(errors, formId) {
-    if (errors.length > 0) {
-        errors.forEach(error => {
-            let field = error.field;
-            let defaultMessage = error.defaultMessage;
-            let fieldInput = $('#' + formId + ' input[name ="' + field + '"]');
-            fieldInput.next().show().text(defaultMessage);
-        });
+    if (errors) {
+        if (errors.length > 0) {
+            errors.forEach(error => {
+                let field = error.field;
+                let defaultMessage = error.defaultMessage;
+                let fieldInput = $('#' + formId + ' input[name ="' + field + '"]');
+                fieldInput.next().show().text(defaultMessage);
+            });
+        }
     }
 }

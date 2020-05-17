@@ -84,7 +84,7 @@ function updateUserAvatarImage(url, targetObjectId) {
  * @param targetErrorObjectId target object to display errors
  * @param userUpdateInfoDto dto with new info
  */
-function updateUserInfo(context, userId, targetErrorObjectId, userUpdateInfoDto) {
+function updateUserInfo(context, userId, formId, targetErrorObjectId, userUpdateInfoDto) {
     let url = getApiV1Context(context) + "/user/update/" + userId;
     console.log(url, userId, userUpdateInfoDto);
 
@@ -97,7 +97,10 @@ function updateUserInfo(context, userId, targetErrorObjectId, userUpdateInfoDto)
             location.reload();
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            $('#' + targetErrorObjectId).html(XMLHttpRequest.responseJSON.message).show();
+            let responseJSON = XMLHttpRequest.responseJSON;
+            $('#' + targetErrorObjectId).html(responseJSON.message).show();
+
+            appendValidationErrors(responseJSON.errors, formId);
         }
     });
 }
@@ -151,12 +154,11 @@ function updateUserEmail(context, formId, targetErrorObjectId, userId, newUserEm
             location.reload();
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            $('#' + targetErrorObjectId).html(XMLHttpRequest.responseJSON.message).show();
+            let responseJSON = XMLHttpRequest.responseJSON;
+            $('#' + targetErrorObjectId).html(responseJSON.message).show();
 
-            let errors = XMLHttpRequest.responseJSON.errors;
-            if (errors) {
-                appendValidationErrors(errors, formId);
-            }
+            let errors = responseJSON.errors;
+            appendValidationErrors(errors, formId);
         }
     });
 }
