@@ -16,11 +16,9 @@ function getApiV1Context(context) {
  */
 function updateUserUsername(context, targetErrorObjectId, changeUsernameDto) {
     let url = getApiV1Context(context) + "/user/update-username";
+    console.log("updateUserUsername", url);
 
     $('#' + targetErrorObjectId).html("").hide();
-
-    console.log("URL: ", url);
-    console.log("DTO:", changeUsernameDto);
 
     $.ajax({
         type: 'POST',
@@ -86,7 +84,7 @@ function updateUserAvatarImage(url, targetObjectId) {
  */
 function updateUserInfo(context, userId, formId, targetErrorObjectId, userUpdateInfoDto) {
     let url = getApiV1Context(context) + "/user/update/" + userId;
-    console.log(url, userId, userUpdateInfoDto);
+    console.log("updateUserInfo", url);
 
     $.ajax({
         type: 'POST',
@@ -115,7 +113,7 @@ function updateUserInfo(context, userId, formId, targetErrorObjectId, userUpdate
  */
 function updateUserPassword(context, targetErrorObjectId, userId, updateUserPasswordDto) {
     let url = getApiV1Context(context) + "/user/update-password/" + userId;
-    console.log(url, userId);
+    console.log("updateUserPassword", url);
 
     $.ajax({
         type: 'POST',
@@ -141,7 +139,7 @@ function updateUserPassword(context, targetErrorObjectId, userId, updateUserPass
  */
 function updateUserEmail(context, formId, targetErrorObjectId, userId, newUserEmail) {
     let url = getApiV1Context(context) + "/user/update-email/" + userId;
-    console.log(url, userId);
+    console.log("updateUserEmail", url);
 
     let updateUserEmailDto = new UpdateUserEmailDto(newUserEmail);
 
