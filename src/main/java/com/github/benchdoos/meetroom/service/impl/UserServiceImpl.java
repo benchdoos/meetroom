@@ -186,8 +186,10 @@ public class UserServiceImpl implements UserService {
         final User savedUser = userRepository.save(user);
         log.info("Successfully created user with username: {}", savedUser.getUsername());
 
+        final String publicFullApplicationUrl = configurationInfoBean.getPublicFullApplicationUrl();
+
         final AccountActivationRequest accountActivationRequest = accountActivationService.createAccountActivationRequest(savedUser);
-        emailService.sendAccountActivation(configurationInfoBean.getPublicFullApplicationUrl(), savedUser, accountActivationRequest);
+        emailService.sendAccountActivation(publicFullApplicationUrl, savedUser, accountActivationRequest);
 
         final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
         userMapper.convert(savedUser, userPublicInfoDto);
