@@ -14,10 +14,6 @@ create table user_email_update_requests
     primary key (id)
 );
 
---Adding foreign key
-alter table if exists user_email_update_requests
-    add constraint FKhl1oervmqgd92cvnfd083smj6 foreign key (requested_for_id) references users;
-
 --Adding unique constraint for new email
 alter table if exists user_email_update_requests
     add constraint UK_nti60rmf7e4hunq38ig2hxd4b unique (new_email_confirmation);
