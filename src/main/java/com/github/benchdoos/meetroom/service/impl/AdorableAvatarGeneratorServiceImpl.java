@@ -7,9 +7,9 @@ import com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType;
 import com.github.benchdoos.meetroom.service.AvatarGeneratorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Base64Utils;
 
 import javax.validation.constraints.NotNull;
-import java.util.Base64;
 import java.util.UUID;
 
 /**
@@ -30,7 +30,7 @@ public class AdorableAvatarGeneratorServiceImpl implements AvatarGeneratorServic
     @Override
     public UserAvatarDto generateAvatarForString(@NotNull String key, int size) {
         final byte[] avatarByKey = avatarGeneratorClient.getAvatarByKey(key, size);
-        final byte[] encode = Base64.getEncoder().encode(avatarByKey);
-        return new UserAvatarDto(AvatarDataType.BASE64, UsersConstants.BASE64_PNG_IMAGE_PREFIX + new String(encode));
+        final String encode = Base64Utils.encodeToString(avatarByKey); //todo fix 3a issue
+        return new UserAvatarDto(AvatarDataType.BASE64, UsersConstants.BASE64_PNG_IMAGE_PREFIX + encode);
     }
 }
