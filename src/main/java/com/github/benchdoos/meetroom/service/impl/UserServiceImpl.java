@@ -8,12 +8,15 @@ import com.github.benchdoos.meetroom.domain.Avatar;
 import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
 import com.github.benchdoos.meetroom.domain.Role;
 import com.github.benchdoos.meetroom.domain.User;
+import com.github.benchdoos.meetroom.domain.UserEmailUpdateRequest;
+import com.github.benchdoos.meetroom.domain.annotations.validators.EmailValidator;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
 import com.github.benchdoos.meetroom.domain.dto.ResetUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserEmailDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
@@ -27,11 +30,11 @@ import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHim
 import com.github.benchdoos.meetroom.exceptions.EmailAlreadyExistsException;
 import com.github.benchdoos.meetroom.exceptions.EmailIsAlreadyUsedException;
 import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
+import com.github.benchdoos.meetroom.exceptions.InvalidAvatarDataException;
 import com.github.benchdoos.meetroom.exceptions.InvalidCurrentPasswordException;
 import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePasswordException;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpiredException;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestIsNotActiveAnyMoreException;
-import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.UserAlreadyExistsException;
 import com.github.benchdoos.meetroom.exceptions.UserCanNotUpdateThisDataByHimselfException;
 import com.github.benchdoos.meetroom.exceptions.UserDisabledException;
@@ -43,6 +46,8 @@ import com.github.benchdoos.meetroom.repository.UserRepository;
 import com.github.benchdoos.meetroom.service.AccountActivationService;
 import com.github.benchdoos.meetroom.service.AvatarGeneratorService;
 import com.github.benchdoos.meetroom.service.EmailService;
+import com.github.benchdoos.meetroom.service.PasswordResetRequestService;
+import com.github.benchdoos.meetroom.service.UserEmailUpdateService;
 import com.github.benchdoos.meetroom.service.UserService;
 import com.github.benchdoos.meetroom.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +59,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -64,12 +68,17 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.time.ZonedDateTime;
-import java.util.Collection;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
+import static com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType.BASE64;
+import static com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType.GRAVATAR;
 
 /**
  * Default implementation for {@link UserService}
@@ -82,8 +91,10 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordResetRequestRepository passwordResetRequestRepository;
     private final RoleRepository roleRepository;
+    private final PasswordResetRequestService passwordResetRequestService;
     private final AvatarGeneratorService avatarGeneratorService;
     private final AccountActivationService accountActivationService;
+    private final UserEmailUpdateService emailUpdateService;
     private final EmailService emailService;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
@@ -223,7 +234,7 @@ public class UserServiceImpl implements UserService {
         final User user = getUserById(id);
 
         validateUsernameChange(editOtherUserDto, user);
-        validateEmailChange(editOtherUserDto, user);
+        validateEmailChange(editOtherUserDto.getEmail(), user);
 
         user.setUsername(editOtherUserDto.getUsername());
         user.setFirstName(editOtherUserDto.getFirstName());
@@ -267,26 +278,9 @@ public class UserServiceImpl implements UserService {
 
         final User user = getUserById(id);
 
-        final Collection<PasswordResetRequest> allActivePasswordResetRequests =
-                passwordResetRequestRepository.findByRequestedForAndExpiresIsAfterAndActiveIsTrue(user, requestTime);
-
-        if (!CollectionUtils.isEmpty(allActivePasswordResetRequests)) {
-            allActivePasswordResetRequests.forEach(passwordResetRequest -> passwordResetRequest.setActive(false));
-            passwordResetRequestRepository.saveAll(allActivePasswordResetRequests);
-        }
-
         final User byUsername = userRepository.findFirstByUsername(principal.getName()).orElseThrow(UserNotFoundException::new);
 
-        //todo move to service layer
-        final PasswordResetRequest passwordResetRequest = PasswordResetRequest.builder()
-                .requestedBy(byUsername)
-                .requestedFor(user)
-                .active(true)
-                .requested(requestTime)
-                .expires(requestTime.plusDays(1))
-                .build();
-
-        final PasswordResetRequest saved = passwordResetRequestRepository.save(passwordResetRequest);
+        final PasswordResetRequest saved = passwordResetRequestService.createPasswordResetRequest(byUsername, user, requestTime);
 
         if (StringUtils.hasText(user.getEmail())) {
             emailService.sendResetPasswordNotification(configurationInfoBean.getPublicFullApplicationUrl(), user, saved);
@@ -316,8 +310,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void resetUserPasswordByResetRequest(UUID id, ResetUserPasswordDto resetUserPasswordDto) {
-        final PasswordResetRequest passwordResetRequest = passwordResetRequestRepository.findById(id)
-                .orElseThrow(PasswordResetRequestNotFoundException::new);
+        final PasswordResetRequest passwordResetRequest = passwordResetRequestService.getById((id));
 
         if (!passwordResetRequest.isActive()) {
             throw new PasswordResetRequestIsNotActiveAnyMoreException();
@@ -328,13 +321,11 @@ public class UserServiceImpl implements UserService {
         }
 
         final User user = passwordResetRequest.getRequestedFor();
-        user.setNeedActivation(false);
+        user.setNeedActivation(false); //todo analyze, probably can be removed
 
         user.setPassword(passwordEncoder.encode(resetUserPasswordDto.getPassword()));
 
-        passwordResetRequest.setActive(false);
-
-        passwordResetRequestRepository.save(passwordResetRequest);
+        passwordResetRequestService.deactivateRequest(passwordResetRequest);
 
         userRepository.save(user);
     }
@@ -402,12 +393,12 @@ public class UserServiceImpl implements UserService {
     /**
      * Validate email change
      *
-     * @param editOtherUserDto dto with email to change
+     * @param newEmailAddress new email to validate
      * @param user user from db
      */
-    private void validateEmailChange(EditOtherUserDto editOtherUserDto, User user) {
-        if (editOtherUserDto.getEmail() != null) {
-            final Optional<User> firstByEmail = userRepository.findFirstByEmail(editOtherUserDto.getEmail());
+    private void validateEmailChange(String newEmailAddress, User user) {
+        if (newEmailAddress != null) {
+            final Optional<User> firstByEmail = userRepository.findFirstByEmail(newEmailAddress);
             if (firstByEmail.isPresent()) {
                 if (!user.getId().equals(firstByEmail.get().getId())) {
                     throw new EmailIsAlreadyUsedException();
@@ -551,6 +542,31 @@ public class UserServiceImpl implements UserService {
         return userPublicInfoDto;
     }
 
+    @Override
+    public void updateUserEmail(UUID userId, UpdateUserEmailDto userEmailDto) {
+        final User user = getUserById(userId);
+        validateEmailChange(userEmailDto.getNewEmail(), user);
+        userEmailDto.setNewEmail(userEmailDto.getNewEmail().toLowerCase());
+
+        if (!userEmailDto.getNewEmail().equals(user.getEmail())) {
+            final CompletableFuture<UserEmailUpdateRequest> emailUpdateRequest = emailUpdateService.createEmailUpdateRequest(user, userEmailDto.getNewEmail());
+
+            CompletableFuture.allOf(emailUpdateRequest).join();
+            try {
+                emailService.sendEmailUpdateRequests(
+                        configurationInfoBean.getPublicFullApplicationUrl(),
+                        user.getEmail(),
+                        userEmailDto.getNewEmail(),
+                        user,
+                        emailUpdateRequest.get());
+
+                log.debug("Emails has been sent");
+            } catch (InterruptedException | ExecutionException e) {
+                log.warn("Could not execute completable feature for sending", e);
+            }
+        }
+    }
+
     /**
      * Validate avatar data by given avatar type
      *
@@ -559,10 +575,27 @@ public class UserServiceImpl implements UserService {
     private void validateAvatar(UpdateUserAvatarDto updateUserAvatar) {
         switch (updateUserAvatar.getType()) {
             case GRAVATAR:
-                //todo validate email
+
+                if (StringUtils.isEmpty(updateUserAvatar.getData())) { //prevents empty strings
+                    throw new InvalidAvatarDataException(GRAVATAR);
+                }
+
+                final EmailValidator emailValidator = new EmailValidator();
+                final boolean valid = emailValidator.isValid(updateUserAvatar.getData(), null); //todo find nice solution
+                if (!valid) {
+                    throw new InvalidAvatarDataException(GRAVATAR);
+                }
+
                 break;
             case BASE64:
-                //todo validate base64
+
+                try {
+                    Base64.getDecoder().decode(updateUserAvatar.getData());
+                } catch (final IllegalArgumentException e) {
+                    log.warn("Could not decode base64 string on validation.", e);
+                    throw new InvalidAvatarDataException(BASE64);
+                }
+
                 break;
         }
     }

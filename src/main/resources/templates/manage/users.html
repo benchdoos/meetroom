@@ -89,7 +89,6 @@
                     <span th:each="role,iterStat : ${user.roles}" th:if="${iterStat.index <= 5}">
                         <div th:include="modal/modal-role :: fr-role-label"></div>
                     </span>
-                <!--todo: iterate role names like: ROLE_ADMIN ROLE_USER ...-->
                 <a th:href="@{/user/{username}(username = ${user.username})}">
                     <span th:if="${#lists.size(user.roles)>5}"
                           class="badge badge-info" data-toggle="tooltip" data-placement="top"

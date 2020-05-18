@@ -84,7 +84,7 @@ function updateUserAvatarImage(url, targetObjectId) {
  * @param targetErrorObjectId target object to display errors
  * @param userUpdateInfoDto dto with new info
  */
-function updateUserInfo(context, userId, targetErrorObjectId, userUpdateInfoDto) {
+function updateUserInfo(context, userId, formId, targetErrorObjectId, userUpdateInfoDto) {
     let url = getApiV1Context(context) + "/user/update/" + userId;
     console.log(url, userId, userUpdateInfoDto);
 
@@ -97,7 +97,10 @@ function updateUserInfo(context, userId, targetErrorObjectId, userUpdateInfoDto)
             location.reload();
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            $('#' + targetErrorObjectId).html(XMLHttpRequest.responseJSON.message).show();
+            let responseJSON = XMLHttpRequest.responseJSON;
+            $('#' + targetErrorObjectId).html(responseJSON.message).show();
+
+            appendValidationErrors(responseJSON.errors, formId);
         }
     });
 }
@@ -124,6 +127,38 @@ function updateUserPassword(context, targetErrorObjectId, userId, updateUserPass
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             $('#' + targetErrorObjectId).html(XMLHttpRequest.responseJSON.message).show();
+        }
+    });
+}
+
+/**
+ * Update user email address
+ *
+ * @param context root url
+ * @param targetErrorObjectId for erros
+ * @param userId id of user
+ * @param newUserEmail new user email
+ */
+function updateUserEmail(context, formId, targetErrorObjectId, userId, newUserEmail) {
+    let url = getApiV1Context(context) + "/user/update-email/" + userId;
+    console.log(url, userId);
+
+    let updateUserEmailDto = new UpdateUserEmailDto(newUserEmail);
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(updateUserEmailDto),
+        contentType: "application/json",
+        success: function (output, status, xhr) {
+            location.reload();
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            let responseJSON = XMLHttpRequest.responseJSON;
+            $('#' + targetErrorObjectId).html(responseJSON.message).show();
+
+            let errors = responseJSON.errors;
+            appendValidationErrors(errors, formId);
         }
     });
 }
