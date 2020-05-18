@@ -36,11 +36,6 @@
             </a>
         </div>
 
-        <div th:switch="${user.enabled}">
-            <span th:case="${false}" class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="top"
-                  title="Account disabled">Disabled</span>
-        </div>
-
         <div th:if="${user.username} == ${#authentication.getPrincipal().getUsername()}">
             <div th:include="modal/modal-user :: fr-user-edit-menu"></div>
         </div>
@@ -53,7 +48,8 @@
                         value="Sign Out"
                         data-toggle="tooltip"
                         data-placement="bottom"
-                        title="Sing out from your account">Sign out</button>
+                        title="Sing out from your account">Sign out
+                </button>
             </form>
 
             <div th:if="${user.username} != ${#authentication.getPrincipal().getUsername()}">
@@ -86,8 +82,22 @@
             <h1 class="display-4">
                 <span id="firstName" th:text="${user.firstName}"></span>
                 <span id="lastName" th:text="${user.lastName}"></span>
+                <span th:if="${user.enabled == false}"
+                      class="noselect notify-badge"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Account disabled"> Disabled</span>
             </h1>
-            <p class="lead">@<span id="username" th:text="${user.username}"></span></p>
+            <p class="lead">
+                <span>
+                    @<span id="username" th:text="${user.username}"></span>
+                </span>
+                <br>
+                <span th:if="${user.email != null}">
+                    <a th:href="|mailto:${user.email}|"
+                       th:text="${user.email}"></a>
+                </span>
+            </p>
         </div>
     </div>
     <div class="container" style="display: flex; padding-top: 10px">
@@ -125,16 +135,9 @@
 <div th:include="modal/modal-user :: fr-update-user"></div>
 <div th:include="modal/modal-user :: fr-user-update-password"></div>
 <div th:include="modal/modal-user :: fr-user-update-username"></div>
+<div th:include="modal/modal-user :: fr-user-update-email"></div>
 <div th:include="modal/modal-user :: fr-user-update-avatar"></div>
 <!--/Modals-->
 
-<script th:inline="javascript">
-    // var userAvatar = [[${user.avatar}]];
-    // $(document).ready(function () {
-    //     $("#update-avatar-link").click(function () {
-    //         $("#avatar-generated-preview").attr("src", userAvatar.src);
-    //     })
-    // })
-</script>
 </body>
 </html>

@@ -72,7 +72,7 @@ public class UserManageController {
     public String editUser(@PathVariable("id") UUID id,
                            @ModelAttribute("editUser") @Valid EditOtherUserDto editOtherUserDto) {
 
-        userService.editOtherUser(id, editOtherUserDto);
+        userService.updateOtherUser(id, editOtherUserDto);
 
         return "redirect:/manage/users";
     }

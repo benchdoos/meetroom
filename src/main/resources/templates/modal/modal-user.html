@@ -28,6 +28,7 @@
                 Change username
             </button>
             <button class="dropdown-item" data-toggle="modal" data-target="#updateUserPassword">Update password</button>
+            <button class="dropdown-item" data-toggle="modal" data-target="#updateUserEmail">Update email</button>
         </div>
     </div>
 </div>
@@ -53,6 +54,7 @@
                                    name="firstName"
                                    placeholder="First name"
                                    class="form-control">
+                            <span class='text-danger noselect' style="display: none"></span>
                         </div>
                         <div class="form-group">
                             <label for="update-user-lastName">Last name:</label>
@@ -60,6 +62,7 @@
                                    name="lastName"
                                    placeholder="Last name"
                                    class="form-control">
+                            <span class='text-danger noselect' style="display: none"></span>
                         </div>
                     </form>
                 </div>
@@ -83,7 +86,7 @@
 
                 let updateUserDto = new UpdateUserInfoDto(firstName, lastName);
 
-                updateUserInfo(contextRoot, user.id, 'editUserInfoModalAlert', updateUserDto);
+                updateUserInfo(contextRoot, user.id, 'update-user-form', 'editUserInfoModalAlert', updateUserDto);
             });
         })
     </script>
@@ -206,6 +209,72 @@
             });
         });
 
+    </script>
+</div>
+
+<div th:fragment="fr-user-update-email">
+    <div class="modal fade" id="updateUserEmail" tabindex="-1" role="dialog"
+         aria-labelledby="editUserEmailModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateUserEmailModalLabel">Update user email</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="updateUserEmailModalAlert" class="alert alert-danger" role="alert"
+                         style="display: none"></div>
+                    <form id="update-user-email-form" novalidate>
+                        <div class="input-group mb-3" style="display: inline-grid">
+                            <input id="update-user-email"
+                                   type="email"
+                                   class="form-control"
+                                   placeholder="E-mail"
+                                   aria-label="E-mail"
+                                   name="newEmail"
+                                   required
+                                   th:value="${user.email}">
+                            <span class='text-danger noselect' style="display: none"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="update-user-email-submit-button"
+                            class="btn btn-primary"
+                            type="button"
+                            onclick="submitEmailUpdateForm()"
+                            form="update-user-username-form">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var contextRoot = [[@{/}]];
+        var user = [[${user}]];
+        /*]]>*/
+
+        function submitEmailUpdateForm() {
+            let newEmail = $('#update-user-email').val();
+            updateUserEmail(contextRoot, 'update-user-email-form', 'updateUserEmailModalAlert', user.id, newEmail);
+        }
+
+        $(function () {
+            $('#update-user-email-form').submit(function (e) {
+                e.preventDefault();
+                submitEmailUpdateForm();
+            });
+
+            $('#update-user-email-submit-button').click(function (e) {
+                submitEmailUpdateForm();
+            })
+        });
     </script>
 </div>
 
