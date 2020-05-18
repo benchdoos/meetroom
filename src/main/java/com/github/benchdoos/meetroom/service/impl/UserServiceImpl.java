@@ -9,6 +9,7 @@ import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
 import com.github.benchdoos.meetroom.domain.Role;
 import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.UserEmailUpdateRequest;
+import com.github.benchdoos.meetroom.domain.annotations.validators.EmailValidator;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
@@ -29,6 +30,7 @@ import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHim
 import com.github.benchdoos.meetroom.exceptions.EmailAlreadyExistsException;
 import com.github.benchdoos.meetroom.exceptions.EmailIsAlreadyUsedException;
 import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
+import com.github.benchdoos.meetroom.exceptions.InvalidAvatarDataException;
 import com.github.benchdoos.meetroom.exceptions.InvalidCurrentPasswordException;
 import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePasswordException;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpiredException;
@@ -66,6 +68,7 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.time.ZonedDateTime;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +76,9 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import static com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType.BASE64;
+import static com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType.GRAVATAR;
 
 /**
  * Default implementation for {@link UserService}
@@ -569,10 +575,27 @@ public class UserServiceImpl implements UserService {
     private void validateAvatar(UpdateUserAvatarDto updateUserAvatar) {
         switch (updateUserAvatar.getType()) {
             case GRAVATAR:
-                //todo validate email
+
+                if (StringUtils.isEmpty(updateUserAvatar.getData())) { //prevents empty strings
+                    throw new InvalidAvatarDataException(GRAVATAR);
+                }
+
+                final EmailValidator emailValidator = new EmailValidator();
+                final boolean valid = emailValidator.isValid(updateUserAvatar.getData(), null); //todo find nice solution
+                if (!valid) {
+                    throw new InvalidAvatarDataException(GRAVATAR);
+                }
+
                 break;
             case BASE64:
-                //todo validate base64
+
+                try {
+                    Base64.getDecoder().decode(updateUserAvatar.getData());
+                } catch (final IllegalArgumentException e) {
+                    log.warn("Could not decode base64 string on validation.", e);
+                    throw new InvalidAvatarDataException(BASE64);
+                }
+
                 break;
         }
     }
