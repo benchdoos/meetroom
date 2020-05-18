@@ -1,6 +1,7 @@
 package com.github.benchdoos.meetroom.controller.api.v1;
 
 import com.github.benchdoos.meetroom.config.constants.ApiConstants;
+import com.github.benchdoos.meetroom.domain.UserEmailUpdateRequest;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.service.UserEmailUpdateService;
@@ -38,6 +39,12 @@ public class ApiV1PublicController {
         return userService.createUser(createUserDto);
     }
 
+    /**
+     * Submit email for update
+     *
+     * @param emailId email id, one of {@link UserEmailUpdateRequest#getOldEmailConfirmation()},
+     * {@link UserEmailUpdateRequest#getNewEmailConfirmation()}
+     */
     @PostMapping("/submit-email-update/{emailId}")
     public void submitEmailUpdate(@PathVariable("emailId") UUID emailId) {
         userEmailUpdateService.submitEmailRequest(emailId);

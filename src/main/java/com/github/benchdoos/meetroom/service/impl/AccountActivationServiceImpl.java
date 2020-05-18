@@ -17,6 +17,9 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
+/**
+ * Default implementation of {@link AccountActivationService}
+ */
 @RequiredArgsConstructor
 @Service
 public class AccountActivationServiceImpl implements AccountActivationService {
