@@ -63,6 +63,7 @@
             <th>Username</th>
             <th>First name</th>
             <th>Last name</th>
+            <th>E-mail</th>
             <th>Roles</th>
             <th>Enabled</th>
             <th></th>
@@ -85,6 +86,18 @@
             </th>
             <th th:text="${user.firstName}"></th>
             <th th:text="${user.lastName}"></th>
+            <th>
+                <a class="badge badge-secondary"
+                   type="button"
+                   th:if="${user.email != null}"
+                   th:href="|mailto:${user.email}|"
+                   target="_blank"
+                   data-toggle="tooltip"
+                   data-placement="top"
+                   th:title="${user.email}">
+                    <i class="fas fa-envelope-open-text" style="padding: 0 10px 0 10px;"></i>
+                </a>
+            </th>
             <th style="max-width: 300px;">
                     <span th:each="role,iterStat : ${user.roles}" th:if="${iterStat.index <= 5}">
                         <div th:include="modal/modal-role :: fr-role-label"></div>
