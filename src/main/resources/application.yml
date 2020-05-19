@@ -35,6 +35,7 @@ protected:
   roles:
     - ROLE_ADMIN
     - ROLE_USER
+    - ROLE_GUEST
 
 api-security:
   secret: common-secret
@@ -201,6 +202,18 @@ server:
 
 spring:
   profiles: TEST
+  #using production email
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: meetroom.benchdoos@gmail.com
+    password: twjjhmfranxxijno
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://ec2-54-75-229-28.eu-west-1.compute.amazonaws.com:5432/d7nmlgp6gc78pn #change it in VM options

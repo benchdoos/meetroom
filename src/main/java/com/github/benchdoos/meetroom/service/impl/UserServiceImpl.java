@@ -68,7 +68,6 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.time.ZonedDateTime;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -77,7 +76,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType.BASE64;
 import static com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType.GRAVATAR;
 
 /**
@@ -186,8 +184,10 @@ public class UserServiceImpl implements UserService {
         final User savedUser = userRepository.save(user);
         log.info("Successfully created user with username: {}", savedUser.getUsername());
 
+        final String publicFullApplicationUrl = configurationInfoBean.getPublicFullApplicationUrl();
+
         final AccountActivationRequest accountActivationRequest = accountActivationService.createAccountActivationRequest(savedUser);
-        emailService.sendAccountActivation(configurationInfoBean.getPublicFullApplicationUrl(), savedUser, accountActivationRequest);
+        emailService.sendAccountActivation(publicFullApplicationUrl, savedUser, accountActivationRequest);
 
         final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
         userMapper.convert(savedUser, userPublicInfoDto);
@@ -588,14 +588,7 @@ public class UserServiceImpl implements UserService {
 
                 break;
             case BASE64:
-
-                try {
-                    Base64.getDecoder().decode(updateUserAvatar.getData());
-                } catch (final IllegalArgumentException e) {
-                    log.warn("Could not decode base64 string on validation.", e);
-                    throw new InvalidAvatarDataException(BASE64);
-                }
-
+                //todo realize base64 validation
                 break;
         }
     }
