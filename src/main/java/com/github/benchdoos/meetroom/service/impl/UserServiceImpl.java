@@ -284,7 +284,7 @@ public class UserServiceImpl implements UserService {
         final PasswordResetRequest saved = passwordResetRequestService.createPasswordResetRequest(byUsername, user, requestTime);
 
         if (StringUtils.hasText(user.getEmail())) {
-            emailService.sendResetPasswordNotification(configurationInfoBean.getPublicFullApplicationUrl(), user, saved);
+            emailService.sendResetPasswordNotification(configurationInfoBean.getPublicFullApplicationUrl(), saved);
         }
     }
 
@@ -558,7 +558,6 @@ public class UserServiceImpl implements UserService {
                         configurationInfoBean.getPublicFullApplicationUrl(),
                         user.getEmail(),
                         userEmailDto.getNewEmail(),
-                        user,
                         emailUpdateRequest.get());
 
                 log.debug("Emails has been sent");

@@ -2,7 +2,6 @@ package com.github.benchdoos.meetroom.service;
 
 import com.github.benchdoos.meetroom.domain.AccountActivationRequest;
 import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
-import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.UserEmailUpdateRequest;
 
 /**
@@ -13,12 +12,10 @@ public interface EmailService {
 
     /**
      * Send user account password reset notification email
-     *
-     * @param publicFullApplicationUrl full public url for application
-     * @param user user to notify
+     *  @param publicFullApplicationUrl full public url for application
      * @param passwordResetRequest password reset request
      */
-    void sendResetPasswordNotification(String publicFullApplicationUrl, User user, PasswordResetRequest passwordResetRequest);
+    void sendResetPasswordNotification(String publicFullApplicationUrl, PasswordResetRequest passwordResetRequest);
 
     /**
      * Send account activation email
@@ -30,12 +27,10 @@ public interface EmailService {
 
     /**
      * Send email update messages. Given emails will have links to submit user email update request
-     *
-     * @param publicFullApplicationUrl full public url for application
+     *  @param publicFullApplicationUrl full public url for application
      * @param oldEmail old user email
      * @param newEmail new user email
-     * @param user user
      * @param emailUpdateRequest request
      */
-    void sendEmailUpdateRequests(String publicFullApplicationUrl, String oldEmail, String newEmail, User user, UserEmailUpdateRequest emailUpdateRequest);
+    void sendEmailUpdateRequests(String publicFullApplicationUrl, String oldEmail, String newEmail, UserEmailUpdateRequest emailUpdateRequest);
 }

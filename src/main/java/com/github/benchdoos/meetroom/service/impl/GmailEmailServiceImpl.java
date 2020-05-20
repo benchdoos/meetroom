@@ -38,7 +38,8 @@ public class GmailEmailServiceImpl implements EmailService {
 
     @Async
     @Override
-    public void sendResetPasswordNotification(String publicFullApplicationUrl, User user, PasswordResetRequest passwordResetRequest) {
+    public void sendResetPasswordNotification(String publicFullApplicationUrl, PasswordResetRequest passwordResetRequest) {
+        final User user = passwordResetRequest.getRequestedFor();
         final String subject = "Meetroom - Reset password";
         final String emailMessage = internalConfiguration.getEmailSettings().getResetPasswordEmailMessage()
                 .replaceAll("\\{userFullName\\}", user.getFirstName() + " " + user.getLastName())
@@ -78,9 +79,9 @@ public class GmailEmailServiceImpl implements EmailService {
     public void sendEmailUpdateRequests(String publicFullApplicationUrl,
                                         String oldEmail,
                                         String newEmail,
-                                        User user,
                                         UserEmailUpdateRequest emailUpdateRequest) {
 
+        final User user = emailUpdateRequest.getRequestedFor();
         final String subject = "Meetroom - Update email request";
         try {
 
