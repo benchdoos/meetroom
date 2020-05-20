@@ -44,7 +44,7 @@ public class GmailEmailServiceImpl implements EmailService {
         final String emailMessage = internalConfiguration.getEmailSettings().getResetPasswordEmailMessage()
                 .replaceAll("\\{userFullName\\}", user.getFirstName() + " " + user.getLastName())
                 .replaceAll("\\{resetPasswordLink\\}", createResetPasswordUrl(publicFullApplicationUrl, passwordResetRequest))
-                .replaceAll("\\{meetroomMainPage\\}", configurationInfoBean.getPublicFullApplicationUrl());
+                .replaceAll("\\{meetroomMainPage\\}", publicFullApplicationUrl);
 
         try {
             sendEmailToUser(user.getEmail(), subject, emailMessage);
@@ -63,7 +63,7 @@ public class GmailEmailServiceImpl implements EmailService {
         final String emailMessage = internalConfiguration.getEmailSettings().getAccountActivationEmailMessage()
                 .replaceAll("\\{userFullName\\}", user.getFirstName() + " " + user.getLastName())
                 .replaceAll("\\{activateAccountLink\\}", createAccountActivationUrl(publicFullApplicationUrl, accountActivationRequest))
-                .replaceAll("\\{meetroomMainPage\\}", configurationInfoBean.getPublicFullApplicationUrl());
+                .replaceAll("\\{meetroomMainPage\\}", publicFullApplicationUrl);
 
         try {
             sendEmailToUser(user.getEmail(), subject, emailMessage);
