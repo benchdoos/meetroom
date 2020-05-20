@@ -206,4 +206,11 @@ public interface UserService extends UserDetailsService {
      * @param userEmailDto dto with new email address
      */
     void updateUserEmail(UUID userId, UpdateUserEmailDto userEmailDto);
+
+    /**
+     * Send to user account activation url (custom request)
+     *
+     * @param userId id of user
+     */
+    void sendAccountActivationRequest(UUID userId);
 }

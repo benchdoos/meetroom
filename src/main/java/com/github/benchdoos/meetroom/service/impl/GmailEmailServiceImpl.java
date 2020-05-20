@@ -56,8 +56,9 @@ public class GmailEmailServiceImpl implements EmailService {
 
     @Async
     @Override
-    public void sendAccountActivation(String publicFullApplicationUrl, User user, AccountActivationRequest accountActivationRequest) {
+    public void sendAccountActivation(String publicFullApplicationUrl, AccountActivationRequest accountActivationRequest) {
         final String subject = "Meetroom - Activate account password";
+        final User user = accountActivationRequest.getRequestedFor();
         final String emailMessage = internalConfiguration.getEmailSettings().getAccountActivationEmailMessage()
                 .replaceAll("\\{userFullName\\}", user.getFirstName() + " " + user.getLastName())
                 .replaceAll("\\{activateAccountLink\\}", createAccountActivationUrl(publicFullApplicationUrl, accountActivationRequest))

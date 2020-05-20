@@ -24,10 +24,9 @@ public interface EmailService {
      * Send account activation email
      *
      * @param publicFullApplicationUrl full public url for application
-     * @param user user to notify
      * @param accountActivationRequest account activation request
      */
-    void sendAccountActivation(String publicFullApplicationUrl, User user, AccountActivationRequest accountActivationRequest);
+    void sendAccountActivation(String publicFullApplicationUrl, AccountActivationRequest accountActivationRequest);
 
     /**
      * Send email update messages. Given emails will have links to submit user email update request
@@ -38,5 +37,5 @@ public interface EmailService {
      * @param user user
      * @param emailUpdateRequest request
      */
-    void sendEmailUpdateRequests(String publicFullApplicationUrl, String oldEmail, String newEmail, User user,  UserEmailUpdateRequest emailUpdateRequest);
+    void sendEmailUpdateRequests(String publicFullApplicationUrl, String oldEmail, String newEmail, User user, UserEmailUpdateRequest emailUpdateRequest);
 }

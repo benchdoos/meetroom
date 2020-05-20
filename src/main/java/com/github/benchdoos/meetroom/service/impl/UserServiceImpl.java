@@ -29,6 +29,7 @@ import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
 import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimselfException;
 import com.github.benchdoos.meetroom.exceptions.EmailAlreadyExistsException;
 import com.github.benchdoos.meetroom.exceptions.EmailIsAlreadyUsedException;
+import com.github.benchdoos.meetroom.exceptions.EmailMustBeSetException;
 import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
 import com.github.benchdoos.meetroom.exceptions.InvalidAvatarDataException;
 import com.github.benchdoos.meetroom.exceptions.InvalidCurrentPasswordException;
@@ -187,7 +188,7 @@ public class UserServiceImpl implements UserService {
         final String publicFullApplicationUrl = configurationInfoBean.getPublicFullApplicationUrl();
 
         final AccountActivationRequest accountActivationRequest = accountActivationService.createAccountActivationRequest(savedUser);
-        emailService.sendAccountActivation(publicFullApplicationUrl, savedUser, accountActivationRequest);
+        emailService.sendAccountActivation(publicFullApplicationUrl, accountActivationRequest);
 
         final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
         userMapper.convert(savedUser, userPublicInfoDto);
@@ -221,7 +222,7 @@ public class UserServiceImpl implements UserService {
 
         final AccountActivationRequest accountActivationRequest = accountActivationService.createAccountActivationRequest(save);
 
-        emailService.sendAccountActivation(configurationInfoBean.getPublicFullApplicationUrl(), save, accountActivationRequest);
+        emailService.sendAccountActivation(configurationInfoBean.getPublicFullApplicationUrl(), accountActivationRequest);
     }
 
     @Override
@@ -565,6 +566,21 @@ public class UserServiceImpl implements UserService {
                 log.warn("Could not execute completable feature for sending", e);
             }
         }
+    }
+
+    @Override
+    public void sendAccountActivationRequest(UUID userId) {
+        final User user = getUserById(userId);
+
+        if (!StringUtils.hasText(user.getEmail())) {
+            throw new EmailMustBeSetException(user.getUsername());
+        }
+
+        final AccountActivationRequest accountActivationRequest = accountActivationService.createAccountActivationRequest(user);
+
+        emailService.sendAccountActivation(
+                configurationInfoBean.getPublicFullApplicationUrl(),
+                accountActivationRequest);
     }
 
     /**
