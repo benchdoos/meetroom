@@ -1,5 +1,6 @@
 package com.github.benchdoos.meetroom.domain;
 
+import com.github.benchdoos.meetroom.domain.annotations.Username;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,6 +34,7 @@ public class User {
     @Column(name = "id")
     private UUID id;
 
+    @Username
     @NotBlank
     @Column(name = "username", unique = true)
     @Size(min = 4, max = 16)

@@ -1,12 +1,14 @@
 package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.abstracts.AbstractIntegrationCommonTest;
-import com.github.benchdoos.meetroom.domain.User;
+import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
+import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.repository.UserRepository;
 import com.github.benchdoos.meetroom.service.UserService;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserServiceTest extends AbstractIntegrationCommonTest {
     @Autowired
@@ -17,12 +19,20 @@ public class UserServiceTest extends AbstractIntegrationCommonTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-//        Mockito.when(userRepository.findByUsername()).thenReturn(alex);
     }
 
-    @org.junit.Test
-    public void findUser() {
-        final List<User> all = userRepository.findAll();
-        System.out.println(all.size());
+
+    @Test
+    public void createNewUserMustCreateNewUser() {
+        final CreateUserDto createUserDto = easyRandom.nextObject(CreateUserDto.class);
+        final UserPublicInfoDto user = userService.createUser(createUserDto);
+
+        assertThat(user).isNotNull();
+        assertThat(user.getUsername()).isEqualTo(createUserDto.getUsername());
+        assertThat(user.getFirstName()).isEqualTo(createUserDto.getFirstName());
+        assertThat(user.getLastName()).isEqualTo(createUserDto.getLastName());
+        assertThat(user.getEnabled()).isEqualTo(true);
+        assertThat(user.getAvatar()).isNotNull();
     }
+
 }
