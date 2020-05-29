@@ -9,6 +9,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
 
+/**
+ * Abstract test class for all containerized tests
+ */
 public abstract class AbstractContainerizedTest extends AbstractTest {
 
     @ClassRule

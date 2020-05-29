@@ -13,6 +13,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+/**
+ * Abstract class for all integration tests
+ */
 @ActiveProfiles("TEST")
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AbstractContainerizedTest.Config.class,
