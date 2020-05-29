@@ -50,6 +50,7 @@ public class UserController {
     public String getUserPage(Principal principal, Model model) {
 
         final UserExtendedInfoDto userDto = userService.getUserExtendedInfoDtoByUsername(principal.getName());
+        appendDefaultUserAvatar(userDto);
         model.addAttribute("user", userDto);
         return "user";
     }
@@ -66,7 +67,7 @@ public class UserController {
     public String getUserPageByUsername(@PathVariable("username") String username, Model model) {
 
         final UserExtendedInfoDto userDto = userService.getUserExtendedInfoDtoByUsername(username);
-
+        appendDefaultUserAvatar(userDto);
         model.addAttribute("user", userDto);
         return "user";
     }
