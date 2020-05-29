@@ -24,7 +24,13 @@ public class UserServiceTest extends AbstractIntegrationCommonTest {
 
     @Test
     public void createNewUserMustCreateNewUser() {
-        final CreateUserDto createUserDto = easyRandom.nextObject(CreateUserDto.class);
+        final CreateUserDto createUserDto = CreateUserDto.builder()
+                .firstName("First name")
+                .lastName("Last name")
+                .password("qwertyuiop")
+                .confirmPassword("qwertyuiop")
+                .username("correctusername")
+                .build();
         final UserPublicInfoDto user = userService.createUser(createUserDto);
 
         assertThat(user).isNotNull();
