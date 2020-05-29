@@ -2,9 +2,11 @@ package com.github.benchdoos.meetroom.mappers;
 
 import com.github.benchdoos.meetroom.abstracts.AbstractIntegrationCommonTest;
 import com.github.benchdoos.meetroom.domain.User;
+import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.service.UserService;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -85,6 +87,7 @@ public class UserMapperTest extends AbstractIntegrationCommonTest {
                 .lastName(testUser.getLastName())
                 .username(testUser.getUsername())
                 .enabled(testUser.isEnabled())
+                .avatar(getUserAvatarDto(testUser))
                 .build();
     }
 
@@ -96,6 +99,17 @@ public class UserMapperTest extends AbstractIntegrationCommonTest {
                 .lastName(testUser.getLastName())
                 .enabled(testUser.isEnabled())
                 .roles(testUser.getRoles())
+                .avatar(getUserAvatarDto(testUser))
                 .build();
+    }
+
+    @NotNull
+    private UserAvatarDto getUserAvatarDto(User testUser) {
+        if (testUser.getAvatar() != null) {
+            final UserAvatarDto userAvatarDto = new UserAvatarDto();
+            userMapper.convertAvatar(testUser.getAvatar(), userAvatarDto);
+            return userAvatarDto;
+        }
+        return null;
     }
 }
