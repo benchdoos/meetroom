@@ -1,10 +1,11 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
-import com.github.benchdoos.meetroom.domain.interfaces.PasswordConfirmation;
 import com.github.benchdoos.meetroom.domain.User;
-import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
+import com.github.benchdoos.meetroom.domain.annotations.Email;
 import com.github.benchdoos.meetroom.domain.annotations.PasswordMatches;
 import com.github.benchdoos.meetroom.domain.annotations.Username;
+import com.github.benchdoos.meetroom.domain.interfaces.PasswordConfirmation;
+import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,6 +34,11 @@ public class CreateUserDto implements UserInfo, PasswordConfirmation {
     @NotBlank
     @Size(min = 4, max = 16)
     private String username;
+
+    @Email
+    @NotBlank
+    @Size(min = 4, max = 320)
+    private String email;
 
     @NotBlank
     private String password;

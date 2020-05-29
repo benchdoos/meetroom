@@ -1,6 +1,7 @@
 package com.github.benchdoos.meetroom.domain;
 
 import com.github.benchdoos.meetroom.domain.annotations.Username;
+import com.github.benchdoos.meetroom.domain.annotations.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -59,8 +60,10 @@ public class User {
     @JoinColumn(name = "avatar_id", referencedColumnName = "id")
     private Avatar avatar;
 
-//    @Column(name = "email")
-//    private String email;
+    @Email
+    @Column(name = "email", unique = true)
+    @Size(min = 4, max = 320)
+    private String email;
 
     @NotNull
     @Column(name = "enabled")

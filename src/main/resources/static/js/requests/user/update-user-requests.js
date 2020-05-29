@@ -16,11 +16,9 @@ function getApiV1Context(context) {
  */
 function updateUserUsername(context, targetErrorObjectId, changeUsernameDto) {
     let url = getApiV1Context(context) + "/user/update-username";
+    console.log("updateUserUsername", url);
 
     $('#' + targetErrorObjectId).html("").hide();
-
-    console.log("URL: ", url);
-    console.log("DTO:", changeUsernameDto);
 
     $.ajax({
         type: 'POST',
@@ -84,9 +82,9 @@ function updateUserAvatarImage(url, targetObjectId) {
  * @param targetErrorObjectId target object to display errors
  * @param userUpdateInfoDto dto with new info
  */
-function updateUserInfo(context, userId, targetErrorObjectId, userUpdateInfoDto) {
+function updateUserInfo(context, userId, formId, targetErrorObjectId, userUpdateInfoDto) {
     let url = getApiV1Context(context) + "/user/update/" + userId;
-    console.log(url, userId, userUpdateInfoDto);
+    console.log("updateUserInfo", url);
 
     $.ajax({
         type: 'POST',
@@ -97,7 +95,10 @@ function updateUserInfo(context, userId, targetErrorObjectId, userUpdateInfoDto)
             location.reload();
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            $('#' + targetErrorObjectId).html(XMLHttpRequest.responseJSON.message).show();
+            let responseJSON = XMLHttpRequest.responseJSON;
+            $('#' + targetErrorObjectId).html(responseJSON.message).show();
+
+            appendValidationErrors(responseJSON.errors, formId);
         }
     });
 }
@@ -112,7 +113,7 @@ function updateUserInfo(context, userId, targetErrorObjectId, userUpdateInfoDto)
  */
 function updateUserPassword(context, targetErrorObjectId, userId, updateUserPasswordDto) {
     let url = getApiV1Context(context) + "/user/update-password/" + userId;
-    console.log(url, userId);
+    console.log("updateUserPassword", url);
 
     $.ajax({
         type: 'POST',
@@ -126,4 +127,53 @@ function updateUserPassword(context, targetErrorObjectId, userId, updateUserPass
             $('#' + targetErrorObjectId).html(XMLHttpRequest.responseJSON.message).show();
         }
     });
+}
+
+/**
+ * Update user email address
+ *
+ * @param context root url
+ * @param modalId to show errors (current modal usually)
+ * @param targetErrorObjectId for errors
+ * @param successDialog to show on success
+ * @param userId id of user
+ * @param newUserEmail new user email
+ */
+function updateUserEmail(context, modalId, targetErrorObjectId, successDialog, userId, newUserEmail) {
+    let url = getApiV1Context(context) + "/user/update-email/" + userId;
+    console.log("updateUserEmail", url);
+
+    let updateUserEmailDto = new UpdateUserEmailDto(newUserEmail);
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(updateUserEmailDto),
+        contentType: "application/json",
+        success: function (output, status, xhr) {
+            $('#' + modalId).modal('hide');
+            showInfoDialog(successDialog, "Email update", "Email requests were successfully sent");
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            let responseJSON = XMLHttpRequest.responseJSON;
+            $('#' + targetErrorObjectId).html(responseJSON.message).show();
+
+            let errors = responseJSON.errors;
+            appendValidationErrors(errors, formId);
+        }
+    });
+}
+
+/**
+ * Update modal dialog title and message
+ *
+ * @param successDialog dialog id
+ * @param title text to set on title
+ * @param message text to set on message
+ */
+function showInfoDialog(successDialog, title, message) {
+    let modal = $('#' + successDialog).modal();
+    modal.find('.modal-title').text(title);
+    modal.find('.modal-body').text(message);
+    modal.modal('show');
 }

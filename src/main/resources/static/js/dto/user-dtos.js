@@ -56,3 +56,16 @@ function UpdateUserPasswordDto(currentPassword, password, confirmPassword) {
         confirmPassword: confirmPassword
     }
 }
+
+/**
+ * Update user email dto
+ *
+ * @param newEmail of user
+ * @returns {{newEmail: string}}
+ * @constructor
+ */
+function UpdateUserEmailDto(newEmail) {
+    return {
+        newEmail: newEmail
+    }
+}

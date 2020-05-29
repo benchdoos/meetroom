@@ -6,7 +6,9 @@ import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
+import com.github.benchdoos.meetroom.domain.dto.ResetUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserEmailDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
@@ -98,7 +100,7 @@ public interface UserService extends UserDetailsService {
      * @param editOtherUserDto user dto
      * @return updated user info
      */
-    UserExtendedInfoDto editOtherUser(UUID id, EditOtherUserDto editOtherUserDto);
+    UserExtendedInfoDto updateOtherUser(UUID id, EditOtherUserDto editOtherUserDto);
 
     /**
      * Edit roles of user
@@ -132,9 +134,9 @@ public interface UserService extends UserDetailsService {
      * Change user password by reset request
      *
      * @param id request id
-     * @param updateUserPasswordDto dto with new password
+     * @param resetUserPasswordDto dto with new password
      */
-    void resetUserPasswordByResetRequest(UUID id, UpdateUserPasswordDto updateUserPasswordDto);
+    void resetUserPasswordByResetRequest(UUID id, ResetUserPasswordDto resetUserPasswordDto);
 
     /**
      * Update user enable. User can not update himself.
@@ -196,4 +198,12 @@ public interface UserService extends UserDetailsService {
      * @return updated user info
      */
     UserPublicInfoDto updateUserInfo(UUID userId, UpdateUserInfoDto updateUserInfoDto);
+
+    /**
+     * Call for user email update request
+     *
+     * @param userId user id
+     * @param userEmailDto dto with new email address
+     */
+    void updateUserEmail(UUID userId, UpdateUserEmailDto userEmailDto);
 }

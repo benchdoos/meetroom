@@ -20,6 +20,8 @@ import java.util.UUID;
 @Data
 public class UserExtendedInfoDto extends UserPublicInfoDto {
 
+    private Collection<Role> roles;
+
     /**
      * Builder for {@link UserExtendedInfoDto} instead of parent ({@link UserPublicInfoDto}) builder
      *
@@ -27,6 +29,7 @@ public class UserExtendedInfoDto extends UserPublicInfoDto {
      * @param username username
      * @param firstName first name
      * @param lastName last name
+     * @param email user email
      * @param enabled enabled
      * @param roles roles of user
      */
@@ -35,12 +38,11 @@ public class UserExtendedInfoDto extends UserPublicInfoDto {
                                String username,
                                String firstName,
                                String lastName,
+                               String email,
                                Boolean enabled,
                                Collection<Role> roles,
                                UserAvatarDto avatar) {
-        super(id, username, firstName, lastName, enabled, avatar);
+        super(id, username, firstName, lastName, email, enabled, avatar);
         this.roles = roles;
     }
-
-    private Collection<Role> roles;
 }
