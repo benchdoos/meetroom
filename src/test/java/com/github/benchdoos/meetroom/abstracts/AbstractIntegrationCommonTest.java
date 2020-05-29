@@ -1,6 +1,7 @@
 package com.github.benchdoos.meetroom.abstracts;
 
 import com.github.benchdoos.meetroom.abstracts.marks.IntegrationTest;
+import org.jeasy.random.EasyRandom;
 import org.jetbrains.annotations.NotNull;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -20,6 +21,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @Category(IntegrationTest.class)
 public abstract class AbstractIntegrationCommonTest extends AbstractContainerizedTest {
+
+    protected final EasyRandom easyRandom = new EasyRandom();
+
     @Override
     public void setUp() throws Exception {
         /*NOP*/

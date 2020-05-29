@@ -1,26 +1,25 @@
 package com.github.benchdoos.meetroom.mappers;
 
-import com.github.benchdoos.meetroom.abstracts.AbstractUnitTest;
+import com.github.benchdoos.meetroom.abstracts.AbstractIntegrationCommonTest;
 import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
+import com.github.benchdoos.meetroom.service.UserService;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
-//todo check if there any ability to test without loading spring context? Or mby load spring context fully?
-class UserMapperTest extends AbstractUnitTest {
 
-    private final UserMapper userMapper;
+public class UserMapperTest extends AbstractIntegrationCommonTest {
 
-    public UserMapperTest() {
-        this.userMapper = Mappers.getMapper(UserMapper.class);
-    }
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Test
-    @Disabled
-    void convertUserToUserPublicInfoDto() {
+    public void convertUserToUserPublicInfoDto() {
         final User testUser = easyRandom.nextObject(User.class);
         final UserPublicInfoDto correctResult = getCorrectUserPublicInfoDto(testUser);
 
@@ -32,8 +31,7 @@ class UserMapperTest extends AbstractUnitTest {
     }
 
     @Test
-    @Disabled
-    void testConvertUserPublicInfoDtoToUser() {
+    public void testConvertUserPublicInfoDtoToUser() {
         final UserPublicInfoDto testDto = easyRandom.nextObject(UserPublicInfoDto.class);
         final User correctResult = getCorrectUser(testDto);
 
@@ -45,8 +43,7 @@ class UserMapperTest extends AbstractUnitTest {
     }
 
     @Test
-    @Disabled
-    void testConvertUserToUserExtendedInfoDto() {
+    public void testConvertUserToUserExtendedInfoDto() {
         final User testUser = easyRandom.nextObject(User.class);
         final UserExtendedInfoDto correctResult = getCorrectUserExtendedInfoDto(testUser);
 
@@ -58,8 +55,7 @@ class UserMapperTest extends AbstractUnitTest {
     }
 
     @Test
-    @Disabled
-    void testConvertUserExtendedInfoDtoToUser() {
+    public void testConvertUserExtendedInfoDtoToUser() {
         final User correctUser = easyRandom.nextObject(User.class);
         correctUser.setPassword(null);
         final UserExtendedInfoDto testDto = getCorrectUserExtendedInfoDto(correctUser);
