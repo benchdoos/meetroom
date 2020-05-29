@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * DTOwith User Authorities and {@link UserDetails} info
+ * DTO with User Authorities and {@link UserDetails} info
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -39,6 +39,6 @@ public class UserDetailsDto extends User implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return isEnabled();
+        return !super.isNeedActivation();
     }
 }

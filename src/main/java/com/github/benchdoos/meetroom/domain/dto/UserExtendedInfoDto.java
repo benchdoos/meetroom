@@ -1,7 +1,7 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
+import com.github.benchdoos.meetroom.domain.Role;
 import com.github.benchdoos.meetroom.domain.User;
-import com.github.benchdoos.meetroom.domain.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,10 +31,16 @@ public class UserExtendedInfoDto extends UserPublicInfoDto {
      * @param roles roles of user
      */
     @Builder(builderMethodName = "realBuilder")
-    public UserExtendedInfoDto(UUID id, String username, String firstName, String lastName, Boolean enabled, Collection<UserRole> roles) {
-        super(id, username, firstName, lastName, enabled);
+    public UserExtendedInfoDto(UUID id,
+                               String username,
+                               String firstName,
+                               String lastName,
+                               Boolean enabled,
+                               Collection<Role> roles,
+                               UserAvatarDto avatar) {
+        super(id, username, firstName, lastName, enabled, avatar);
         this.roles = roles;
     }
 
-    private Collection<UserRole> roles;
+    private Collection<Role> roles;
 }

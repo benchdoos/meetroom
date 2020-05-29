@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.4.1-1/css/bootstrap.min.css}">
+    <link href="../../static/css/custom.css" th:href="@{/static/css/custom.css}" rel="stylesheet">
+    <title></title>
+</head>
+<body>
+
+<div th:fragment="fr-user-username">
+    <a th:href="@{/user/{username}(username = ${user.username})}" th:text="|@${user.username}|"
+       data-toggle="tooltip" data-placement="top" th:title="|${user.firstName} ${user.lastName}|"></a>
+</div>
+
+<div th:fragment="fr-user-edit-menu">
+    <div class="btn-group">
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editUserModal"
+                style="margin:0 !important;">
+            Edit
+        </button>
+        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+            <button class="dropdown-item" data-toggle="modal" data-target="#editUsernameModal">
+                Change username
+            </button>
+            <button class="dropdown-item" data-toggle="modal" data-target="#updateUserPassword">Update password</button>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="fr-update-user">
+    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Update user info</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="update-user-form">
+                        <div id="editUserInfoModalAlert" class="alert alert-danger" role="alert"
+                             style="display: none"></div>
+                        <div class="form-group">
+                            <label for="update-user-firstName">First name:</label>
+                            <input id="update-user-firstName" type="text" th:value="${user.firstName}"
+                                   name="firstName"
+                                   placeholder="First name"
+                                   class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="update-user-lastName">Last name:</label>
+                            <input id="update-user-lastName" type="text" th:value="${user.lastName}"
+                                   name="lastName"
+                                   placeholder="Last name"
+                                   class="form-control">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="edit-user-submit-button" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var contextRoot = [[@{/}]];
+        var user = [[${user}]];
+        /*]]>*/
+
+        $(document).ready(function () {
+            $('#edit-user-submit-button').click(function () {
+                let firstName = $('#update-user-form input[name = "firstName"]').val();
+                let lastName = $('#update-user-form input[name = "lastName"]').val();
+
+                let updateUserDto = new UpdateUserInfoDto(firstName, lastName);
+
+                updateUserInfo(contextRoot, user.id, 'editUserInfoModalAlert', updateUserDto);
+            });
+        })
+    </script>
+</div>
+
+<div th:fragment="fr-user-update-username">
+    <div class="modal fade" id="editUsernameModal" tabindex="-1" role="dialog"
+         aria-labelledby="editUsernameModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUsernameModalLabel">Change username</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="editUserUserNameModalAlert" class="alert alert-danger" role="alert"
+                         style="display: none"></div>
+                    <form id="update-user-username-form">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">@</span>
+                            </div>
+                            <input id="update-user-username-username" type="text"
+                                   class="form-control"
+                                   placeholder="Username"
+                                   aria-label="Username"
+                                   aria-describedby="basic-addon1"
+                                   th:value="${user.username}">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="update-user-username-submit-button" type="button" class="btn btn-primary"
+                            form="update-user-username-form">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var contextRoot = [[@{/}]];
+            /*]]>*/
+
+            $(function () {
+                $('#update-user-username-submit-button').click(function (e) {
+                    let newUsername = $('#update-user-username-username').val();
+                    let oldUsername = [[${user.username}]];
+
+                    let updateUserUsernameDto = new UpdateUserUsernameDto(oldUsername, newUsername);
+
+                    console.log("dto:", updateUserUsernameDto);
+                    updateUserUsername(contextRoot, 'editUserUserNameModalAlert', updateUserUsernameDto);
+                })
+            });
+    </script>
+</div>
+
+<div th:fragment="fr-user-update-password">
+    <div class="modal fade" id="updateUserPassword" tabindex="-1" role="dialog"
+         aria-labelledby="editUsernameModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="updateUserPasswordModalAlert" class="alert alert-danger" role="alert"
+                         style="display: none"></div>
+                    <form id="update-user-password-form">
+                        <div class="input-group mb-3">
+                            <input id="update-user-password-current-password" type="password"
+                                   class="form-control"
+                                   placeholder="Current password"
+                                   aria-label="Current password">
+                            <input id="update-user-password-new-password" type="password"
+                                   class="form-control"
+                                   placeholder="Confirm password"
+                                   aria-label="Current password">
+                            <input id="update-user-password-confirm-password" type="password"
+                                   class="form-control"
+                                   placeholder="Repeat password"
+                                   aria-label="Current password">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="update-user-password-submit-button" type="button" class="btn btn-primary"
+                            form="update-user-username-form">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var contextRoot = [[@{/}]];
+        var user = [[${user}]];
+        /*]]>*/
+
+        $(document).ready(function () {
+            $('#update-user-password-submit-button').click(function (e) {
+                let currentPassword = $('#update-user-password-current-password').val();
+                let newPassword = $('#update-user-password-new-password').val();
+                let confirmPassword = $('#update-user-password-confirm-password').val();
+                let updateUserPasswordDto = new UpdateUserPasswordDto(currentPassword, newPassword, confirmPassword)
+
+                updateUserPassword(contextRoot, 'updateUserPasswordModalAlert', user.id, updateUserPasswordDto);
+            });
+        });
+
+    </script>
+</div>
+
+<div th:fragment="fr-user-update-avatar">
+    <div class="modal fade" id="editAvatarModal" tabindex="-1" role="dialog"
+         aria-labelledby="editAvatarModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document" id="editAvatarModalDialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editAvatarModalLabel">Update avatar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="editAvatarModalAlert" class="alert alert-danger" role="alert" style="display: none"></div>
+
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="list-group" id="avatar-switcher-list-tab" role="tablist">
+
+                                <a class="list-group-item list-group-item-action"
+                                   id="list-generated-avatar-head"
+                                   data-toggle="list" href="#list-generated-avatar-element" role="tab"
+                                   aria-controls="home">Generated</a>
+
+                                <a class="list-group-item list-group-item-action"
+                                   id="list-gravatar-avatar-head"
+                                   data-toggle="list" href="#list-gravatar-avatar-element" role="tab"
+                                   aria-controls="profile">Gravatar</a>
+
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div class="tab-content" id="nav-tabContent">
+                                <!--Generated avatar:-->
+                                <div id="list-generated-avatar-element"
+                                     class="tab-pane fade show active"
+                                     role="tabpanel"
+                                     aria-labelledby="list-generated-avatar-head">
+
+                                    <div style="text-align: center">
+                                        <div style="height: 256px">
+                                            <img id="avatar-generated-preview"/>
+                                        </div>
+                                        <span class="text-muted noselect">Powered by:
+                                                        <a href="http://avatars.adorable.io/">Adorable Avatars</a>
+                                            </span>
+                                    </div>
+
+                                    <div style="padding: 10px; display: flex">
+                                        <div class="w-100">
+                                            <button id="regenerate-personal-avatar-button"
+                                                    type="button" class="btn btn-secondary"
+                                                    data-toggle="tooltip"
+                                                    data-placement="top" title="Personal avatar">
+                                                <i class="fas fa-user"></i>
+                                            </button>
+                                        </div>
+
+                                        <button type="button" class="btn btn-success"
+                                                th:onclick="|generateNewAvatar('@{/}','avatar-generated-preview')|"
+                                                data-toggle="tooltip"
+                                                data-placement="top" title="Generate next">
+                                            <i class="fas fa-arrow-circle-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!--Gravatar avatar-->
+                                <div class="tab-pane fade" id="list-gravatar-avatar-element" role="tabpanel"
+                                     aria-labelledby="list-gravatar-avatar-head">
+
+                                    <div style="text-align: center">
+                                        <div style="height: 256px">
+                                            <div id="gravatar-validation-alert"
+                                                 style="display: none"
+                                                 class="alert alert-danger" role="alert">
+
+                                            </div>
+                                            <img id="avatar-gravatar-preview"/>
+                                        </div>
+                                        <span class="text-muted noselect">Powered by:
+                                                        <a href="https://gravatar.com/">Gravatar</a>
+                                                </span>
+                                    </div>
+
+                                    <div class="row" style="padding-top: 10px">
+                                        <div class="col-auto my-1">
+                                            <label for="gravatar-user-email-input" hidden></label>
+                                            <input id="gravatar-user-email-input"
+                                                   class="form-control" type="email"
+                                                   placeholder="Gravatar user email"/>
+                                            <input id="gravatar-user-email-input-hidden-val" hidden="hidden">
+                                        </div>
+                                        <div class="col-auto my-1">
+                                            <button id="update-gravatar-avatar-preview"
+                                                    type="button" class="btn btn-success"
+                                                    data-toggle="tooltip"
+                                                    data-placement="top" title="Check">
+                                                <i class="fas fa-arrow-circle-right"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <!--TODO: change button type to submit-->
+                    <button type="button" id="avatar-submit-button"
+                            class="btn btn-primary"
+                            form="update-user-username-form">Update
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var contextRoot = [[@{/}]];
+        var user = [[${user}]];
+        /*]]>*/
+
+        if (user.avatar) {
+            let type = user.avatar.type;
+            if (type === "GRAVATAR") {
+                console.log("gravatar_!");
+                $('#avatar-switcher-list-tab a[href="#list-gravatar-avatar-element"]').tab('show') // Select tab by name
+            } else {
+                console.log("generated!");
+                $('#avatar-switcher-list-tab a[href="#list-generated-avatar-element"]').tab('show') // Select tab by name
+            }
+        } else {
+            console.log("undefined?");
+            $('#avatar-switcher-list-tab a[href="#list-generated-avatar-element"]').tab('show') // Select tab by name
+        }
+
+        $(document).ready(function () {
+
+            $("#regenerate-personal-avatar-button").click(function () {
+                generateAvatarByGivenName(contextRoot, user.username, 'avatar-generated-preview');
+            });
+
+            $("#update-avatar-link").click(function () {
+                generateNewAvatar(contextRoot, 'avatar-generated-preview');
+            });
+
+            $("#update-gravatar-avatar-preview").click(function () {
+                let email = $("#gravatar-user-email-input").val();
+                if (email) {
+                    $("#gravatar-validation-alert").hide();
+                    $("#gravatar-user-email-input-hidden-val").val(email);
+                    updateImageSrcByGravatarEmail(contextRoot, email, 'avatar-gravatar-preview');
+                } else {
+                    $("#avatar-gravatar-preview").attr('src', null);
+                    $('#gravatar-validation-alert').html("Gravatar user email must be set.");
+                    $("#gravatar-validation-alert").show();
+                }
+            });
+
+            $("#avatar-submit-button").click(function () {
+                let selected = $("#avatar-switcher-list-tab a.active").attr('id');
+                console.log("Selected:", selected);
+
+                var newAvatarDto;
+
+                if (selected === 'list-generated-avatar-head') {
+                    newAvatarDto = new UpdateUserAvatarDto('BASE64', $('#avatar-generated-preview').attr('src'));
+                } else if (selected === 'list-gravatar-avatar-head') {
+                    let data = $('#gravatar-user-email-input-hidden-val').val();
+
+                    //validate if data is not empty, otherwise - check email input
+                    if (data === "") {
+                        console.log("Gravatar email is empty, checking email input");
+                        let email = $("#gravatar-user-email-input").val();
+                        if (email === "") {
+                            $('#gravatar-validation-alert').html("Check user email must be set.");
+                            $("#gravatar-validation-alert").show();
+                        } else {
+                            data = email;
+                        }
+                    }
+
+                    newAvatarDto = new UpdateUserAvatarDto('GRAVATAR', data);
+                }
+
+                updateUserAvatar(contextRoot, 'editAvatarModal', 'editAvatarModalAlert', 'user-page-avatar', user.id, newAvatarDto);
+            });
+        })
+    </script>
+</div>
+
+</body>
+</html>

@@ -2,26 +2,14 @@
     cursor: pointer;
 }
 
-.header {
-    padding: 20px;
-}
-
 .card-list {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     margin: 10px;
 }
 
-.login-block {
-    align-content: end;
-}
-
 .content {
     grid-area: content;
-}
-
-.pagination {
-    display: inline-flex;
 }
 
 .top-date {

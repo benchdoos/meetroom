@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -48,6 +50,13 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
+    /**
+     * User avatar
+     */
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "avatar_id", referencedColumnName = "id")
+    private Avatar avatar;
+
 //    @Column(name = "email")
 //    private String email;
 
@@ -55,10 +64,13 @@ public class User {
     @Column(name = "enabled")
     private boolean enabled;
 
+    @Column(name = "need_activation", nullable = false, columnDefinition = "boolean default false")
+    private boolean needActivation;
+
     @ManyToMany
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"))
-    private Collection<UserRole> roles;
+    private Collection<Role> roles;
 }

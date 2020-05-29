@@ -2,82 +2,64 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <title>Meeting rooms</title>
+    <link rel="shortcut icon" href="/favicon.ico" th:href="@{/favicon.ico}" type="image/x-icon">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.4.1-1/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.12.0/css/all.css}">
     <link href="/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet">
+    <link href="/css/common.css" th:href="@{/css/common.css}" rel="stylesheet">
+    <link href="/css/pagination.css" th:href="@{/css/pagination.css}" rel="stylesheet">
 </head>
 <body>
-<div class="header" style="display: flex">
-    <div style="width: 100%; display: flex;">
-        <h2>Available meeting rooms list</h2>
-            <div sec:authorize="hasRole('ROLE_ADMIN')" style="display: flex; padding-left: 20px">
-                <div>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">+
+<nav class="navbar navbar-dark bg-primary">
+    <div class="header">
+        <div style="width: 100%; display: flex;">
+            <div th:style="|height: 32px; width: 32px; background-image: url(@{/}images/applicationIcon.png); background-size: contain;|"></div>
+            <span class="h2 noselect" style="padding-left: 10px">Meeting rooms</span>
+            <div style="display: flex; padding-left: 10px">
+                <div sec:authorize="hasAnyAuthority('MEETING_ROOM:CREATE')">
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#exampleModal">
+                        +
                     </button>
                 </div>
-                <div class="dropdown" style="padding-left: 20px;">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                <div sec:authorize="hasAnyAuthority('LIST_ROOMS:USE','MANAGE:USE')" class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Actions
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" th:href="@{/all}">Show all</a>
-                        <a class="dropdown-item" th:href="@{/}">Show available</a>
+                        <a class="dropdown-item" th:href="@{/}">Show available rooms</a>
+                        <a class="dropdown-item" th:href="@{/all}">Show all rooms</a>
+                        <div sec:authorize="hasAnyAuthority('MANAGE:USE')">
+                            <hr>
+                            <a class="dropdown-item" th:href="@{/manage}">Management page</a>
+                        </div>
                     </div>
                 </div>
+            </div>
         </div>
-    </div>
-    <div class="login-block">
         <div th:include="modal/modal-login :: fr-login"></div>
     </div>
-</div>
+</nav>
 
 <div class="card-list">
     <div class="card" style="min-width: 18rem; margin: 10px;" th:each="room : ${rooms.content}">
         <div class="card-body">
-            <span th:class="|${room.enabled ? 'badge badge-primary' : 'badge badge-danger'}|"
-                  th:text="${room.enabled ? 'enabled' : 'disabled'}"></span>
+            <span th:if="${room.enabled != true}"
+                  class="badge badge-danger noselect"
+                  style="display: inherit"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="This room is disabled for this moment">disabled</span>
+
             <h5 class="card-title" th:text="${room.name}"></h5>
             <h6 class="card-subtitle mb-2 text-muted" th:text="${room.location}">Card subtitle</h6>
-            <a th:href="@{'/' + ${room.id}}" class="card-link">Open</a>
+            <a th:href="@{/meetroom/{roomId}(roomId = ${room.id})}" class="card-link">Open</a>
         </div>
     </div>
 </div>
 
-<!--Fixme not correctly working on 2nd++ page for all objects-->
-<nav aria-label="Pagination" th:if="${rooms.totalPages gt 0}" style="text-align: center">
-    <ul class="pagination justify-content-center font-weight-medium">
-        <li class="page-item" th:classappend="${rooms.number eq 0} ? 'disabled'">
-            <a class="page-link svg-icon"
-               th:href="@{/(size=${rooms.size}, page=${rooms.number - 1})}"
-               aria-label="Previous"
-               title="Previous Page" rel="tooltip">
-                <span aria-hidden="true" data-feather="chevrons-left" width="20" height="20"></span>
-                <i class="fas fa-chevron-left"></i>
-            </a>
-        </li>
-        <li class="page-item" th:classappend="${i eq rooms.number + 1} ? 'active'"
-            th:each="i : ${#numbers.sequence( rooms.number + 1, rooms.totalPages > 10 + rooms.number ? rooms.number + 10 : rooms.totalPages, 1)}">
-            <a class="page-link" th:href="@{/(size=${rooms.size}, page=${i-1})}" th:text="${i}"
-               th:title="${'Page '+ i}"
-               rel="tooltip"></a>
-        </li>
-        <li class="page-item disabled" th:if="${rooms.number + 10 < rooms.totalPages}">
-            <a class="page-link svg-icon" href="#">
-                <span data-feather="more-horizontal" width="20" height="20"></span>
-            </a>
-        </li>
-        <li class="page-item" th:classappend="${rooms.number + 1 eq rooms.totalPages} ? 'disabled'">
-            <a class="page-link svg-icon" th:href="@{/(size=${rooms.size}, page=${rooms.number + 1})}"
-               aria-label="Next"
-               title="Next Page" rel="tooltip">
-                <span aria-hidden="true" data-feather="chevrons-right" width="20" height="20"></span>
-                <i class="fas fa-chevron-right"></i>
-            </a>
-        </li>
-    </ul>
-</nav>
+<div th:with="page=${rooms}" th:include="modal/modal-pagination :: fr-pagination"></div>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -105,15 +87,15 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+<!-- todo use webjars-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+        integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
         crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
+<script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.4.1-1/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+
+<script th:src="@{/js/pagination-fix.js}"></script>
 <script>
     $('#myModal').on('shown.bs.modal', function () {
         $('#myInput').trigger('focus')

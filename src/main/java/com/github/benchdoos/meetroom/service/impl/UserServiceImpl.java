@@ -1,35 +1,67 @@
 package com.github.benchdoos.meetroom.service.impl;
 
 import com.github.benchdoos.meetroom.config.constants.SecurityConstants;
+import com.github.benchdoos.meetroom.config.properties.InternalConfiguration;
+import com.github.benchdoos.meetroom.domain.Avatar;
+import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
+import com.github.benchdoos.meetroom.domain.Role;
 import com.github.benchdoos.meetroom.domain.User;
-import com.github.benchdoos.meetroom.domain.UserRole;
+import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
+import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
+import com.github.benchdoos.meetroom.domain.dto.EditRolesForUserDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
+import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
+import com.github.benchdoos.meetroom.domain.dto.security.LoginDto;
+import com.github.benchdoos.meetroom.domain.interfaces.UserInfo;
+import com.github.benchdoos.meetroom.exceptions.AdminCanNotRemoveAdminRoleForHimselfException;
+import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
+import com.github.benchdoos.meetroom.exceptions.InvalidCurrentPasswordException;
+import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePasswordException;
+import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpiredException;
+import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestIsNotActiveAnyMoreException;
+import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.UserAlreadyExistsException;
+import com.github.benchdoos.meetroom.exceptions.UserCanNotUpdateThisDataByHimselfException;
 import com.github.benchdoos.meetroom.exceptions.UserDisabledException;
 import com.github.benchdoos.meetroom.exceptions.UserNotFoundException;
+import com.github.benchdoos.meetroom.exceptions.UserWithSuchUsernameAlreadyExistsException;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
-import com.github.benchdoos.meetroom.repository.RolesRepository;
+import com.github.benchdoos.meetroom.repository.PasswordResetRequestRepository;
+import com.github.benchdoos.meetroom.repository.RoleRepository;
 import com.github.benchdoos.meetroom.repository.UserRepository;
+import com.github.benchdoos.meetroom.service.AvatarGeneratorService;
 import com.github.benchdoos.meetroom.service.UserService;
+import com.github.benchdoos.meetroom.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
+import java.security.Principal;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -39,10 +71,33 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
+    private static final int RANDOM_PASSWORD_LENGTH = 10;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final RolesRepository rolesRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordResetRequestRepository passwordResetRequestRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AvatarGeneratorService avatarGeneratorService;
+    private final InternalConfiguration internalConfiguration;
+
+    /**
+     * Random password generator
+     *
+     * @param length password length
+     * @return password
+     */
+    private static String generateRandomPassword(int length) {
+        final String symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_-";
+        final Random random = new Random();
+
+        final StringBuilder stringBuilder = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            stringBuilder.append(symbols.charAt(random.nextInt(symbols.length())));
+        }
+
+        return stringBuilder.toString();
+    }
 
     @Override
     public UserPublicInfoDto getUserPublicInfoDtoByUsername(String username) {
@@ -54,7 +109,7 @@ public class UserServiceImpl implements UserService {
         return userPublicInfoDto;
     }
 
-    public UserExtendedInfoDto getExtendedUserInfoDtoByUsername(String username) {
+    public UserExtendedInfoDto getUserExtendedInfoDtoByUsername(String username) {
         final User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         final UserExtendedInfoDto userExtendedInfoDto = new UserExtendedInfoDto();
 
@@ -64,22 +119,45 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getById(UUID id) {
+    public User getUserById(UUID id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
+    public UserExtendedInfoDto getUserExtendedInfoById(UUID id) {
+        final User user = getUserById(id);
+        final UserExtendedInfoDto userExtendedInfoDto = new UserExtendedInfoDto();
+
+        userMapper.convert(user, userExtendedInfoDto);
+
+        return userExtendedInfoDto;
+    }
+
+    @Override
+    public UserPublicInfoDto getUserPublicInfoDtoById(UUID userId) {
+        final User user = getUserById(userId);
+
+        final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
+        userMapper.convert(user, userPublicInfoDto);
+        return userPublicInfoDto;
     }
 
     @Override
     public UserPublicInfoDto createUser(CreateUserDto createUserDto) {
         validateNewUser(createUserDto);
 
-        final UserRole userRole = rolesRepository.findFirstByRole(SecurityConstants.ROLE_USER);
+        final Role role = roleRepository.findFirstByInternalName(SecurityConstants.ROLE_USER);
+
+        final Avatar avatar = prepareUserAvatar(createUserDto.getUsername());
 
         final User user = User.builder()
                 .firstName(createUserDto.getFirstName())
                 .lastName(createUserDto.getLastName())
                 .username(createUserDto.getUsername())
                 .password(passwordEncoder.encode(createUserDto.getPassword()))
-                .roles(Collections.singleton(userRole))
+                .roles(Collections.singleton(role))
+                .avatar(avatar)
+                .needActivation(false) //todo add email-activation, change to true
                 .enabled(true)
                 .build();
 
@@ -92,6 +170,205 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    @Override
+    public void createOtherUser(CreateOtherUserDto createOtherUserDto) {
+        validateNewUser(createOtherUserDto);
+
+        final String password = generateRandomPassword(RANDOM_PASSWORD_LENGTH);
+
+        final Role role = roleRepository.findFirstByInternalName(SecurityConstants.ROLE_USER);
+
+        final Avatar avatar = prepareUserAvatar(createOtherUserDto.getUsername());
+
+        final User userToSave = User.builder()
+                .username(createOtherUserDto.getUsername())
+                .firstName(createOtherUserDto.getFirstName())
+                .lastName(createOtherUserDto.getLastName())
+                .password(passwordEncoder.encode(password))
+                .roles(Collections.singletonList(role))
+                .avatar(avatar)
+                .needActivation(true)
+                .enabled(true)
+                .build();
+
+        userRepository.save(userToSave);
+    }
+
+    @Override
+    public UserExtendedInfoDto editOtherUser(UUID id, EditOtherUserDto editOtherUserDto) {
+        final User user = getUserById(id);
+
+        validateUsernameChange(editOtherUserDto, user);
+
+        user.setUsername(editOtherUserDto.getUsername());
+        user.setFirstName(editOtherUserDto.getFirstName());
+        user.setLastName(editOtherUserDto.getLastName());
+
+        final User savedUser = userRepository.save(user);
+
+        final UserExtendedInfoDto userExtendedInfoDto = new UserExtendedInfoDto();
+        userMapper.convert(user, userExtendedInfoDto);
+
+        return userExtendedInfoDto;
+    }
+
+    @Override
+    public UserExtendedInfoDto updateUserRoles(UUID id, EditRolesForUserDto editRolesForUserDto, Principal principal) {
+        final User user = getUserById(id);
+
+        final List<Role> rolesByIds = roleRepository.findAllById(editRolesForUserDto.getRoles());
+
+        validateAdminRoleChange(principal, user, rolesByIds);
+
+        user.setRoles(rolesByIds);
+
+        final User savedUser = userRepository.save(user);
+
+        final UserExtendedInfoDto userExtendedInfoDto = new UserExtendedInfoDto();
+        userMapper.convert(savedUser, userExtendedInfoDto);
+
+        return userExtendedInfoDto;
+    }
+
+    @Transactional
+    @Override
+    public void callForUserPasswordReset(@NotNull UUID id, @NotNull Principal principal) {
+        final ZonedDateTime requestTime = ZonedDateTime.now();
+
+        final User user = getUserById(id);
+
+        final Collection<PasswordResetRequest> allActivePasswordResetRequests =
+                passwordResetRequestRepository.findByRequestedForAndExpiresIsAfterAndActiveIsTrue(user, requestTime);
+
+        if (!CollectionUtils.isEmpty(allActivePasswordResetRequests)) {
+            allActivePasswordResetRequests.forEach(passwordResetRequest -> passwordResetRequest.setActive(false));
+            passwordResetRequestRepository.saveAll(allActivePasswordResetRequests);
+        }
+
+        final User byUsername = userRepository.findByUsername(principal.getName()).orElseThrow(UserNotFoundException::new);
+
+        final PasswordResetRequest passwordResetRequest = PasswordResetRequest.builder()
+                .requestedBy(byUsername)
+                .requestedFor(user)
+                .active(true)
+                .requested(requestTime)
+                .expires(requestTime.plusDays(1))
+                .build();
+
+        passwordResetRequestRepository.save(passwordResetRequest);
+    }
+
+    @Override
+    public void updateUserPassword(UUID id, UpdateUserPasswordDto updateUserPasswordDto, Principal principal) {
+        final User user = getUserById(id);
+
+        final boolean owner = UserUtils.checkPrincipalToGivenId(principal, id);
+
+        if (!owner) {
+            throw new OnlyAccountOwnerCanChangePasswordException(user.getUsername(), principal.getName());
+        }
+
+        final boolean matches = passwordEncoder.matches(updateUserPasswordDto.getCurrentPassword(), user.getPassword());
+
+        if (!matches) {
+            throw new InvalidCurrentPasswordException();
+        }
+
+        user.setPassword(passwordEncoder.encode(updateUserPasswordDto.getPassword()));
+        userRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public void resetUserPasswordByResetRequest(UUID id, UpdateUserPasswordDto updateUserPasswordDto) {
+        final PasswordResetRequest passwordResetRequest = passwordResetRequestRepository.findById(id)
+                .orElseThrow(PasswordResetRequestNotFoundException::new);
+
+        if (!passwordResetRequest.isActive()) {
+            throw new PasswordResetRequestIsNotActiveAnyMoreException();
+        }
+
+        if (ZonedDateTime.now().isAfter(passwordResetRequest.getExpires())) {
+            throw new PasswordResetRequestExpiredException();
+        }
+
+        final User user = passwordResetRequest.getRequestedFor();
+        user.setNeedActivation(false);
+
+        user.setPassword(passwordEncoder.encode(updateUserPasswordDto.getPassword()));
+
+        passwordResetRequest.setActive(false);
+
+        passwordResetRequestRepository.save(passwordResetRequest);
+
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUserEnable(@NotNull UUID id, boolean enabled, Principal principal) {
+        final User user = getUserById(id);
+
+        if (principal != null) {
+            if (principal.getName().equals(user.getUsername())) {
+                throw new UserCanNotUpdateThisDataByHimselfException();
+            }
+        }
+
+        user.setEnabled(enabled);
+
+        userRepository.save(user);
+    }
+
+    /**
+     * Validates if admin can change role for himself
+     *
+     * @param principal of user
+     * @param user user to update
+     * @param roles user roles
+     */
+    private void validateAdminRoleChange(Principal principal, User user, List<Role> roles) {
+        final boolean hasAdminRoleInChange = roles.stream()
+                .anyMatch(role -> role.getInternalName().equals(SecurityConstants.ROLE_ADMIN));
+        if (!hasAdminRoleInChange) {
+            final boolean userAdminRole = user.getRoles().stream()
+                    .anyMatch(role -> role.getInternalName().equals(SecurityConstants.ROLE_ADMIN));
+
+            if (userAdminRole) {
+
+                final boolean isCurrentUserEditingHimself = principal.getName().equals(user.getUsername());
+
+                if (isCurrentUserEditingHimself) { //no need to check if user is admin
+                    throw new AdminCanNotRemoveAdminRoleForHimselfException(user.getUsername());
+                }
+            }
+        }
+    }
+
+    /**
+     * Validates username change
+     *
+     * @param editOtherUserDto dto with username to change
+     * @param user user from db
+     */
+    private void validateUsernameChange(EditOtherUserDto editOtherUserDto, User user) {
+
+        if (!user.getUsername().equals(editOtherUserDto.getUsername())) {
+
+            final Optional<User> byUsername = userRepository.findByUsername(editOtherUserDto.getUsername());
+
+            if (byUsername.isPresent()) {
+                if (!user.getId().equals(byUsername.get().getId())) {
+                    throw new UserWithSuchUsernameAlreadyExistsException(editOtherUserDto.getUsername());
+                }
+            }
+        }
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         final User user = userRepository.findByUsername(username)
@@ -101,7 +378,7 @@ public class UserServiceImpl implements UserService {
 
         final UserDetailsDto userDetailsDto = new UserDetailsDto(user);
 
-        userDetailsDto.setAuthorities(getGrantedAuthoritiesFromUserRoles(user.getRoles()));
+        userDetailsDto.setAuthorities(UserUtils.getUserRolesFromGrantedAuthorities(user.getRoles()));
 
         return userDetailsDto;
     }
@@ -109,14 +386,14 @@ public class UserServiceImpl implements UserService {
     /**
      * Validate user for creation
      *
-     * @param createUserDto dto with user
+     * @param userInfo dto with user
      */
-    private void validateNewUser(CreateUserDto createUserDto) {
+    private void validateNewUser(UserInfo userInfo) {
 
-        final Optional<User> byUsername = userRepository.findByUsername(createUserDto.getUsername());
+        final Optional<User> byUsername = userRepository.findByUsername(userInfo.getUsername());
 
         if (byUsername.isPresent()) {
-            throw new UserAlreadyExistsException(createUserDto.getUsername());
+            throw new UserAlreadyExistsException(userInfo.getUsername());
         }
     }
 
@@ -131,20 +408,154 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    /**
-     * Transforms list of {@link UserRole} to {@link GrantedAuthority} final List<>  = new ();
-     *
-     * @param roles list of user's roles
-     * @return list of granted authorities
-     */
-    private List<GrantedAuthority> getGrantedAuthoritiesFromUserRoles(Collection<UserRole> roles) {
-        final List<GrantedAuthority> grantList = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(roles)) {
-            roles.forEach(role -> {
-                grantList.add(new SimpleGrantedAuthority(role.getRole()));
-                role.getPrivileges().forEach(privilege -> grantList.add(new SimpleGrantedAuthority(privilege.getName())));
-            });
-        }
-        return grantList;
+    @Override
+    public Page<User> searchByUsernameAndNames(String request, Pageable pageable) {
+        return userRepository.findAll(prepareUserSearchByUsernameOrLastAndFirstNameSpecification(request), pageable);
     }
+
+    @Override
+    public UserDetails getUserByLoginDto(LoginDto loginDto) {
+        final UserDetails user = loadUserByUsername(loginDto.getUsername());
+
+        final String encodedPassword = passwordEncoder.encode(loginDto.getPassword());
+
+        log.debug("e: [{}] [{}]", encodedPassword, user.getPassword());
+
+        if (passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
+            return user;
+        }
+
+        throw new IllegalUserCredentialsException();
+    }
+
+    @Override
+    public UserPublicInfoDto updateUserUsername(UpdateUserUsernameDto updateUserUsernameDto) {
+
+        if (ObjectUtils.nullSafeEquals(updateUserUsernameDto.getOldUsername(), updateUserUsernameDto.getNewUsername())) {
+            return getUserPublicInfoDtoByUsername(updateUserUsernameDto.getOldUsername());
+        }
+
+        validateNewUser(updateUserUsernameDto::getNewUsername);
+
+        final User byUsername = userRepository.findByUsername(updateUserUsernameDto.getOldUsername())
+                .orElseThrow(UserNotFoundException::new);
+
+        byUsername.setUsername(updateUserUsernameDto.getNewUsername());
+
+        final User savedUser = userRepository.save(byUsername);
+        final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
+
+        userMapper.convert(savedUser, userPublicInfoDto);
+
+        return userPublicInfoDto;
+    }
+
+    @Override
+    public UserAvatarDto getAvatarForUserId(UUID id) {
+        final User byId = getUserById(id);
+        final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
+        userMapper.convert(byId, userPublicInfoDto);
+        return userPublicInfoDto.getAvatar();
+    }
+
+    @Override
+    public UserAvatarDto updateUserAvatar(UUID userId, UpdateUserAvatarDto updateUserAvatarDto) {
+        final User user = getUserById(userId);
+
+        validateAvatar(updateUserAvatarDto);
+
+        if (user.getAvatar() != null) {
+            user.getAvatar().setType(updateUserAvatarDto.getType());
+            user.getAvatar().setData(updateUserAvatarDto.getData());
+        } else {
+            final Avatar avatar = new Avatar(null, updateUserAvatarDto.getType(), updateUserAvatarDto.getData());
+            user.setAvatar(avatar);
+        }
+
+        userRepository.save(user);
+
+        final UserAvatarDto userAvatarDto = new UserAvatarDto();
+        userMapper.convertAvatar(user.getAvatar(), userAvatarDto);
+
+        return userAvatarDto;
+    }
+
+    @Override
+    public UserPublicInfoDto updateUserInfo(UUID userId, UpdateUserInfoDto updateUserInfoDto) {
+        final User user = getUserById(userId);
+
+        user.setFirstName(updateUserInfoDto.getFirstName());
+        user.setLastName(updateUserInfoDto.getLastName());
+
+        final User saved = userRepository.save(user);
+
+        final UserPublicInfoDto userPublicInfoDto = new UserPublicInfoDto();
+
+        userMapper.convert(user, userPublicInfoDto);
+
+        return userPublicInfoDto;
+    }
+
+    /**
+     * Validate avatar data by given avatar type
+     *
+     * @param updateUserAvatar dto to validate
+     */
+    private void validateAvatar(UpdateUserAvatarDto updateUserAvatar) {
+        switch (updateUserAvatar.getType()) {
+            case GRAVATAR:
+                //validate email
+                break;
+            case BASE64:
+                //validate base64
+                break;
+        }
+    }
+
+    /**
+     * Create {@link Specification} to look for users with username or last or first name are like request.
+     *
+     * @return specification with needed queries
+     */
+    private Specification<User> prepareUserSearchByUsernameOrLastAndFirstNameSpecification(String request) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            final String requestPattern = "%" + request.toUpperCase() + "%";
+
+            final Predicate username = criteriaBuilder.like(criteriaBuilder.upper(root.get("username")), requestPattern);
+
+            final Expression<String> lastNameAndFirstNameExpression = criteriaBuilder.upper(
+                    criteriaBuilder.concat(
+                            criteriaBuilder.concat(root.get("lastName"), " "),
+                            root.get("firstName")
+                    )
+            );
+
+            final Predicate lastNameAndFirstNamePredicate = criteriaBuilder.like(lastNameAndFirstNameExpression, requestPattern);
+
+            final Expression<String> firstNameAndLastNameExpression = criteriaBuilder.upper(
+                    criteriaBuilder.concat(
+                            criteriaBuilder.concat(root.get("firstName"), " "),
+                            root.get("lastName")
+                    )
+            );
+
+            final Predicate firstNameAndLastNamePredicate = criteriaBuilder.like(firstNameAndLastNameExpression, requestPattern);
+
+            return criteriaBuilder.or(username, firstNameAndLastNamePredicate, lastNameAndFirstNamePredicate);
+        };
+    }
+
+    /**
+     * Creates {@link Avatar} instance (in memory, not in database) by given username
+     *
+     * @param username as a keyword
+     * @return avatar
+     */
+    private Avatar prepareUserAvatar(String username) {
+        final UserAvatarDto userAvatarDto = avatarGeneratorService.generateAvatarForString(
+                username,
+                internalConfiguration.getUserSettings().getAvatarSize());
+        return new Avatar(null, userAvatarDto.getType(), userAvatarDto.getSrc());
+    }
+
 }

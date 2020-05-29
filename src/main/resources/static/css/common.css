@@ -1,0 +1,144 @@
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.login-block {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.verticalHr {
+
+    border: none;
+    border-left: 1px solid hsla(200, 10%, 50%, 100);
+    width: 1px;
+}
+
+.rounded-top-left {
+    border-top-left-radius: 3px;
+}
+
+.rounded-top-right {
+    border-top-right-radius: 3px;
+}
+
+.rounded-bottom-left {
+    border-bottom-left-radius: 3px;
+}
+
+.rounded-bottom-right {
+    border-bottom-right-radius: 3px;
+}
+
+.notify-badge {
+    position: absolute;
+    right: -20px;
+    top: 10px;
+    background: red;
+    text-align: center;
+    border-radius: 30px 30px 30px 30px;
+    color: white;
+    padding: 5px 10px;
+    font-size: 20px;
+}
+/*-------------------HEADER-----------------------*/
+.header {
+    color: white;
+    width: 100% !important;
+    display: inline-flex;
+}
+
+.header .w-100 {
+    display: inline-flex;
+}
+
+.header a:hover{
+    text-decoration: none;
+}
+
+.header .btn {
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.header .btn-outline-secondary {
+    color: white;
+}
+
+.header .btn-outline-secondary:hover {
+    border-color: #6c757d;
+}
+
+.header .btn-outline-primary {
+    color: white;
+    border-color: #006bef;
+}
+
+.header .btn-outline-primary:hover {
+    color: #007bff;
+    border-color: #007bff;
+    background-color: white;
+}
+
+.header .btn-outline-danger {
+    color: white;
+}
+
+.header .btn-outline-info {
+    color: white;
+}
+
+.header .btn-outline-warning {
+    color: #f7cb47;
+}
+
+.header .btn-outline-warning:hover {
+    color: white;
+}
+
+.header .btn-outline-success {
+    color: white;
+}
+
+.header .btn-primary {
+    background-color: #208dff;
+}
+
+.header .btn-primary:hover {
+    background-color: #1a78dc;
+}
+
+/*----------------HEADER END------------------*/
+
+
+./**
+ * Makes time row more compact
+ */
+.table-striped tbody .timeRow {
+    line-height: 5px;
+}
+
+.table-striped tbody .timeRow td .eventCell{
+    width: 100%;
+}
+
+/**
+ * Makes time row more compact
+ */
+.eventCell {
+    padding: 5px !important;
+}
+
+.header-link {
+    color: white;
+}
+
+.header-link:hover{
+    color: white;
+    text-decoration: none;
+}

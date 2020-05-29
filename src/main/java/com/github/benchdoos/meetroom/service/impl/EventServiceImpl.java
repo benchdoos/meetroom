@@ -8,6 +8,7 @@ import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.dto.CreateEventDto;
 import com.github.benchdoos.meetroom.domain.dto.EventDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateEventDto;
+import com.github.benchdoos.meetroom.exceptions.EventCanBeDeletedByOwnerOrAdminException;
 import com.github.benchdoos.meetroom.exceptions.EventNotFoundException;
 import com.github.benchdoos.meetroom.exceptions.TimeNotAvailableException;
 import com.github.benchdoos.meetroom.mappers.EventMapper;
@@ -16,8 +17,11 @@ import com.github.benchdoos.meetroom.service.EventService;
 import com.github.benchdoos.meetroom.service.MeetingRoomService;
 import com.github.benchdoos.meetroom.service.UserService;
 import com.github.benchdoos.meetroom.utils.DateUtils;
+import com.github.benchdoos.meetroom.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -25,11 +29,13 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.Predicate;
+import java.security.Principal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class EventServiceImpl implements EventService {
@@ -51,23 +57,15 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDto getEventDtoById(UUID id) {
+    public EventDto getEventById(UUID id) {
         final Event event = eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
 
-        final EventDto eventDto = new EventDto();
-        eventMapper.convert(event, eventDto);
-
-        return eventDto;
+        return eventMapper.toEventDto(event);
     }
 
     @Override
-    public Event getEventById(UUID id) {
-        return eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
-    }
-
-    @Override
-    public Event createEvent(CreateEventDto createEventDto) {
-        final User user = userService.getById(createEventDto.getUserId());
+    public EventDto createEvent(CreateEventDto createEventDto) {
+        final User user = userService.getUserById(createEventDto.getUserId());
         final MeetingRoom meetingRoom = meetingRoomService.getById(createEventDto.getMeetingRoomId());
 
         Assert.isTrue(user.isEnabled(), "User must be enabled to create events");
@@ -95,12 +93,13 @@ public class EventServiceImpl implements EventService {
                 .deleted(false)
                 .build();
 
-        return eventRepository.save(event);
+        final Event saved = eventRepository.save(event);
+        return eventMapper.toEventDto(saved);
     }
 
 
     @Override
-    public Event updateEvent(UUID id, UpdateEventDto updateEventDto) {
+    public EventDto updateEvent(UUID id, UpdateEventDto updateEventDto) {
         final Event event = eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
 
         Assert.isTrue(event.getDeleted() == null || !event.getDeleted(),
@@ -126,15 +125,64 @@ public class EventServiceImpl implements EventService {
         event.setTitle(updateEventDto.getTitle());
         event.setDescription(updateEventDto.getDescription());
 
-        return eventRepository.save(event);
+        final Event saved = eventRepository.save(event);
+        return eventMapper.toEventDto(saved);
     }
 
     @Override
-    public boolean deleteEvent(UUID id) {
+    public boolean deleteEvent(UUID id, Principal principal) {
         final Event event = eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
+
+        final boolean owner = UserUtils.checkPrincipalToGivenId(principal, event.getUser().getId());
+        if (!owner) {
+            final boolean role_admin = UserUtils.hasAnyAuthority(principal, "ROLE_ADMIN");
+            if (!role_admin) {
+                throw new EventCanBeDeletedByOwnerOrAdminException();
+            }
+        }
+
         event.setDeleted(true);
         final Event save = eventRepository.save(event);
         return save.getDeleted() != null && save.getDeleted();
+    }
+
+    @Override
+    public List<EventDto> getCurrentEventsForUser(UUID userId) {
+        final User user = userService.getUserById(userId);
+
+        final ZonedDateTime now = ZonedDateTime.now();
+
+        final Specification<Event> prepareSpecification = prepareEventSpecificationToFindEventsByUserAndTimeBetweenEventStartAndEnd(user, now);
+
+        final List<Event> userCurrentEvents = eventRepository.findAll(prepareSpecification);
+
+        final List<EventDto> eventDtos = new ArrayList<>();
+
+        eventMapper.convert(userCurrentEvents, eventDtos);
+
+        return eventDtos;
+    }
+
+    @Override
+    public Page<EventDto> getFutureEventsForUser(UUID userId, Pageable pageable) {
+        final User user = userService.getUserById(userId);
+
+        final ZonedDateTime now = ZonedDateTime.now();
+
+        final Specification<Event> prepareSpecification = prepareEventSpecificationToFindEventsByUserSinceGivenTime(user, now);
+
+        return findAllEventsDto(prepareSpecification, pageable);
+    }
+
+    @Override
+    public Page<EventDto> getPreviousEventsForUser(UUID userId, Pageable pageable) {
+        final User user = userService.getUserById(userId);
+
+        final ZonedDateTime now = ZonedDateTime.now();
+
+        final Specification<Event> prepareSpecification = prepareEventSpecificationToFindEventsByUserBeforeGivenTime(user, now);
+
+        return findAllEventsDto(prepareSpecification, pageable);
     }
 
     /**
@@ -149,7 +197,7 @@ public class EventServiceImpl implements EventService {
         final long eventDuration = DateUtils.getDateRangeDuration(fromDate, toDate);
 
         Assert.isTrue(eventDuration >= properties.getMinimumReservationValue()
-                && eventDuration <= properties.getMaximumReservationValue(),
+                        && eventDuration <= properties.getMaximumReservationValue(),
                 String.format("Event duration is not in given range: %s", properties.getViewableDurationString()));
 
         Assert.isTrue(fromDate.isBefore(toDate), "Start date must be before the end date.");
@@ -184,5 +232,103 @@ public class EventServiceImpl implements EventService {
                     criteriaBuilder.not(deletedPredicate),
                     criteriaBuilder.or(datePredicates.toArray(new Predicate[0])));
         };
+    }
+
+    /**
+     * Get {@link Specification} for {@link Event} to get events by user for given time, that are not deleted
+     *
+     * @param user user
+     * @param time time
+     * @return prepared specification
+     */
+    private Specification<Event> prepareEventSpecificationToFindEventsByUserAndTimeBetweenEventStartAndEnd(User user, ZonedDateTime time) {
+
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            final Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
+
+            final Predicate deletedPredicate = criteriaBuilder.and(
+                    criteriaBuilder.isNotNull(root.get("deleted").as(Boolean.class)),
+                    criteriaBuilder.isTrue(root.get("deleted").as(Boolean.class)));
+
+
+            final Predicate between = criteriaBuilder.between(
+                    criteriaBuilder.literal(DateUtils.truncateSecondsToStart(time)),
+                    root.get("fromDate"),
+                    root.get("toDate"));
+
+            return criteriaBuilder.and(
+                    userPredicate,
+                    criteriaBuilder.not(deletedPredicate),
+                    between);
+        };
+    }
+
+    /**
+     * Get {@link Specification} for {@link Event} to get future starting events from given time
+     *
+     * @param user user
+     * @param time time to find future events starting from this time
+     * @return prepared specification
+     */
+    private Specification<Event> prepareEventSpecificationToFindEventsByUserSinceGivenTime(User user, ZonedDateTime time) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            final Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
+
+            final Predicate deletedPredicate = criteriaBuilder.and(
+                    criteriaBuilder.isNotNull(root.get("deleted").as(Boolean.class)),
+                    criteriaBuilder.isTrue(root.get("deleted").as(Boolean.class)));
+
+
+            final Predicate futureTimePredicate = criteriaBuilder
+                    .greaterThan(root.get("fromDate"), DateUtils.truncateSecondsToStart(time));
+
+            return criteriaBuilder.and(
+                    userPredicate,
+                    criteriaBuilder.not(deletedPredicate),
+                    futureTimePredicate);
+        };
+    }
+
+    /**
+     * Get {@link Specification} for {@link Event} to get previous ending events before given time
+     *
+     * @param user user
+     * @param time time to find previous events ending before this time
+     * @return prepared specification
+     */
+    private Specification<Event> prepareEventSpecificationToFindEventsByUserBeforeGivenTime(User user, ZonedDateTime time) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            final Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
+
+            final Predicate deletedPredicate = criteriaBuilder.and(
+                    criteriaBuilder.isNotNull(root.get("deleted").as(Boolean.class)),
+                    criteriaBuilder.isTrue(root.get("deleted").as(Boolean.class)));
+
+
+            final Predicate futureTimePredicate = criteriaBuilder
+                    .lessThan(root.get("toDate"), DateUtils.truncateSecondsToEnd(time));
+
+            return criteriaBuilder.and(
+                    userPredicate,
+                    criteriaBuilder.not(deletedPredicate),
+                    futureTimePredicate);
+        };
+    }
+
+    /**
+     * Find all events by given specification and pageable
+     *
+     * @param prepareSpecification specification
+     * @param pageable pageable
+     * @return page of event dto
+     */
+    private Page<EventDto> findAllEventsDto(Specification<Event> prepareSpecification, Pageable pageable) {
+        final Page<Event> userCurrentEvents = eventRepository.findAll(prepareSpecification, pageable);
+
+        final List<EventDto> eventDtos = new ArrayList<>();
+
+        eventMapper.convert(userCurrentEvents.getContent(), eventDtos);
+
+        return new PageImpl<>(eventDtos, pageable, userCurrentEvents.getTotalElements());
     }
 }

@@ -1,0 +1,171 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+>
+<head>
+    <title>Meeting users</title>
+    <link rel="shortcut icon" href="/favicon.ico" th:href="@{/favicon.ico}" type="image/x-icon">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.4.1-1/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.12.0/css/all.css}">
+    <link href="/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet">
+    <link href="/css/common.css" th:href="@{/css/common.css}" rel="stylesheet">
+    <link href="/css/pagination.css" th:href="@{/css/pagination.css}" rel="stylesheet">
+
+    <!-- todo use webjars-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+            integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<nav class="navbar navbar-dark bg-primary">
+    <div class="header">
+        <div style="display: flex;" class="w-100">
+            <a class="btn btn-dark h2"
+               th:href="@{/}"
+               data-toggle="tooltip"
+               data-placement="bottom"
+               title="Main page"><i class="fas fa-home"></i></a>
+            <button class="btn btn-light h2" onclick="goBack()"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Go back">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <a class="btn btn-info h2" th:href="@{/manage/}"
+               data-toggle="tooltip"
+               data-placement="bottom"
+               title="Management page">
+                <i class="fas fa-user-cog"></i>
+            </a>
+            <a class="link h2" th:href="@{/manage/users}" style="color: white">Manage users</a>
+            <button sec:authorize="hasAnyAuthority('MANAGE_USERS:USE')"
+                    type="button"
+                    class="btn btn-outline-primary h2"
+                    style="margin-right: 10px; margin-left: 10px"
+                    data-toggle="modal"
+                    data-target="#create-user-modal"
+                    title="Create new user">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+        <div class="search">
+            <div th:include="modal/modal-search :: fr-search(@{/manage/users/search}, 'Search user')"></div>
+        </div>
+        <div th:include="modal/modal-login :: fr-login"></div>
+    </div>
+</nav>
+
+<div class="content" sec:authorize="hasAnyAuthority('MANAGE_USERS:USE')" style="overflow-y: auto;">
+    <table class="table table-striped" id="users-table">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Roles</th>
+            <th>Enabled</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="user : ${users.content}">
+            <th>
+                <div style="display: inline-flex;">
+                    <span th:include="modal/modal-user :: fr-user-username"></span>&nbsp;
+                    <i class="fas fa-exclamation-circle"
+                       th:if="${user.needActivation}"
+                       style="color: chocolate"
+                       title="User account not activated"></i>
+                </div>
+            </th>
+            <th th:text="${user.firstName}"></th>
+            <th th:text="${user.lastName}"></th>
+            <th style="max-width: 300px;">
+                    <span th:each="role,iterStat : ${user.roles}" th:if="${iterStat.index <= 5}">
+                        <div th:include="modal/modal-role :: fr-role-label"></div>
+                    </span>
+                <!--todo: iterate role names like: ROLE_ADMIN ROLE_USER ...-->
+                <a th:href="@{/user/{username}(username = ${user.username})}">
+                    <span th:if="${#lists.size(user.roles)>5}"
+                          class="badge badge-info" data-toggle="tooltip" data-placement="top"
+                          th:title="|Total roles: ${#lists.size(user.roles)}|">...</span>
+                </a>
+            </th>
+            <th>
+                <span th:if="${user.enabled}" title="Enabled" data-toggle="tooltip" data-placement="top">
+                    <i class="fas fa-check-square" style="color:green"></i>
+                </span>
+                <span th:if="${!user.enabled}" title="Disabled" data-toggle="tooltip" data-placement="top">
+                    <i class="fas fa-times" style="color:red"></i>
+                </span>
+            </th>
+            <th>
+                <a href="#" data-toggle="modal"
+                   th:attrappend="data-target=|#edit-user-modal-${user.id}|"
+                   data-placement="top">
+                    <i class="fas fa-edit" title="Edit user"></i>
+                </a>
+            </th>
+            <th>
+                <a href="#" data-toggle="modal"
+                   th:attrappend="data-target=|#edit-user-roles-modal-${user.id}|"
+                   data-placement="top">
+                    <i class="fas fa-user-tag" title="Set user roles"></i>
+                </a>
+            </th>
+            <th>
+                <a href="#" data-toggle="modal"
+                   th:attrappend="data-target=|#reset-user-password-modal-${user.id}|"
+                   data-placement="top">
+                    <i class="fas fa-user-shield text-danger" title="Reset user password"></i>
+                </a>
+            </th>
+            <th>
+                <a href="#" data-toggle="modal"
+                   th:attrappend="data-target=|#edit-user-enable-modal-${user.id}|"
+                   data-placement="top">
+                    <i class="fas fa-user-cog text-danger" title="Manage user enable ability"></i>
+                </a>
+            </th>
+        </tr>
+
+        <tr th:if="${users.getTotalElements()==0}">
+            <td colspan="9" style="text-align: center">No content</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:if="${users.getTotalElements()>0}"
+     th:with="page=${users}"
+     th:include="modal/modal-pagination :: fr-pagination"></div>
+
+<!-- Modals -->
+
+<div id="modals">
+    <div th:include="modal/modal-manage-user :: fr-create-user-modal"></div>
+    <div th:include="modal/modal-manage-user :: fr-edit-user" th:each="user : ${users.content}"></div>
+    <div th:include="modal/modal-manage-user :: fr-edit-user-roles" th:each="user : ${users.content}"></div>
+    <div th:include="modal/modal-manage-user :: fr-reset-user-password" th:each="user : ${users.content}"></div>
+    <div th:include="modal/modal-manage-user :: fr-edit-user-enable" th:each="user : ${users.content}"></div>
+</div>
+
+<!-- /Modals -->
+
+<script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.4.1-1/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+
+<script th:src="@{/js/pagination-fix.js}"></script>
+<script>
+    $('#myModal').on('shown.bs.modal', function () {
+        $('#myInput').trigger('focus')
+    });
+</script>
+</body>
+</html>

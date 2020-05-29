@@ -11,10 +11,41 @@ management:
           - info
           - prometheus
           - configprops
+          - mappings
 #meetroom reservation properties
 meetroom:
   minimum-reservation-value: 30 #in minutes
   maximum-reservation-value: 1440 #24h in minutes
+
+manage-pages:
+  pages:
+    - name: Manage users
+      path: users
+      description: "Manage users: register, edit, disable users. Manage user roles and reset password."
+      icon: fas fa-user-cog
+    - name: Manage roles
+      path: roles
+      description: "Manage roles: create and edit roles, set permissions to each role."
+      icon: fas fa-user-tag
+    - name: See privileges
+      path: privileges
+      description: "See all available privileges in system and its descriptions"
+      icon: fas fa-parking
+protected:
+  roles:
+    - ROLE_ADMIN
+    - ROLE_USER
+
+api-security:
+  secret: common-secret
+  token-validity: 7200
+  refresh-token-validity: 14400
+
+internal-configuration:
+  user-settings:
+    avatar-size: 256
+    default-avatar-id: 1729ebbd-341e-40a5-a71e-a4dcb9b9f1b5
+
 ---
 
 spring:
@@ -42,6 +73,9 @@ spring:
     validate-on-migrate: true
     baseline-on-migrate: true
 
+api-security:
+  token-validity: 86400
+  refresh-token-validity: 86400
 server:
   servlet:
     context-path: /meetroom
@@ -74,7 +108,82 @@ spring:
     validate-on-migrate: true
     baseline-on-migrate: true
 
+api-security:
+  secret: 8c6be0fb-f96e-46c4-9a7d-2f34d734c28a
+
 server:
   servlet:
     context-path: /
   port: 80
+
+
+---
+
+spring:
+  profiles: TEST
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://ec2-54-75-229-28.eu-west-1.compute.amazonaws.com:5432/d7nmlgp6gc78pn #change it in VM options
+    username: ajtxkoapgrezkx
+    password: 703d19701094358ff933c966dfbb8867c75716b04f263e8a4a2bf9a3d078c1e9
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1;
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+  flyway:
+    enabled: true
+    encoding: UTF-8
+    locations: classpath:/db/flyway/migration/
+    validate-on-migrate: true
+    baseline-on-migrate: true
+
+api-security:
+  secret: 01cc3481-e92f-4793-8233-e648cf38d1fa
+
+server:
+  servlet:
+    context-path: /
+  port: 80
+
+---
+
+#Profile clone of PRODUCTION, except using local database
+spring:
+  profiles: LOCAL
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/meetroom_local
+    username: meetroom
+    password: meetroom
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1;
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+  flyway:
+    enabled: true
+    encoding: UTF-8
+    locations: classpath:/db/flyway/migration/
+    validate-on-migrate: true
+    baseline-on-migrate: true
+
+api-security:
+  secret: 4176429e-a07b-4a2f-9e02-a80081ab2ac7
+
+server:
+  servlet:
+    context-path: /
+  port: 8030

@@ -1,5 +1,9 @@
 # Meetroom 
 
+## For HRs and PMs:
+
+This project was developed as a test project for one of companies and it still being in development to show actual skills and experience, that will help avoid time wasting on test tasks. You can see as code to analyse, as the project up itself at [http://meetroom.herokuapp.com/](http://meetroom.herokuapp.com/) (wait a little bit while loading, until project will boot up). 
+
 ## Introduction:
 
 Meetroom gives ability to manage meeting rooms inside company,
@@ -78,10 +82,12 @@ Admins can:
 
 - create, edit, disable meeting rooms
 - create, edit and delete **all** events
+- act all management options
 
 Users can:
 
 - create events, edit, delete their own events
+- manage their profile and other stuff
 
 
 
@@ -105,3 +111,9 @@ To override VM options:
 ![Main page](https://i.postimg.cc/V6tKLXw8/image.png)
 ![Meeting room page](https://i.postimg.cc/CKTBp8cD/image.png)
 ![Meeting info page with editing](https://i.postimg.cc/hth6RzXS/image.png)
+![Management page](https://i.postimg.cc/0Nn764tB/image.png)
+![Manage users](https://i.postimg.cc/g0qpGkm9/image.png)
+![Manage roles](https://i.postimg.cc/cCF1qVcf/image.png)
+![See privileges](https://i.postimg.cc/66bNXLXV/image.png)
+![User page](https://i.postimg.cc/rFb57vVg/image.png)
+![Update your avatar](https://i.postimg.cc/44P52LHF/image.png)
