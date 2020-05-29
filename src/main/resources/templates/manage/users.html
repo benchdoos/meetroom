@@ -78,10 +78,16 @@
             <th>
                 <div style="display: inline-flex;">
                     <span th:include="modal/modal-user :: fr-user-username"></span>&nbsp;
-                    <i class="fas fa-exclamation-circle"
+                    <a href="#"
                        th:if="${user.needActivation}"
-                       style="color: chocolate"
-                       title="User account not activated"></i>
+                       th:target="${user}"
+                       data-toggle="modal"
+                       data-placement="top"
+                       data-target="#sendAccountActivationRequestModal">
+                        <i class="fas fa-exclamation-circle"
+                           style="color: chocolate"
+                           title="User account not activated"></i>
+                    </a>
                 </div>
             </th>
             <th th:text="${user.firstName}"></th>
@@ -161,6 +167,7 @@
 
 <div id="modals">
     <div th:include="modal/modal-manage-user :: fr-create-user-modal"></div>
+    <div th:include="modal/modal-manage-user :: fr-send-account-activation"></div>
     <div th:include="modal/modal-manage-user :: fr-edit-user" th:each="user : ${users.content}"></div>
     <div th:include="modal/modal-manage-user :: fr-edit-user-roles" th:each="user : ${users.content}"></div>
     <div th:include="modal/modal-manage-user :: fr-reset-user-password" th:each="user : ${users.content}"></div>
@@ -175,9 +182,15 @@
 
 <script th:src="@{/js/pagination-fix.js}"></script>
 <script>
-    $('#myModal').on('shown.bs.modal', function () {
-        $('#myInput').trigger('focus')
+    $('#sendAccountActivationRequestModal').on('shown.bs.modal', function (e) {
+        //todo how to get the caller???
+        console.log($(e.relatedTarget));
+        let attribute = $(e.relatedTarget).attr('target');
+        console.log(attribute);
+        console.log(attribute.username);
+        // var id= $(e.relatedTarget).data('yourid');
     });
+
 </script>
 </body>
 </html>
