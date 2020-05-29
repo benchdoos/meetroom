@@ -7,8 +7,8 @@ import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.service.UserService;
 import org.jetbrains.annotations.NotNull;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +35,7 @@ public class UserMapperTest extends AbstractIntegrationCommonTest {
     }
 
     @Test
-    @Disabled
+    @Ignore
     public void testConvertUserPublicInfoDtoToUser() {
         final UserPublicInfoDto testDto = easyRandom.nextObject(UserPublicInfoDto.class);
         final User correctResult = getCorrectUser(testDto);
@@ -60,7 +60,7 @@ public class UserMapperTest extends AbstractIntegrationCommonTest {
     }
 
     @Test
-    @Disabled
+    @Ignore
     public void testConvertUserExtendedInfoDtoToUser() {
         final User correctUser = easyRandom.nextObject(User.class);
         correctUser.setPassword(null);
