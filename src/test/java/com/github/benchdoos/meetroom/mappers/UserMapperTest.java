@@ -90,6 +90,7 @@ public class UserMapperTest extends AbstractIntegrationCommonTest {
                 .firstName(testUser.getFirstName())
                 .lastName(testUser.getLastName())
                 .username(testUser.getUsername())
+                .email(testUser.getEmail())
                 .enabled(testUser.isEnabled())
                 .avatar(getUserAvatarDto(testUser))
                 .build();
@@ -102,6 +103,7 @@ public class UserMapperTest extends AbstractIntegrationCommonTest {
                 .firstName(testUser.getFirstName())
                 .lastName(testUser.getLastName())
                 .enabled(testUser.isEnabled())
+                .email(testUser.getEmail())
                 .roles(testUser.getRoles())
                 .avatar(getUserAvatarDto(testUser))
                 .build();
