@@ -250,6 +250,18 @@ server:
 #Profile clone of PRODUCTION, except using local database
 spring:
   profiles: LOCAL
+  #using production email
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: meetroom.benchdoos@gmail.com
+    password: twjjhmfranxxijno
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/meetroom_local

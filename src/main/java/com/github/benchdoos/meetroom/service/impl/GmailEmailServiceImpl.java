@@ -30,7 +30,6 @@ import java.util.UUID;
 @Service
 public class GmailEmailServiceImpl implements EmailService {
     private final JavaMailSender emailSender;
-    private final SpringConfigurationInfoBean configurationInfoBean;
     private final InternalConfiguration internalConfiguration;
 
     @Value("spring.mail.username")
@@ -43,7 +42,7 @@ public class GmailEmailServiceImpl implements EmailService {
         final String emailMessage = internalConfiguration.getEmailSettings().getResetPasswordEmailMessage()
                 .replaceAll("\\{userFullName\\}", user.getFirstName() + " " + user.getLastName())
                 .replaceAll("\\{resetPasswordLink\\}", createResetPasswordUrl(publicFullApplicationUrl, passwordResetRequest))
-                .replaceAll("\\{meetroomMainPage\\}", configurationInfoBean.getPublicFullApplicationUrl());
+                .replaceAll("\\{meetroomMainPage\\}", publicFullApplicationUrl);
 
         try {
             sendEmailToUser(user.getEmail(), subject, emailMessage);
@@ -61,7 +60,7 @@ public class GmailEmailServiceImpl implements EmailService {
         final String emailMessage = internalConfiguration.getEmailSettings().getAccountActivationEmailMessage()
                 .replaceAll("\\{userFullName\\}", user.getFirstName() + " " + user.getLastName())
                 .replaceAll("\\{activateAccountLink\\}", createAccountActivationUrl(publicFullApplicationUrl, accountActivationRequest))
-                .replaceAll("\\{meetroomMainPage\\}", configurationInfoBean.getPublicFullApplicationUrl());
+                .replaceAll("\\{meetroomMainPage\\}", publicFullApplicationUrl);
 
         try {
             sendEmailToUser(user.getEmail(), subject, emailMessage);

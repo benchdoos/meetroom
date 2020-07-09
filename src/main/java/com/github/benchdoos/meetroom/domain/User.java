@@ -1,7 +1,7 @@
 package com.github.benchdoos.meetroom.domain;
 
-import com.github.benchdoos.meetroom.domain.annotations.Email;
 import com.github.benchdoos.meetroom.domain.annotations.Username;
+import com.github.benchdoos.meetroom.domain.annotations.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
