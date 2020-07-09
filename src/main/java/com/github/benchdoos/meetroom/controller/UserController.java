@@ -1,16 +1,22 @@
 package com.github.benchdoos.meetroom.controller;
 
 import com.github.benchdoos.meetroom.domain.Avatar;
+import com.github.benchdoos.meetroom.domain.UserEmailUpdateRequest;
 import com.github.benchdoos.meetroom.domain.dto.EventDto;
+import com.github.benchdoos.meetroom.domain.dto.ResetUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
 import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
+import com.github.benchdoos.meetroom.domain.dto.UserEmailUpdateRequestDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.domain.enumirations.UserEventTabType;
+import com.github.benchdoos.meetroom.mappers.UserEmailUpdateRequestMapper;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
+import com.github.benchdoos.meetroom.service.AccountActivationService;
 import com.github.benchdoos.meetroom.service.AvatarService;
 import com.github.benchdoos.meetroom.service.EventService;
 import com.github.benchdoos.meetroom.service.PasswordResetRequestService;
+import com.github.benchdoos.meetroom.service.UserEmailUpdateService;
 import com.github.benchdoos.meetroom.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,6 +43,9 @@ public class UserController {
     private final UserMapper userMapper;
     private final AvatarService avatarService;
     private final PasswordResetRequestService passwordResetRequestService;
+    private final AccountActivationService accountActivationService;
+    private final UserEmailUpdateService userEmailUpdateService;
+    private final UserEmailUpdateRequestMapper userEmailUpdateRequestMapper;
 
     /**
      * Get user page by principal
@@ -50,6 +59,7 @@ public class UserController {
     public String getUserPage(Principal principal, Model model) {
 
         final UserExtendedInfoDto userDto = userService.getUserExtendedInfoDtoByUsername(principal.getName());
+        appendDefaultUserAvatar(userDto);
         model.addAttribute("user", userDto);
         return "user";
     }
@@ -66,7 +76,7 @@ public class UserController {
     public String getUserPageByUsername(@PathVariable("username") String username, Model model) {
 
         final UserExtendedInfoDto userDto = userService.getUserExtendedInfoDtoByUsername(username);
-
+        appendDefaultUserAvatar(userDto);
         model.addAttribute("user", userDto);
         return "user";
     }
@@ -112,11 +122,35 @@ public class UserController {
     @PreAuthorize("isAnonymous()")
     @PostMapping("/reset-password/{id}")
     public String resetPasswordByResetRequest(@PathVariable("id") UUID id,
-                                              @Valid UpdateUserPasswordDto updateUserPasswordDto) {
+                                              @Valid ResetUserPasswordDto resetUserPasswordDto) {
 
-        userService.resetUserPasswordByResetRequest(id, updateUserPasswordDto);
+        userService.resetUserPasswordByResetRequest(id, resetUserPasswordDto);
 
         return "redirect:/login";
+    }
+
+    @PreAuthorize("isAnonymous()")
+    @GetMapping("/activate/{id}")
+    public String activateAccount(@PathVariable("id") UUID id) {
+
+        accountActivationService.activateAccount(id);
+
+        return "redirect:/login";
+    }
+
+    /**
+     * Submit email change page
+     *
+     * @param emailId id
+     */
+    @GetMapping("/submit-email-update/{emailId}")
+    public String submitEmailUpdate(@PathVariable("emailId") UUID emailId, Model model) {
+        final UserEmailUpdateRequest userEmailUpdateRequest = userEmailUpdateService.submitEmailRequest(emailId);
+        final UserEmailUpdateRequestDto requestDto = userEmailUpdateRequestMapper.toRequestDto(userEmailUpdateRequest);
+
+        model.addAttribute("emailRequest", requestDto);
+
+        return "submit-email-update";
     }
 
 

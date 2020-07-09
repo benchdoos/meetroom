@@ -26,3 +26,23 @@ $(document).ready(function () {
         });
     };
 })(jQuery);
+
+
+/**
+ * Show validation errors on form
+ *
+ * @param {array} errors from spring validation
+ * @param {string} formId where to find fields by names
+ */
+function appendValidationErrors(errors, formId) {
+    if (errors) {
+        if (errors.length > 0) {
+            errors.forEach(error => {
+                let field = error.field;
+                let defaultMessage = error.defaultMessage;
+                let fieldInput = $('#' + formId + ' input[name ="' + field + '"]');
+                fieldInput.next().show().text(defaultMessage);
+            });
+        }
+    }
+}

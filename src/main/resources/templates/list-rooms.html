@@ -19,7 +19,7 @@
             <div style="display: flex; padding-left: 10px">
                 <div sec:authorize="hasAnyAuthority('MEETING_ROOM:CREATE')">
                     <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#exampleModal">
-                        +
+                        <i class="fas fa-plus"></i>
                     </button>
                 </div>
                 <div sec:authorize="hasAnyAuthority('LIST_ROOMS:USE','MANAGE:USE')" class="dropdown">

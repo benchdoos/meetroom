@@ -2,7 +2,10 @@
 
 ## For HRs and PMs:
 
-This project was developed as a test project for one of companies and it still being in development to show actual skills and experience, that will help avoid time wasting on test tasks. You can see as code to analyse, as the project up itself at [http://meetroom.herokuapp.com/](http://meetroom.herokuapp.com/) (wait a little bit while loading, until project will boot up). 
+This project was developed as a test project for one of companies and it still being in development to show actual
+skills and experience, that will help avoid time wasting on test tasks. You can see as code to analyse, as the project
+up itself at [http://meetroom.herokuapp.com/](http://meetroom.herokuapp.com/) (wait a little bit while loading, until
+project will boot up).
 
 ## Introduction:
 
@@ -41,7 +44,8 @@ There are 2 ways to run application:
 
 ## 1) DEVELOP PROFILE:
 
-By default application start in DEVELOP (see `/resources/application.yml`) profile. It will create needed tables, but will not create initial data. 
+By default application start in DEVELOP (see `/resources/application.yml`) profile. It will create needed tables,
+but will not create initial data.
 
 You need to apply initial filling data sql script.
 
@@ -71,12 +75,13 @@ To open secured pages you need to log in.
 
 You can create new account if needed. It will have role `ROLE_USER`.
 
-Or you can use one of 2 pre-made user accounts:
+Or you can use one of 3 pre-made user accounts:
 
 | Login | Password | Role       |
 | ----- | -------- | ---------- |
 | admin | admin    | ROLE_ADMIN |
 | user  | user     | ROLE_USER  |
+| guest | guest    | ROLE_GUEST |
 
 Admins can:
 
@@ -88,6 +93,15 @@ Users can:
 
 - create events, edit, delete their own events
 - manage their profile and other stuff
+
+Guests can:
+
+- see events
+
+
+You can also create your own account, but be ready to set up an e-mail. There will be sent e-mail message to activate
+account.
+E-mail changes also need e-mail confirmation, as user password restores.
 
 
 
@@ -108,12 +122,12 @@ To override VM options:
 
 ## Some screenshots:
 
-![Main page](https://i.postimg.cc/V6tKLXw8/image.png)
-![Meeting room page](https://i.postimg.cc/CKTBp8cD/image.png)
-![Meeting info page with editing](https://i.postimg.cc/hth6RzXS/image.png)
-![Management page](https://i.postimg.cc/0Nn764tB/image.png)
-![Manage users](https://i.postimg.cc/g0qpGkm9/image.png)
-![Manage roles](https://i.postimg.cc/cCF1qVcf/image.png)
-![See privileges](https://i.postimg.cc/66bNXLXV/image.png)
-![User page](https://i.postimg.cc/rFb57vVg/image.png)
-![Update your avatar](https://i.postimg.cc/44P52LHF/image.png)
+![Main page](https://i.postimg.cc/15qWz7v9/image.png)
+![Meeting room page](https://i.postimg.cc/L5tFj4mT/image.png)
+![Meeting info page with editing](https://i.postimg.cc/fTvhLb2W/image.png)
+![User page](https://i.postimg.cc/jdtGGbsp/image.png)
+![Update your avatar](https://i.postimg.cc/sXCn7Yxk/image.png)
+![User events page](https://i.postimg.cc/QdpKVcL9/image.png)
+![Management page](https://i.postimg.cc/T1zh33CJ/image.png)
+![Manage users](https://i.postimg.cc/y6tDPLs3/image.png)
+

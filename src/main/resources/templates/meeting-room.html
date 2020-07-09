@@ -47,9 +47,13 @@
             <p class="h6 noselect" th:text="${room.location}"></p>
         </div>
         <div>
-            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createEventModal"
+            <button type="button"
+                    class="btn btn-outline-primary"
+                    sec:authorize="hasAnyAuthority('MEETING_ROOM:CREATE')"
+                    data-toggle="modal"
+                    data-target="#createEventModal"
                     title="Create event">
-                +
+                <i class="fas fa-plus"></i>
             </button>
         </div>
         <div th:include="modal/modal-login :: fr-login"></div>
