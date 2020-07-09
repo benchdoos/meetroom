@@ -7,6 +7,9 @@ import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 import org.springframework.test.context.ActiveProfiles;
 
+/**
+ * Abstract test for all Unit tests
+ */
 @ActiveProfiles("TEST")
 @Category(UnitTest.class)
 @RequiredArgsConstructor

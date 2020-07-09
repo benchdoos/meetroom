@@ -30,7 +30,6 @@ import java.util.UUID;
 @Service
 public class GmailEmailServiceImpl implements EmailService {
     private final JavaMailSender emailSender;
-    private final SpringConfigurationInfoBean configurationInfoBean;
     private final InternalConfiguration internalConfiguration;
 
     @Value("spring.mail.username")

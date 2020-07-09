@@ -164,6 +164,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserPublicInfoDto createUser(CreateUserDto createUserDto) {
+        //todo add validation for passwords?
         validateNewUser(createUserDto);
 
         final Role role = roleRepository.findFirstByInternalName(SecurityConstants.ROLE_USER);
