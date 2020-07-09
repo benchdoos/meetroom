@@ -35,13 +35,15 @@ public class UserMapperTest extends AbstractIntegrationCommonTest {
     }
 
     @Test
-    @Ignore
     public void testConvertUserPublicInfoDtoToUser() {
         final UserPublicInfoDto testDto = easyRandom.nextObject(UserPublicInfoDto.class);
         final User correctResult = getCorrectUser(testDto);
 
         final User resultUser = new User();
         userMapper.convert(testDto, resultUser);
+
+        //important, we are not checking avatar conversion. Furthermore null avatars are changed to default avatars
+        resultUser.setAvatar(null);
 
         assertThat(resultUser).isNotNull();
         assertThat(resultUser).isEqualTo(correctResult);
@@ -60,10 +62,12 @@ public class UserMapperTest extends AbstractIntegrationCommonTest {
     }
 
     @Test
-    @Ignore
     public void testConvertUserExtendedInfoDtoToUser() {
         final User correctUser = easyRandom.nextObject(User.class);
         correctUser.setPassword(null);
+        //important, we are not checking avatar conversion. Furthermore null avatars are changed to default avatars
+        correctUser.setAvatar(null);
+
         final UserExtendedInfoDto testDto = getCorrectUserExtendedInfoDto(correctUser);
 
         final User resultUser = new User();
@@ -80,6 +84,7 @@ public class UserMapperTest extends AbstractIntegrationCommonTest {
                 .lastName(testDto.getLastName())
                 .username(testDto.getUsername())
                 .roles(null) // important
+                .email(testDto.getEmail())
                 .enabled(testDto.getEnabled())
                 .build();
     }
@@ -109,7 +114,6 @@ public class UserMapperTest extends AbstractIntegrationCommonTest {
                 .build();
     }
 
-    @NotNull
     private UserAvatarDto getUserAvatarDto(User testUser) {
         if (testUser.getAvatar() != null) {
             final UserAvatarDto userAvatarDto = new UserAvatarDto();
