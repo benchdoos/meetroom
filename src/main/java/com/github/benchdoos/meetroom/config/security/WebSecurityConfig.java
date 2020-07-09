@@ -70,18 +70,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         //Login form
+        //@formatter:off
         httpSecurity.authorizeRequests()
-                .anyRequest().authenticated()
+                .anyRequest()
+                    .authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/")
-                .failureUrl("/login?error=true")
+                    .formLogin()
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/")
+                        .failureUrl("/login?error=true")
                 .and()
-                .logout()
+                    .logout()
                 .and()
-                .exceptionHandling()
+                    .exceptionHandling()
                 // FIXME: 12.04.2020 this is probably needed, but breaks login page redirect on accessing the
                 //  secured page without authorization
 //                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
@@ -89,11 +91,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //  issue#57
                 //  maybe STATELESS is able for controller?
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                    .sessionManagement()
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                    .and()
+                        .httpBasic()
                 .and()
-                .httpBasic()
-                .and()
-                .csrf().disable();
+                    .csrf().disable();
+        //@formatter:on
     }
 }
