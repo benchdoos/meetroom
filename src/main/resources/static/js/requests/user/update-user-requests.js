@@ -165,6 +165,32 @@ function updateUserEmail(context, modalId, targetErrorObjectId, successDialog, u
 }
 
 /**
+ * Send account activation request to user
+ *
+ * @param context root url
+ * @param modalId to show errors (current modal usually)
+ * @param targetErrorObjectId for errors
+ * @param userId id of user
+ */
+function sendUserActivationLink(context,  modalId, targetErrorObjectId, userId) {
+    let url = getApiV1Context(context) + '/manage/user/send-activation-request/' + userId;
+    console.log("sendUserActivationLink", url);
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        contentType: "application/json",
+        success: function (output, status, xhr) {
+            $('#' + modalId).modal('hide');
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            let responseJSON = XMLHttpRequest.responseJSON;
+            $('#' + targetErrorObjectId).html(responseJSON.message).show();
+        }
+    });
+}
+
+/**
  * Update modal dialog title and message
  *
  * @param successDialog dialog id

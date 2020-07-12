@@ -63,6 +63,7 @@
             <th>Username</th>
             <th>First name</th>
             <th>Last name</th>
+            <th>E-mail</th>
             <th>Roles</th>
             <th>Enabled</th>
             <th></th>
@@ -77,14 +78,33 @@
             <th>
                 <div style="display: inline-flex;">
                     <span th:include="modal/modal-user :: fr-user-username"></span>&nbsp;
-                    <i class="fas fa-exclamation-circle"
+                    <a href="#"
                        th:if="${user.needActivation}"
-                       style="color: chocolate"
-                       title="User account not activated"></i>
+                       th:userId="${user.id}"
+                       th:userUsername="${user.username}"
+                       data-toggle="modal"
+                       data-placement="top"
+                       data-target="#sendAccountActivationRequestModal">
+                        <i class="fas fa-exclamation-circle"
+                           style="color: chocolate"
+                           title="User account not activated"></i>
+                    </a>
                 </div>
             </th>
             <th th:text="${user.firstName}"></th>
             <th th:text="${user.lastName}"></th>
+            <th>
+                <a class="badge badge-secondary"
+                   type="button"
+                   th:if="${user.email != null}"
+                   th:href="|mailto:${user.email}|"
+                   target="_blank"
+                   data-toggle="tooltip"
+                   data-placement="top"
+                   th:title="${user.email}">
+                    <i class="fas fa-envelope-open-text" style="padding: 0 10px 0 10px;"></i>
+                </a>
+            </th>
             <th style="max-width: 300px;">
                     <span th:each="role,iterStat : ${user.roles}" th:if="${iterStat.index <= 5}">
                         <div th:include="modal/modal-role :: fr-role-label"></div>
@@ -148,6 +168,7 @@
 
 <div id="modals">
     <div th:include="modal/modal-manage-user :: fr-create-user-modal"></div>
+    <div th:include="modal/modal-manage-user :: fr-send-account-activation"></div>
     <div th:include="modal/modal-manage-user :: fr-edit-user" th:each="user : ${users.content}"></div>
     <div th:include="modal/modal-manage-user :: fr-edit-user-roles" th:each="user : ${users.content}"></div>
     <div th:include="modal/modal-manage-user :: fr-reset-user-password" th:each="user : ${users.content}"></div>
@@ -162,9 +183,17 @@
 
 <script th:src="@{/js/pagination-fix.js}"></script>
 <script>
-    $('#myModal').on('shown.bs.modal', function () {
-        $('#myInput').trigger('focus')
+    $('#sendAccountActivationRequestModal').on('shown.bs.modal', function (e) {
+        //todo: looks like shit,... works, but looks like shit. User OBJECT must be caught
+        console.log($(e.relatedTarget));
+        let userId = $(e.relatedTarget).attr('userId');
+        let username = $(e.relatedTarget).attr('userUsername');
+        console.log(userId);
+        let modal = $(this);
+        modal.find('.modal-body #userUsername').text(username);
+        modal.find('.modal-body #send-user-activation-request-userId-value').val(userId);
     });
+
 </script>
 </body>
 </html>

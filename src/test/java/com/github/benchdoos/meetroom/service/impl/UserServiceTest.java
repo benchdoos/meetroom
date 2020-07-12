@@ -18,6 +18,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Sql(value = "/sql/UserServiceTest.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class UserServiceTest extends AbstractIntegrationCommonTest {
 
     @Autowired
@@ -73,13 +74,12 @@ public class UserServiceTest extends AbstractIntegrationCommonTest {
                 .lastName("Last name")
                 .password("qwertyuiop")
                 .confirmPassword("qwertyuiop")
-                .username("user") //important
+                .username("testuser1") //important
                 .email("correct-email@mail.com")
                 .build();
         final UserPublicInfoDto user = userService.createUser(alreadyCreatedUser);
     }
 
-    @Sql("/sql/UserServiceTest.sql")
     @Test(expected = EmailAlreadyExistsException.class)
     public void createNewUserMustThrowEmailAlreadyExistsException() {
 
@@ -89,7 +89,7 @@ public class UserServiceTest extends AbstractIntegrationCommonTest {
                 .password("qwertyuiop")
                 .confirmPassword("qwertyuiop")
                 .username("correctusername")
-                .email("correct-test-user-email@mail.com") //important
+                .email("testuser1@mail.com") //important
                 .build();
 
         final UserPublicInfoDto user = userService.createUser(alreadyCreatedUser);
