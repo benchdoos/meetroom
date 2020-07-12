@@ -9,7 +9,6 @@ import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
 import com.github.benchdoos.meetroom.domain.Role;
 import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.UserEmailUpdateRequest;
-import com.github.benchdoos.meetroom.domain.annotations.validators.EmailValidator;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
 import com.github.benchdoos.meetroom.domain.dto.EditOtherUserDto;
@@ -31,7 +30,6 @@ import com.github.benchdoos.meetroom.exceptions.EmailAlreadyExistsException;
 import com.github.benchdoos.meetroom.exceptions.EmailIsAlreadyUsedException;
 import com.github.benchdoos.meetroom.exceptions.EmailMustBeSetException;
 import com.github.benchdoos.meetroom.exceptions.IllegalUserCredentialsException;
-import com.github.benchdoos.meetroom.exceptions.InvalidAvatarDataException;
 import com.github.benchdoos.meetroom.exceptions.InvalidCurrentPasswordException;
 import com.github.benchdoos.meetroom.exceptions.OnlyAccountOwnerCanChangePasswordException;
 import com.github.benchdoos.meetroom.exceptions.PasswordResetRequestExpiredException;
@@ -76,8 +74,6 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
-import static com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType.GRAVATAR;
 
 /**
  * Default implementation for {@link UserService}
@@ -510,8 +506,6 @@ public class UserServiceImpl implements UserService {
     public UserAvatarDto updateUserAvatar(UUID userId, UpdateUserAvatarDto updateUserAvatarDto) {
         final User user = getUserById(userId);
 
-//        validateAvatar(updateUserAvatarDto);
-
         if (user.getAvatar() != null) {
             user.getAvatar().setType(updateUserAvatarDto.getType());
             user.getAvatar().setData(updateUserAvatarDto.getData());
@@ -581,32 +575,6 @@ public class UserServiceImpl implements UserService {
         emailService.sendAccountActivation(
                 configurationInfoBean.getPublicFullApplicationUrl(),
                 accountActivationRequest);
-    }
-
-    /**
-     * Validate avatar data by given avatar type
-     *
-     * @param updateUserAvatar dto to validate
-     */
-    private void validateAvatar(UpdateUserAvatarDto updateUserAvatar) {
-        switch (updateUserAvatar.getType()) {
-            case GRAVATAR:
-
-                if (StringUtils.isEmpty(updateUserAvatar.getData())) { //prevents empty strings
-                    throw new InvalidAvatarDataException(GRAVATAR);
-                }
-
-                final EmailValidator emailValidator = new EmailValidator();
-                final boolean valid = emailValidator.isValid(updateUserAvatar.getData(), null); //todo find nice solution
-                if (!valid) {
-                    throw new InvalidAvatarDataException(GRAVATAR);
-                }
-
-                break;
-            case BASE64:
-                //todo realize base64 validation
-                break;
-        }
     }
 
     /**
