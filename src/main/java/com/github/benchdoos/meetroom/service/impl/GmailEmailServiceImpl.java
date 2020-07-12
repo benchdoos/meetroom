@@ -37,7 +37,8 @@ public class GmailEmailServiceImpl implements EmailService {
 
     @Async
     @Override
-    public void sendResetPasswordNotification(String publicFullApplicationUrl, User user, PasswordResetRequest passwordResetRequest) {
+    public void sendResetPasswordNotification(String publicFullApplicationUrl, PasswordResetRequest passwordResetRequest) {
+        final User user = passwordResetRequest.getRequestedFor();
         final String subject = "Meetroom - Reset password";
         final String emailMessage = internalConfiguration.getEmailSettings().getResetPasswordEmailMessage()
                 .replaceAll("\\{userFullName\\}", user.getFirstName() + " " + user.getLastName())
@@ -55,8 +56,9 @@ public class GmailEmailServiceImpl implements EmailService {
 
     @Async
     @Override
-    public void sendAccountActivation(String publicFullApplicationUrl, User user, AccountActivationRequest accountActivationRequest) {
+    public void sendAccountActivation(String publicFullApplicationUrl, AccountActivationRequest accountActivationRequest) {
         final String subject = "Meetroom - Activate account password";
+        final User user = accountActivationRequest.getRequestedFor();
         final String emailMessage = internalConfiguration.getEmailSettings().getAccountActivationEmailMessage()
                 .replaceAll("\\{userFullName\\}", user.getFirstName() + " " + user.getLastName())
                 .replaceAll("\\{activateAccountLink\\}", createAccountActivationUrl(publicFullApplicationUrl, accountActivationRequest))
@@ -76,9 +78,9 @@ public class GmailEmailServiceImpl implements EmailService {
     public void sendEmailUpdateRequests(String publicFullApplicationUrl,
                                         String oldEmail,
                                         String newEmail,
-                                        User user,
                                         UserEmailUpdateRequest emailUpdateRequest) {
 
+        final User user = emailUpdateRequest.getRequestedFor();
         final String subject = "Meetroom - Update email request";
         try {
 

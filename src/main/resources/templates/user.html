@@ -95,7 +95,8 @@
                 <br>
                 <span th:if="${user.email != null}">
                     <a th:href="|mailto:${user.email}|"
-                       th:text="${user.email}"></a>
+                       th:text="${user.email}"
+                       target="_blank"></a>
                 </span>
             </p>
         </div>
