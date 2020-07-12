@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.UUID;
 
@@ -86,7 +87,7 @@ public class ApiV1UserAvatarController {
     @PreAuthorize("hasAnyAuthority('USER:USE')")
     @PostMapping("/update/{userId}")
     public UserAvatarDto updateUserAvatar(@PathVariable("userId") UUID userId,
-                                          @RequestBody UpdateUserAvatarDto updateUserAvatarDto,
+                                          @RequestBody @Valid UpdateUserAvatarDto updateUserAvatarDto,
                                           Principal principal) {
         final boolean owner = UserUtils.checkPrincipalToGivenId(principal, userId);
         if (owner) {

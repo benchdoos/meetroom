@@ -1,7 +1,9 @@
 package com.github.benchdoos.meetroom.domain.dto;
 
 import com.github.benchdoos.meetroom.domain.Avatar;
+import com.github.benchdoos.meetroom.domain.annotations.ValidAvatar;
 import com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType;
+import com.github.benchdoos.meetroom.domain.interfaces.AvatarInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +19,8 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Data
 @Builder
-public class UpdateUserAvatarDto {
+@ValidAvatar
+public class UpdateUserAvatarDto implements AvatarInfo {
 
     /**
      * Avatar data type

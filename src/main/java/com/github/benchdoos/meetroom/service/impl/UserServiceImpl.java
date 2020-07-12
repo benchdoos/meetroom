@@ -510,7 +510,7 @@ public class UserServiceImpl implements UserService {
     public UserAvatarDto updateUserAvatar(UUID userId, UpdateUserAvatarDto updateUserAvatarDto) {
         final User user = getUserById(userId);
 
-        validateAvatar(updateUserAvatarDto);
+//        validateAvatar(updateUserAvatarDto);
 
         if (user.getAvatar() != null) {
             user.getAvatar().setType(updateUserAvatarDto.getType());

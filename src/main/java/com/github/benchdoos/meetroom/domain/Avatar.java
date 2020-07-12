@@ -1,6 +1,8 @@
 package com.github.benchdoos.meetroom.domain;
 
+import com.github.benchdoos.meetroom.domain.annotations.ValidAvatar;
 import com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType;
+import com.github.benchdoos.meetroom.domain.interfaces.AvatarInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +26,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Builder
-public class Avatar {
+@ValidAvatar
+public class Avatar implements AvatarInfo {
     @Id
     @GeneratedValue
     @Column(name = "id")

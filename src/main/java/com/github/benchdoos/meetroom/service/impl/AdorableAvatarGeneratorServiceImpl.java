@@ -6,19 +6,24 @@ import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType;
 import com.github.benchdoos.meetroom.service.AvatarGeneratorService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
 
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
+
 /**
  * Adorable avatar generation
+ *
  * @see <a href="adorable.io">adorable.io</a>
  */
 @RequiredArgsConstructor
+@Slf4j
 @Service
 public class AdorableAvatarGeneratorServiceImpl implements AvatarGeneratorService {
+    private static final int COMPRESSION_LEVEL = 4;
     private final AvatarGeneratorClient avatarGeneratorClient;
 
     @Override
