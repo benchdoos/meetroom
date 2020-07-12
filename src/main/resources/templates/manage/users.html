@@ -80,7 +80,8 @@
                     <span th:include="modal/modal-user :: fr-user-username"></span>&nbsp;
                     <a href="#"
                        th:if="${user.needActivation}"
-                       th:target="${user}"
+                       th:userId="${user.id}"
+                       th:userUsername="${user.username}"
                        data-toggle="modal"
                        data-placement="top"
                        data-target="#sendAccountActivationRequestModal">
@@ -183,12 +184,14 @@
 <script th:src="@{/js/pagination-fix.js}"></script>
 <script>
     $('#sendAccountActivationRequestModal').on('shown.bs.modal', function (e) {
-        //todo how to get the caller???
+        //todo: looks like shit,... works, but looks like shit. User OBJECT must be caught
         console.log($(e.relatedTarget));
-        let attribute = $(e.relatedTarget).attr('target');
-        console.log(attribute);
-        console.log(attribute.username);
-        // var id= $(e.relatedTarget).data('yourid');
+        let userId = $(e.relatedTarget).attr('userId');
+        let username = $(e.relatedTarget).attr('userUsername');
+        console.log(userId);
+        let modal = $(this);
+        modal.find('.modal-body #userUsername').text(username);
+        modal.find('.modal-body #send-user-activation-request-userId-value').val(userId);
     });
 
 </script>

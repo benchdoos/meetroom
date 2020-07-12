@@ -241,8 +241,8 @@
     </div>
 </div>
 
-<div th:fragment="fr-send-account-activation">
-    <div class="modal" tabindex="-1" role="dialog" id="sendAccountActivationRequestModal">
+<div th:fragment="fr-send-account-activation"> <!--fr-send-account-activation(user)-->
+    <div class="modal" tabindex="-1" role="dialog" id="sendAccountActivationRequestModal" th:attrappend="user=${user}">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -252,17 +252,33 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <span>Do you want to send activation request to user: ADD USERNAME</span>?</span>
+                    <div id="sendUserActivationRequestModalAlert" class="alert alert-danger" role="alert"
+                         style="display: none"></div>
+                    <input id="send-user-activation-request-userId-value" hidden="hidden"/>
+                    <span>Do you want to send activation request to user: <span id="userUsername"></span></span>?</span>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">
+                    <button id="send-user-activation-request-button" type="button" class="btn btn-primary">
                         Send activation request
                     </button>
                 </div>
             </div>
         </div>
     </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var contextRoot = [[@{/}]];
+            /*]]>*/
+
+            $(function () {
+                $('#send-user-activation-request-button').click(function (e) {
+                    let userId = $('#send-user-activation-request-userId-value').val();
+                    console.log("sending activation to user: ", userId);
+                    sendUserActivationLink(contextRoot, 'sendAccountActivationRequestModal', 'sendUserActivationRequestModalAlert', userId);
+                })
+            });
+    </script>
 </div>
 
 <div th:fragment="fr-edit-user-enable">
