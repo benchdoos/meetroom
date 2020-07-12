@@ -436,9 +436,11 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistsException(userInfo.getUsername());
         }
 
-        final Optional<User> byEmail = userRepository.findFirstByEmail(userInfo.getEmail());
-        if (byEmail.isPresent()) {
-            throw new EmailAlreadyExistsException(userInfo.getEmail());
+        if (userInfo.getEmail() != null) {
+            final Optional<User> byEmail = userRepository.findFirstByEmail(userInfo.getEmail());
+            if (byEmail.isPresent()) {
+                throw new EmailAlreadyExistsException(userInfo.getEmail());
+            }
         }
     }
 
