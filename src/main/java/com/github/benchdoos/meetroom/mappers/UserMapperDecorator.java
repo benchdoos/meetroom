@@ -51,6 +51,12 @@ public abstract class UserMapperDecorator implements UserMapper {
             } else {
                 userAvatarDto.setSrc(avatar.getData());
             }
+        } else {
+            //returns default avatar instead
+            final Avatar defaultAvatar = avatarService.getDefaultUserAvatar();
+            if (defaultAvatar != null) {
+                convertAvatar(defaultAvatar, userAvatarDto);
+            }
         }
     }
 
@@ -63,12 +69,10 @@ public abstract class UserMapperDecorator implements UserMapper {
      */
     private void convertUserAvatar(User user, @MappingTarget UserPublicInfoDto userPublicInfoDto) {
         final Avatar avatar = user.getAvatar();
-        if (avatar != null) {
-            final UserAvatarDto userAvatarDto = new UserAvatarDto();
+        final UserAvatarDto userAvatarDto = new UserAvatarDto();
 
-            convertAvatar(avatar, userAvatarDto);
+        convertAvatar(avatar, userAvatarDto);
 
-            userPublicInfoDto.setAvatar(userAvatarDto);
-        }
+        userPublicInfoDto.setAvatar(userAvatarDto);
     }
 }
