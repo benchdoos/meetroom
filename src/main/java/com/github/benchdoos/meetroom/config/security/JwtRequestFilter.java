@@ -44,19 +44,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-            HttpServletRequest httpServletRequest,
-            @NonNull HttpServletResponse httpServletResponse,
+            HttpServletRequest request,
+            @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        final String requestTokenHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        final String requestTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (StringUtils.hasText(requestTokenHeader)) {
             //authorization via JWT token
-            doJwtTokenFilter(httpServletRequest, httpServletResponse, requestTokenHeader);
+            doJwtTokenFilter(request, response, requestTokenHeader);
         } else {
-            doSessionFilter(httpServletRequest, httpServletResponse);
+            doSessionFilter(request, response);
         }
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
+        filterChain.doFilter(request, response);
     }
 
     /**

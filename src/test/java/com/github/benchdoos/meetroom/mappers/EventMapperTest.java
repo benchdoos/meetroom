@@ -1,32 +1,28 @@
 package com.github.benchdoos.meetroom.mappers;
 
-import com.github.benchdoos.meetroom.abstracts.AbstractUnitTest;
+import com.github.benchdoos.meetroom.abstracts.AbstractIntegrationCommonTest;
 import com.github.benchdoos.meetroom.domain.Event;
 import com.github.benchdoos.meetroom.domain.dto.EventDto;
 import com.github.benchdoos.meetroom.domain.dto.MeetingRoomDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class EventMapperTest extends AbstractUnitTest {
+public class EventMapperTest extends AbstractIntegrationCommonTest {
+    @Autowired
     private EventMapper eventMapper;
+    @Autowired
     private UserMapper userMapper;
+    @Autowired
     private MeetingRoomMapper meetingRoomMapper;
 
-    public EventMapperTest() {
-        this.eventMapper = Mappers.getMapper(EventMapper.class);
-        this.userMapper = Mappers.getMapper(UserMapper.class);
-        this.meetingRoomMapper = Mappers.getMapper(MeetingRoomMapper.class);
-    }
-
     @Test
-    @Disabled
-    void convertEventToEventDto() {
+    public void convertEventToEventDto() {
         final Event testEvent = easyRandom.nextObject(Event.class);
         final EventDto testEventDto = getCorrectEventDto(testEvent);
+        testEventDto.getCreator().setAvatar(null); //we are not testing avatars here
 
         final EventDto testingObject = eventMapper.toEventDto(testEvent);
 
