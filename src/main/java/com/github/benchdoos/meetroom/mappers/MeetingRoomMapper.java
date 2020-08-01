@@ -13,8 +13,7 @@ import org.mapstruct.ReportingPolicy;
  * Mapper for {@link MeetingRoom}
  */
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-componentModel = "spring")
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface MeetingRoomMapper {
 
     void convert(MeetingRoom meetingRoom, @MappingTarget CreateMeetingRoomDto createMeetingRoomDto);

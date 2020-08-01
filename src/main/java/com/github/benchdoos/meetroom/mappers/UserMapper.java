@@ -17,8 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
  * Mapper for {@link User}
  */
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        componentModel = "spring")
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 @DecoratedWith(UserMapperDecorator.class)
 public interface UserMapper {
 

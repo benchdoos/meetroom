@@ -10,8 +10,7 @@ import org.mapstruct.ReportingPolicy;
  * Mapper to convert {@link UserEmailUpdateRequest}
  */
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        componentModel = "spring")
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserEmailUpdateRequestMapper {
 
     UserEmailUpdateRequestDto toRequestDto(UserEmailUpdateRequest event);

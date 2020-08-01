@@ -14,8 +14,7 @@ import java.util.List;
  * Mapper for {@link Event}
  */
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        componentModel = "spring")
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface EventMapper {
 
     @Mapping(source = "user", target = "creator") //for example
