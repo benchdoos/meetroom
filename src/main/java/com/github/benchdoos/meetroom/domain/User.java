@@ -1,11 +1,16 @@
 package com.github.benchdoos.meetroom.domain;
 
-import com.github.benchdoos.meetroom.domain.annotations.Username;
 import com.github.benchdoos.meetroom.domain.annotations.Email;
+import com.github.benchdoos.meetroom.domain.annotations.Username;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -25,6 +30,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users")
+@TypeDefs({
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class),
+        @TypeDef(name = "json", typeClass = JsonStringType.class)
+})
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -78,4 +87,11 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"))
     private Collection<Role> roles;
+
+    /**
+     * User settings with preferences
+     */
+    @Type(type = "jsonb")
+    @OneToOne(cascade = CascadeType.ALL)
+    private UserSettings settings;
 }

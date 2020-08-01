@@ -11,6 +11,7 @@ import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserEmailDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserSettingsDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
 import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
@@ -213,4 +214,13 @@ public interface UserService extends UserDetailsService {
      * @param userId id of user
      */
     void sendAccountActivationRequest(UUID userId);
+
+    /**
+     * Update user settings
+     *
+     * @param userId user id
+     * @param updateUserSettingsDto dto with new settings
+     * @return information about user
+     */
+    UserExtendedInfoDto updateUserSettings(UUID userId, UpdateUserSettingsDto updateUserSettingsDto);
 }

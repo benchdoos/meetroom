@@ -8,6 +8,7 @@ import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
@@ -25,6 +26,7 @@ public interface UserMapper {
 
     void convert(UserPublicInfoDto userPublicInfoDto, @MappingTarget User user);
 
+    @Mapping(source = "settings", target = "userSettings")
     void convert(User user, @MappingTarget UserExtendedInfoDto userExtendedInfoDto);
 
     void convert(UserExtendedInfoDto userExtendedInfoDto, @MappingTarget User user);

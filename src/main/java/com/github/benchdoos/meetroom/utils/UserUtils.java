@@ -102,4 +102,26 @@ public class UserUtils {
         }
         return false;
     }
+
+    /**
+     * Get user id by principal
+     *
+     * @param principal principal
+     * @return null if principal is not present
+     */
+    public static UUID getUserIdByPrincipal(Principal principal) {
+        try {
+            if (principal != null) {
+                if (principal instanceof UsernamePasswordAuthenticationToken) {
+                    final UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) principal;
+                    if (token.getPrincipal() instanceof UserDetailsDto) {
+                      return ((UserDetailsDto) token.getPrincipal()).getId();
+                    }
+                }
+            }
+        } catch (final Exception ignore) {
+            /*NOP*/
+        }
+        return null;
+    }
 }

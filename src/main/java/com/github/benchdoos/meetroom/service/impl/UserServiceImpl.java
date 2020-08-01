@@ -9,6 +9,7 @@ import com.github.benchdoos.meetroom.domain.PasswordResetRequest;
 import com.github.benchdoos.meetroom.domain.Role;
 import com.github.benchdoos.meetroom.domain.User;
 import com.github.benchdoos.meetroom.domain.UserEmailUpdateRequest;
+import com.github.benchdoos.meetroom.domain.UserSettings;
 import com.github.benchdoos.meetroom.domain.annotations.validators.EmailValidator;
 import com.github.benchdoos.meetroom.domain.dto.CreateOtherUserDto;
 import com.github.benchdoos.meetroom.domain.dto.CreateUserDto;
@@ -19,6 +20,7 @@ import com.github.benchdoos.meetroom.domain.dto.UpdateUserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserEmailDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserSettingsDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
 import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.dto.UserDetailsDto;
@@ -581,6 +583,33 @@ public class UserServiceImpl implements UserService {
         emailService.sendAccountActivation(
                 configurationInfoBean.getPublicFullApplicationUrl(),
                 accountActivationRequest);
+    }
+
+    @Override
+    public UserExtendedInfoDto updateUserSettings(UUID userId, UpdateUserSettingsDto updateDto) {
+        final User user = getUserById(userId);
+
+         UserSettings settings = user.getSettings();
+        if (settings == null) {
+            settings = new UserSettings();
+        }
+
+        if (updateDto.getDarkModeEnabled() != null) {
+            settings.setDarkModeEnabled(updateDto.getDarkModeEnabled());
+        }
+
+        if (updateDto.getShowEmailToOtherUsers() != null) {
+            settings.setShowEmailToOtherUsers(updateDto.getShowEmailToOtherUsers());
+        }
+
+        user.setSettings(settings);
+
+        final User saved = userRepository.save(user);
+
+        final UserExtendedInfoDto userExtendedInfoDto = new UserExtendedInfoDto();
+        userMapper.convert(saved, userExtendedInfoDto);
+
+        return userExtendedInfoDto;
     }
 
     /**

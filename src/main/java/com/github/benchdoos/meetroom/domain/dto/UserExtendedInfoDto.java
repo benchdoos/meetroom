@@ -22,6 +22,8 @@ public class UserExtendedInfoDto extends UserPublicInfoDto {
 
     private Collection<Role> roles;
 
+    private UserSettingsDto userSettings;
+
     /**
      * Builder for {@link UserExtendedInfoDto} instead of parent ({@link UserPublicInfoDto}) builder
      *
@@ -41,8 +43,10 @@ public class UserExtendedInfoDto extends UserPublicInfoDto {
                                String email,
                                Boolean enabled,
                                Collection<Role> roles,
+                               UserSettingsDto userSettings,
                                UserAvatarDto avatar) {
         super(id, username, firstName, lastName, email, enabled, avatar);
         this.roles = roles;
+        this.userSettings = userSettings;
     }
 }

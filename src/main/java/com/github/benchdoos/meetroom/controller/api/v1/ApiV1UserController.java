@@ -4,11 +4,13 @@ import com.github.benchdoos.meetroom.config.constants.ApiConstants;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserEmailDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserPasswordDto;
+import com.github.benchdoos.meetroom.domain.dto.UpdateUserSettingsDto;
 import com.github.benchdoos.meetroom.domain.dto.UpdateUserUsernameDto;
 import com.github.benchdoos.meetroom.domain.dto.UserExtendedInfoDto;
 import com.github.benchdoos.meetroom.domain.dto.UserPublicInfoDto;
 import com.github.benchdoos.meetroom.exceptions.PermissionDeniedForActionException;
 import com.github.benchdoos.meetroom.exceptions.UserInformationCanOnlyBeUpdatedByItsOwnerException;
+import com.github.benchdoos.meetroom.exceptions.UserPrincipalNotPresentException;
 import com.github.benchdoos.meetroom.mappers.UserMapper;
 import com.github.benchdoos.meetroom.service.UserEmailUpdateService;
 import com.github.benchdoos.meetroom.service.UserService;
@@ -29,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -168,6 +171,21 @@ public class ApiV1UserController {
         userService.updateUserEmail(userId, userEmailDto);
     }
 
+    /**
+     * Update user settings with given settings
+     *
+     * @param updateUserSettingsDto dto with new settings
+     * @param principal principal
+     * @return info about user
+     */
+    @PreAuthorize("hasAnyAuthority('USER:USE')")
+    @PostMapping("/settings")
+    public UserExtendedInfoDto updateUserSettings(@RequestBody @Valid UpdateUserSettingsDto updateUserSettingsDto,
+                                                  Principal principal) {
+        final UUID userId = Optional.ofNullable(UserUtils.getUserIdByPrincipal(principal)).orElseThrow(UserPrincipalNotPresentException::new);
+
+        return userService.updateUserSettings(userId, updateUserSettingsDto);
+    }
 
     /**
      * Logs out user by given request
