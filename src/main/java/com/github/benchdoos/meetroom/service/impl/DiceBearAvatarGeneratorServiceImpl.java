@@ -14,25 +14,19 @@ import org.springframework.util.Base64Utils;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-/**
- * Adorable avatar generation
- *
- * @see <a href="adorable.io">adorable.io</a>
- * @deprecated по состоянию на 25.02.2021 - сервис недоступен. Если это не изменится - под нож в свледующей итерации.
- * Вместо этого использовать - {@link DiceBearAvatarGeneratorServiceImpl}
- */
+@Service("diceBearAvatarGeneratorService")
 @RequiredArgsConstructor
-@Service
-public class AdorableAvatarGeneratorServiceImpl implements AvatarGeneratorService {
+public class DiceBearAvatarGeneratorServiceImpl implements AvatarGeneratorService {
 
-    @Qualifier("adorableAvatarGeneratorClientImpl")
+    @Qualifier("diceBearAvatarGeneratorClient")
     @Autowired
     private AvatarGeneratorClient avatarGeneratorClient;
 
+
     @Override
     public UserAvatarDto generateRandomAvatar(int size) {
-        final String key = UUID.randomUUID().toString();
-        return generateAvatarForString(key, size);
+        final String seed = UUID.randomUUID().toString();
+        return generateAvatarForString(seed, size);
     }
 
     @Override

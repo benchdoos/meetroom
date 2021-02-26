@@ -52,6 +52,8 @@ import com.github.benchdoos.meetroom.service.UserService;
 import com.github.benchdoos.meetroom.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -90,7 +92,9 @@ public class UserServiceImpl implements UserService {
     private final PasswordResetRequestRepository passwordResetRequestRepository;
     private final RoleRepository roleRepository;
     private final PasswordResetRequestService passwordResetRequestService;
-    private final AvatarGeneratorService avatarGeneratorService;
+    @Qualifier("diceBearAvatarGeneratorService")
+    @Autowired
+    private AvatarGeneratorService avatarGeneratorService;
     private final AccountActivationService accountActivationService;
     private final UserEmailUpdateService emailUpdateService;
     private final EmailService emailService;

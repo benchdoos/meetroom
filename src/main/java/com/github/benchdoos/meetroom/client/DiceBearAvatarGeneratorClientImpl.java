@@ -1,6 +1,5 @@
-package com.github.benchdoos.meetroom.client.impl;
+package com.github.benchdoos.meetroom.client;
 
-import com.github.benchdoos.meetroom.client.AvatarGeneratorClient;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpEntity;
@@ -15,15 +14,11 @@ import javax.validation.constraints.Size;
 import java.io.InputStream;
 import java.util.Arrays;
 
-/**
- * Adorable avatar generation client
- * @see <a href="adorable.io">adorable.io</a>
- */
-@Deprecated
+@Service("diceBearAvatarGeneratorClient")
 @RequiredArgsConstructor
-@Service
-public class AdorableAvatarGeneratorClientImpl implements AvatarGeneratorClient {
-    private static final String API_URL = "https://api.adorable.io/avatars/{size}/{key}.png";
+public class DiceBearAvatarGeneratorClientImpl implements AvatarGeneratorClient {
+    private static final String API_URL
+            = "https://avatars.dicebear.com/api/human/{key}.svg?w={width}&h={height}&mood[]=happy";
 
     private final RestTemplate restTemplate;
 
@@ -46,7 +41,6 @@ public class AdorableAvatarGeneratorClientImpl implements AvatarGeneratorClient 
                     final InputStream body = response.getBody();
                     return IOUtils.toByteArray(body);
                 },
-                size,
-                key);
+                key, size, size);
     }
 }

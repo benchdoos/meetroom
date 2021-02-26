@@ -11,6 +11,8 @@ import com.github.benchdoos.meetroom.service.UserService;
 import com.github.benchdoos.meetroom.utils.UserUtils;
 import com.timgroup.jgravatar.GravatarDefaultImage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,9 +33,11 @@ import java.util.UUID;
 @RequestMapping(ApiConstants.API_V1_PATH_PREFIX + "/user-avatar")
 public class ApiV1UserAvatarController {
     private final InternalConfiguration configuration;
-    private final AvatarGeneratorService avatarGeneratorService;
     private final AvatarGravatarService avatarGravatarService;
     private final UserService userService;
+    @Qualifier("diceBearAvatarGeneratorService")
+    @Autowired
+    private AvatarGeneratorService avatarGeneratorService;
 
     /**
      * Get randomly generated user avatar
