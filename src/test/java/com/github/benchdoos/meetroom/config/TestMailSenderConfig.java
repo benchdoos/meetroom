@@ -1,7 +1,6 @@
 package com.github.benchdoos.meetroom.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.MailException;
@@ -11,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
 import javax.mail.internet.MimeMessage;
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Properties;
 

@@ -2,23 +2,20 @@ package com.github.benchdoos.meetroom.abstracts;
 
 import com.github.benchdoos.meetroom.abstracts.marks.IntegrationTest;
 import com.github.benchdoos.meetroom.config.TestMailSenderConfig;
-import com.github.benchdoos.meetroom.config.beans.SpringConfigurationInfoBean;
 import lombok.extern.slf4j.Slf4j;
 import org.jeasy.random.EasyRandom;
-import org.jetbrains.annotations.NotNull;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Abstract class for all integration tests
