@@ -6,7 +6,6 @@ import com.github.benchdoos.meetroom.domain.dto.UserAvatarDto;
 import com.github.benchdoos.meetroom.domain.enumirations.AvatarDataType;
 import com.github.benchdoos.meetroom.service.AvatarGeneratorService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
@@ -23,11 +22,11 @@ import java.util.UUID;
  */
 @RequiredArgsConstructor
 @Service
+@Deprecated
 public class AdorableAvatarGeneratorServiceImpl implements AvatarGeneratorService {
 
     @Qualifier("adorableAvatarGeneratorClientImpl")
-    @Autowired
-    private AvatarGeneratorClient avatarGeneratorClient;
+    private final AvatarGeneratorClient avatarGeneratorClient;
 
     @Override
     public UserAvatarDto generateRandomAvatar(int size) {
