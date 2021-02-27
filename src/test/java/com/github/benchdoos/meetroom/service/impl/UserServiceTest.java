@@ -23,14 +23,14 @@ public class UserServiceTest extends AbstractIntegrationCommonTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserService userService;
+
     @MockBean
     private SpringConfigurationInfoBean springConfigurationInfoBean;
 
     @MockBean
     private EmailService emailService;
-
-    @Autowired
-    private UserService userService;
 
     @Override
     public void setUp() throws Exception {
